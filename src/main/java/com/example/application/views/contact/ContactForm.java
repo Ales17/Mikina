@@ -1,4 +1,4 @@
-package com.example.application.views.list;
+package com.example.application.views.contact;
 
 import com.example.application.data.entity.Company;
 import com.example.application.data.entity.Contact;
@@ -84,7 +84,7 @@ public class ContactForm extends FormLayout {
   }
 
   public static class SaveEvent extends ContactFormEvent {
-    SaveEvent(ContactForm source, Contact contact) {
+    public SaveEvent(ContactForm source, Contact contact) {
       super(source, contact);
     }
   }
@@ -97,7 +97,7 @@ public class ContactForm extends FormLayout {
   }
 
   public static class CloseEvent extends ContactFormEvent {
-    CloseEvent(ContactForm source) {
+    public CloseEvent(ContactForm source) {
       super(source, null);
     }
   }

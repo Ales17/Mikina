@@ -1,7 +1,8 @@
-package com.example.application.views.list;
+package com.example.application.views.contact;
 
 import com.example.application.data.entity.Contact;
 import com.example.application.data.service.CrmService;
+import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -11,16 +12,19 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 
-@Route(value = "")
+@PermitAll
+
+@Route(value="", layout = MainLayout.class)
 @PageTitle("Contacts | Vaadin CRM")
-public class ListView extends VerticalLayout {
+public class ContactView extends VerticalLayout {
     Grid<Contact> grid = new Grid<>(Contact.class);
     TextField filterText = new TextField();
     ContactForm form;
     CrmService service;
 
-    public ListView(CrmService service) {
+    public ContactView(CrmService service) {
         this.service = service;
         addClassName("list-view");
         setSizeFull();
