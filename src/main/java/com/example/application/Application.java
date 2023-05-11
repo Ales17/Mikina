@@ -12,7 +12,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @PWA(
         name = "VaadinCRM",
         shortName = "CRM",
-        offlinePath="offline.html"
+        offlinePath = "offline.html"
 
 )
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
