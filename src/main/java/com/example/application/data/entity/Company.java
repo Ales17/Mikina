@@ -17,7 +17,7 @@ public class Company extends AbstractEntity {
     @OneToMany(mappedBy = "company")
     @Nullable
     private List<Contact> employees = new LinkedList<>();
-    private String ceo;
+
     @Formula("(select count(c.id) from Contact c where c.company_id = id)")
     private int employeeCount;
 
@@ -37,9 +37,7 @@ public class Company extends AbstractEntity {
         this.employees = employees;
     }
 
-    public String getCeo() {
-        return ceo;
-    }
+
 
     public int getEmployeeCount() {
         return employeeCount;
