@@ -10,6 +10,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -27,6 +28,7 @@ public class ContactForm extends FormLayout {
     ComboBox<Status> status = new ComboBox<>("Status");
     ComboBox<Company> company = new ComboBox<>("Company");
 
+    DatePicker birthDate = new DatePicker("Birthdate");
     Button save = new Button("Save");
     Button delete = new Button("Delete");
     Button close = new Button("Cancel");
@@ -37,7 +39,7 @@ public class ContactForm extends FormLayout {
         binder.bindInstanceFields(this);
 
         company.setItems(companies);
-        company.setItemLabelGenerator(Company::getName);
+        company.setItemLabelGenerator(Company::getCompanyName);
         status.setItems(statuses);
         status.setItemLabelGenerator(Status::getName);
 
@@ -45,7 +47,7 @@ public class ContactForm extends FormLayout {
                 lastName,
                 email,
                 company,
-                status,
+                status, birthDate,
                 createButtonsLayout());
     }
 

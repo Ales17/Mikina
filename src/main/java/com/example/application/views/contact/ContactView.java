@@ -13,13 +13,12 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
-import org.springframework.context.annotation.Scope;
 
 
 
-@Scope("prototype")
+@PermitAll
 @Route(value = "", layout = MainLayout.class)
-@PageTitle("Contacts | Vaadin CRM")@PermitAll
+@PageTitle("Contacts | Vaadin CRM")
 public class ContactView extends VerticalLayout {
     Grid<Contact> grid = new Grid<>(Contact.class);
     TextField filterText = new TextField();
@@ -32,12 +31,21 @@ public class ContactView extends VerticalLayout {
         setSizeFull();
         configureGrid();
         configureForm();
-
         add(getToolbar(), getContent());
         updateList();
         closeEditor();
     }
-
+    private Component getToolbar() {
+        filterText.setPlaceholder("Filtrovat dle jména...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.addValueChangeListener(e -> updateList());
+        Button addContactButton = new Button("Přidat kontakt");
+        addContactButton.addClickListener(click -> addContact());
+        var toolbar = new HorizontalLayout(filterText, addContactButton);
+        toolbar.addClassName("toolbar");
+        return toolbar;
+    }
     private HorizontalLayout getContent() {
         HorizontalLayout content = new HorizontalLayout(grid, form);
         content.setFlexGrow(2, grid);
@@ -46,7 +54,22 @@ public class ContactView extends VerticalLayout {
         content.setSizeFull();
         return content;
     }
+    private void configureGrid() {
+        grid.addClassNames("contact-grid");
+        grid.setSizeFull();
+        grid.setColumns("firstName", "lastName", "email", "birthDate" );
+        // set column names Jméno, Příjmení, Email, Datum narození
+        grid.getColumnByKey("firstName").setHeader("Jméno");
+        grid.getColumnByKey("lastName").setHeader("Příjmení");
+        grid.getColumnByKey("email").setHeader("Email");
+        grid.getColumnByKey("birthDate").setHeader("Datum narození");
+        grid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
+        grid.addColumn(contact -> contact.getCompany().getCompanyName()).setHeader("Společnost");
+        grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
+        grid.asSingleSelect().addValueChangeListener(event ->
+                editContact(event.getValue()));
+    }
     private void configureForm() {
         form = new ContactForm(service.findAllCompanies(), service.findAllStatuses());
         form.setWidth("25em");
@@ -68,33 +91,11 @@ public class ContactView extends VerticalLayout {
     }
 
 
-    private void configureGrid() {
-        grid.addClassNames("contact-grid");
-        grid.setSizeFull();
-        grid.setColumns("firstName", "lastName", "email");
-        grid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
-        grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Company");
-        grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
-        grid.asSingleSelect().addValueChangeListener(event ->
-                editContact(event.getValue()));
-    }
 
-    private Component getToolbar() {
-        filterText.setPlaceholder("Filter by name...");
-        filterText.setClearButtonVisible(true);
-        filterText.setValueChangeMode(ValueChangeMode.LAZY);
-        filterText.addValueChangeListener(e -> updateList());
 
-        Button addContactButton = new Button("Add contact");
-        addContactButton.addClickListener(click -> addContact());
 
-        var toolbar = new HorizontalLayout(filterText, addContactButton);
-        toolbar.addClassName("toolbar");
-        return toolbar;
-    }
-
-    public void editContact(Contact contact) {
+    private void editContact(Contact contact) {
         if (contact == null) {
             closeEditor();
         } else {

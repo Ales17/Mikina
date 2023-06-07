@@ -1,12 +1,16 @@
 package com.example.application.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 public class Contact extends AbstractEntity {
@@ -16,7 +20,8 @@ public class Contact extends AbstractEntity {
 
     @NotEmpty
     private String lastName = "";
-
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
     @ManyToOne
     @JoinColumn(name = "company_id")
     @NotNull
@@ -43,6 +48,14 @@ public class Contact extends AbstractEntity {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
+        public LocalDate getBirthDate() {
+            return birthDate;
+        }
+
+        public void setBirthDate(LocalDate birthDate) {
+            this.birthDate = birthDate;
+        }
 
     public String getLastName() {
         return lastName;

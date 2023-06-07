@@ -33,6 +33,14 @@ public class CrmService {
         }
     }
 
+    public List<Company> findAllCompanies() {
+        return companyRepository.findAll();
+
+    }
+
+    public List<Company> findCompaniesByName(String filter)
+    {return  companyRepository.search(filter);
+}
     public long countContacts() {
         return contactRepository.count();
     }
@@ -49,11 +57,23 @@ public class CrmService {
         contactRepository.save(contact);
     }
 
-    public List<Company> findAllCompanies() {
-        return companyRepository.findAll();
-    }
+
 
     public List<Status> findAllStatuses() {
         return statusRepository.findAll();
+    }
+
+
+
+    public void saveCompany(Company company) {
+        if (company == null) {
+            System.err.println("Company is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        companyRepository.save(company);
+    }
+
+    public void deleteCompany(Company company) {
+        companyRepository.delete(company);
     }
 }

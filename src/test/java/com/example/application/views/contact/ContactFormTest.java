@@ -25,9 +25,9 @@ public class ContactFormTest {
     public void setupData() {
         companies = new ArrayList<>();
         company1 = new Company();
-        company1.setName("Vaadin Ltd");
+        company1.setCompanyName("Vaadin Ltd");
         company2 = new Company();
-        company2.setName("IT Mill");
+        company2.setCompanyName("IT Mill");
         companies.add(company1);
         companies.add(company2);
 

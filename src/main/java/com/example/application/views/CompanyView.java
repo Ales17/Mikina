@@ -8,6 +8,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
@@ -16,25 +17,32 @@ import jakarta.annotation.security.PermitAll;
 @Route(value = "company", layout = MainLayout.class)
 @PageTitle("Company List | Vaadin CRM")
 public class CompanyView extends VerticalLayout {
+    Grid<Company> grid = new Grid<>(Company.class);
 
-private final CrmService service;
-TextField filterText = new TextField()  ;
-     public CompanyView(CrmService service) {
+    private final CrmService service;
+    TextField filterText = new TextField()  ;
+    public CompanyView(CrmService service) {
         this.service = service;
         add(getToolbar(), getCompanyList());
     }
     private Component getToolbar(){
-         filterText.setPlaceholder("Filter by company name...");
-         filterText.setClearButtonVisible(true);
+        filterText.setPlaceholder("Filter by company name...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.addValueChangeListener(event -> filterCompanies(event.getValue()));
 
-         Button addCompanyButton = new Button("Add company");
-         var toolbar = new HorizontalLayout(filterText, addCompanyButton);
-         return toolbar;
-     }
+
+        Button addCompanyButton = new Button("Add company");
+        var toolbar = new HorizontalLayout(filterText, addCompanyButton);
+        return toolbar;
+    }
+
+    private void filterCompanies(String filter) {
+        grid.setItems(service.findCompaniesByName(filter));
+    }
     private Grid<Company> getCompanyList() {
-        Grid<Company> grid = new Grid<>(Company.class);
         grid.setItems(service.findAllCompanies());
-        grid.setColumns("name");
+        grid.setColumns("companyName");
         return grid;
     }
 

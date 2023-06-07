@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 public class Company extends AbstractEntity {
     @NotBlank
-    private String name;
+    private String companyName;
 
     @OneToMany(mappedBy = "company")
     @Nullable
@@ -21,12 +21,12 @@ public class Company extends AbstractEntity {
     @Formula("(select count(c.id) from Contact c where c.company_id = id)")
     private int employeeCount;
 
-    public String getName() {
-        return name;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCompanyName(String name) {
+        this.companyName = name;
     }
 
     public List<Contact> getEmployees() {
