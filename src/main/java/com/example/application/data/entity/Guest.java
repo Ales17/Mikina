@@ -1,7 +1,6 @@
 package com.example.application.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -10,23 +9,44 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
-public class Contact extends AbstractEntity {
+public class Guest extends AbstractEntity {
 
     @NotEmpty
     private String firstName = "";
 
     @NotEmpty
     private String lastName = "";
-    @Column(name = "birth_date")
+
     private LocalDate birthDate;
+
+    private LocalDate dateArrived;
+
+    private LocalDate dateLeft;
+
+
+    public LocalDate getDateArrived() {
+        return dateArrived;
+    }
+
+    public void setDateArrived(LocalDate dateArrived) {
+        this.dateArrived = dateArrived;
+    }
+
+    public LocalDate getDateLeft() {
+        return dateLeft;
+    }
+
+    public void setDateLeft(LocalDate dateLeft) {
+        this.dateLeft = dateLeft;
+    }
+
     @ManyToOne
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "country_id")
     @NotNull
     @JsonIgnoreProperties({"employees"})
-    private Company company;
+    private Country country;
 
     @NotNull
     @ManyToOne
@@ -49,13 +69,15 @@ public class Contact extends AbstractEntity {
         this.firstName = firstName;
     }
 
-        public LocalDate getBirthDate() {
-            return birthDate;
-        }
 
-        public void setBirthDate(LocalDate birthDate) {
-            this.birthDate = birthDate;
-        }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
 
     public String getLastName() {
         return lastName;
@@ -65,12 +87,12 @@ public class Contact extends AbstractEntity {
         this.lastName = lastName;
     }
 
-    public Company getCompany() {
-        return company;
+    public Country getCountry() {
+        return country;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
     public Status getStatus() {

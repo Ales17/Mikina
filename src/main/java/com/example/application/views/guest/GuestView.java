@@ -1,7 +1,7 @@
-package com.example.application.views.contact;
+package com.example.application.views.guest;
 
-import com.example.application.data.entity.Contact;
-import com.example.application.data.service.CrmService;
+import com.example.application.data.entity.Guest;
+import com.example.application.data.service.Service;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -18,14 +18,14 @@ import jakarta.annotation.security.PermitAll;
 
 @PermitAll
 @Route(value = "", layout = MainLayout.class)
-@PageTitle("Contacts | Vaadin CRM")
-public class ContactView extends VerticalLayout {
-    Grid<Contact> grid = new Grid<>(Contact.class);
+@PageTitle("Seznam hostů | Ubytovací systém")
+public class GuestView extends VerticalLayout {
+    Grid<Guest> grid = new Grid<>(Guest.class);
     TextField filterText = new TextField();
-    ContactForm form;
-    CrmService service;
+    GuestForm form;
+    Service service;
 
-    public ContactView(CrmService service) {
+    public GuestView(Service service) {
         this.service = service;
         addClassName("list-view");
         setSizeFull();
@@ -40,9 +40,9 @@ public class ContactView extends VerticalLayout {
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
-        Button addContactButton = new Button("Přidat kontakt");
-        addContactButton.addClickListener(click -> addContact());
-        var toolbar = new HorizontalLayout(filterText, addContactButton);
+        Button addGuestButton = new Button("Přidat kontakt");
+        addGuestButton.addClickListener(click -> addGuest());
+        var toolbar = new HorizontalLayout(filterText, addGuestButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -55,37 +55,39 @@ public class ContactView extends VerticalLayout {
         return content;
     }
     private void configureGrid() {
-        grid.addClassNames("contact-grid");
+        grid.addClassNames("Guest-grid");
         grid.setSizeFull();
-        grid.setColumns("firstName", "lastName", "email", "birthDate" );
+        grid.setColumns("firstName", "lastName", "email", "birthDate", "dateArrived", "dateLeft" );
         // set column names Jméno, Příjmení, Email, Datum narození
         grid.getColumnByKey("firstName").setHeader("Jméno");
         grid.getColumnByKey("lastName").setHeader("Příjmení");
         grid.getColumnByKey("email").setHeader("Email");
         grid.getColumnByKey("birthDate").setHeader("Datum narození");
-        grid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
-        grid.addColumn(contact -> contact.getCompany().getCompanyName()).setHeader("Společnost");
+        grid.getColumnByKey("dateArrived").setHeader("Datum příchodu");
+        grid.getColumnByKey("dateLeft").setHeader("Datum odchodu");
+        grid.addColumn(Guest -> Guest.getStatus().getName()).setHeader("Status");
+        grid.addColumn(Guest -> Guest.getCountry().getCountryName()).setHeader("Země");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         grid.asSingleSelect().addValueChangeListener(event ->
-                editContact(event.getValue()));
+                editGuest(event.getValue()));
     }
     private void configureForm() {
-        form = new ContactForm(service.findAllCompanies(), service.findAllStatuses());
+        form = new GuestForm(service.findAllCompanies(), service.findAllStatuses());
         form.setWidth("25em");
-        form.addSaveListener(this::saveContact);
-        form.addDeleteListener(this::deleteContact);
+        form.addSaveListener(this::saveGuest);
+        form.addDeleteListener(this::deleteGuest);
         form.addCloseListener(e -> closeEditor());
     }
 
-    private void saveContact(ContactForm.SaveEvent event) {
-        service.saveContact(event.getContact());
+    private void saveGuest(GuestForm.SaveEvent event) {
+        service.saveGuest(event.getGuest());
         updateList();
         closeEditor();
     }
 
-    private void deleteContact(ContactForm.DeleteEvent event) {
-        service.deleteContact(event.getContact());
+    private void deleteGuest(GuestForm.DeleteEvent event) {
+        service.deleteGuest(event.getGuest());
         updateList();
         closeEditor();
     }
@@ -95,29 +97,29 @@ public class ContactView extends VerticalLayout {
 
 
 
-    private void editContact(Contact contact) {
-        if (contact == null) {
+    private void editGuest(Guest guest) {
+        if (guest == null) {
             closeEditor();
         } else {
-            form.setContact(contact);
+            form.setGuest(guest);
             form.setVisible(true);
             addClassName("editing");
         }
     }
 
     private void closeEditor() {
-        form.setContact(null);
+        form.setGuest(null);
         form.setVisible(false);
         removeClassName("editing");
     }
 
-    private void addContact() {
+    private void addGuest() {
         grid.asSingleSelect().clear();
-        editContact(new Contact());
+        editGuest(new Guest());
     }
 
 
     private void updateList() {
-        grid.setItems(service.findAllContacts(filterText.getValue()));
+        grid.setItems(service.findAllGuests(filterText.getValue()));
     }
 }

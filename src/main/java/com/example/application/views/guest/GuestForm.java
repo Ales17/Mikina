@@ -1,7 +1,7 @@
-package com.example.application.views.contact;
+package com.example.application.views.guest;
 
-import com.example.application.data.entity.Company;
-import com.example.application.data.entity.Contact;
+import com.example.application.data.entity.Country;
+import com.example.application.data.entity.Guest;
 import com.example.application.data.entity.Status;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -21,38 +21,44 @@ import com.vaadin.flow.shared.Registration;
 
 import java.util.List;
 
-public class ContactForm extends FormLayout {
-    TextField firstName = new TextField("First name");
-    TextField lastName = new TextField("Last name");
+public class GuestForm extends FormLayout {
+    TextField firstName = new TextField("Jméno");
+    TextField lastName = new TextField("Příjmení");
     EmailField email = new EmailField("Email");
     ComboBox<Status> status = new ComboBox<>("Status");
-    ComboBox<Company> company = new ComboBox<>("Company");
+    ComboBox<Country> country = new ComboBox<>("Země");
 
-    DatePicker birthDate = new DatePicker("Birthdate");
-    Button save = new Button("Save");
-    Button delete = new Button("Delete");
-    Button close = new Button("Cancel");
-    Binder<Contact> binder = new BeanValidationBinder<>(Contact.class);
+    DatePicker birthDate = new DatePicker("Datum narození");
 
-    public ContactForm(List<Company> companies, List<Status> statuses) {
-        addClassName("contact-form");
+    DatePicker dateArrived = new DatePicker("Datum příjezdu");
+    DatePicker dateLeft = new DatePicker("Datum odjezdu");
+
+
+
+    Button save = new Button("Uložit");
+    Button delete = new Button("Smazat");
+    Button close = new Button("Storno");
+    Binder<Guest> binder = new BeanValidationBinder<>(Guest.class);
+
+    public GuestForm(List<Country> countries, List<Status> statuses) {
+        addClassName("Guest-form");
         binder.bindInstanceFields(this);
 
-        company.setItems(companies);
-        company.setItemLabelGenerator(Company::getCompanyName);
+        country.setItems(countries);
+        country.setItemLabelGenerator(Country::getCountryName);
         status.setItems(statuses);
         status.setItemLabelGenerator(Status::getName);
 
         add(firstName,
                 lastName,
                 email,
-                company,
-                status, birthDate,
+                country,
+                status, birthDate, dateArrived, dateLeft,
                 createButtonsLayout());
     }
 
-    public void setContact(Contact contact) {
-        binder.setBean(contact);
+    public void setGuest(Guest guest) {
+        binder.setBean(guest);
     }
 
 
@@ -91,36 +97,36 @@ public class ContactForm extends FormLayout {
     }
 
     // Events
-    public static abstract class ContactFormEvent
-            extends ComponentEvent<ContactForm> {
-        private final Contact contact;
+    public static abstract class GuestFormEvent
+            extends ComponentEvent<GuestForm> {
+        private final Guest guest;
 
-        protected ContactFormEvent(ContactForm source, Contact contact) {
+        protected GuestFormEvent(GuestForm source, Guest guest) {
             super(source, false);
-            this.contact = contact;
+            this.guest = guest;
         }
 
-        public Contact getContact() {
-            return contact;
+        public Guest getGuest() {
+            return guest;
         }
     }
     // Events
 
-    public static class SaveEvent extends ContactFormEvent {
-        public SaveEvent(ContactForm source, Contact contact) {
-            super(source, contact);
+    public static class SaveEvent extends GuestFormEvent {
+        public SaveEvent(GuestForm source, Guest guest) {
+            super(source, guest);
         }
     }
 
-    public static class DeleteEvent extends ContactFormEvent {
-        DeleteEvent(ContactForm source, Contact contact) {
-            super(source, contact);
+    public static class DeleteEvent extends GuestFormEvent {
+        DeleteEvent(GuestForm source, Guest guest) {
+            super(source, guest);
         }
 
     }
 
-    public static class CloseEvent extends ContactFormEvent {
-        public CloseEvent(ContactForm source) {
+    public static class CloseEvent extends GuestFormEvent {
+        public CloseEvent(GuestForm source) {
             super(source, null);
         }
     }

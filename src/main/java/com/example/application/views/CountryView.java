@@ -1,7 +1,7 @@
 package com.example.application.views;
 
-import com.example.application.data.entity.Company;
-import com.example.application.data.service.CrmService;
+import com.example.application.data.entity.Country;
+import com.example.application.data.service.Service;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -14,25 +14,26 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 
 @PermitAll
-@Route(value = "company", layout = MainLayout.class)
-@PageTitle("Company List | Vaadin CRM")
-public class CompanyView extends VerticalLayout {
-    Grid<Company> grid = new Grid<>(Company.class);
+@Route(value = "country", layout = MainLayout.class)
+@PageTitle("Seznam zemí | Ubytovací systém")
+public class CountryView extends VerticalLayout {
+    private final Service service;
+    Grid<Country> grid = new Grid<>(Country.class);
+    TextField filterText = new TextField();
 
-    private final CrmService service;
-    TextField filterText = new TextField()  ;
-    public CompanyView(CrmService service) {
+    public CountryView(Service service) {
         this.service = service;
         add(getToolbar(), getCompanyList());
     }
-    private Component getToolbar(){
-        filterText.setPlaceholder("Filter by company name...");
+
+    private Component getToolbar() {
+        filterText.setPlaceholder("Filtrovat podle názvu...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(event -> filterCompanies(event.getValue()));
 
 
-        Button addCompanyButton = new Button("Add company");
+        Button addCompanyButton = new Button("Přidat zemi");
         var toolbar = new HorizontalLayout(filterText, addCompanyButton);
         return toolbar;
     }
@@ -40,9 +41,10 @@ public class CompanyView extends VerticalLayout {
     private void filterCompanies(String filter) {
         grid.setItems(service.findCompaniesByName(filter));
     }
-    private Grid<Company> getCompanyList() {
+
+    private Grid<Country> getCompanyList() {
         grid.setItems(service.findAllCompanies());
-        grid.setColumns("companyName");
+        grid.setColumns("countryName");
         return grid;
     }
 

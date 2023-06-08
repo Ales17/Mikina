@@ -1,6 +1,6 @@
 package com.example.application.views;
 
-import com.example.application.data.entity.Company;
+import com.example.application.data.entity.Country;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -14,15 +14,15 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
-public class CompanyForm extends FormLayout {
+public class CountryForm extends FormLayout {
     TextField companyName = new TextField("Company Name");
 
     Button save = new Button("Save");
     Button delete = new Button("Delete");
     Button close = new Button("Cancel");
-    Binder<Company> binder = new BeanValidationBinder<>(Company.class);
+    Binder<Country> binder = new BeanValidationBinder<>(Country.class);
 
-    public CompanyForm() {
+    public CountryForm() {
         addClassName("company-form");
         binder.bindInstanceFields(this);
 
@@ -30,8 +30,8 @@ public class CompanyForm extends FormLayout {
                 createButtonsLayout());
     }
 
-    public void setCompany(Company company) {
-        binder.setBean(company);
+    public void setCompany(Country country) {
+        binder.setBean(country);
     }
 
     private Component createButtonsLayout() {
@@ -54,40 +54,47 @@ public class CompanyForm extends FormLayout {
             fireEvent(new SaveEvent(this, binder.getBean()));
         }
     }
+
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         return addListener(DeleteEvent.class, listener);
     }
+
     public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
         return addListener(SaveEvent.class, listener);
     }
+
     public Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
         return addListener(CloseEvent.class, listener);
     }
+
     // Events
-    public static abstract class CompanyFormEvent extends ComponentEvent<CompanyForm> {
-        private Company company;
+    public static abstract class CompanyFormEvent extends ComponentEvent<CountryForm> {
+        private Country country;
 
-        protected CompanyFormEvent(CompanyForm source, Company company) {
+        protected CompanyFormEvent(CountryForm source, Country country) {
             super(source, false);
-            this.company = company;
+            this.country = country;
         }
 
-        public Company getCompany() {
-            return company;
+        public Country getCompany() {
+            return country;
         }
     }
+
     public static class SaveEvent extends CompanyFormEvent {
-        SaveEvent(CompanyForm source, Company company) {
-            super(source, company);
+        SaveEvent(CountryForm source, Country country) {
+            super(source, country);
         }
     }
+
     public static class DeleteEvent extends CompanyFormEvent {
-        DeleteEvent(CompanyForm source, Company company) {
-            super(source, company);
+        DeleteEvent(CountryForm source, Country country) {
+            super(source, country);
         }
     }
+
     public static class CloseEvent extends CompanyFormEvent {
-        CloseEvent(CompanyForm source) {
+        CloseEvent(CountryForm source) {
             super(source, null);
         }
     }

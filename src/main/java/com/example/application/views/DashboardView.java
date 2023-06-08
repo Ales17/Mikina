@@ -1,6 +1,6 @@
 package com.example.application.views;
 
-import com.example.application.data.service.CrmService;
+import com.example.application.data.service.Service;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.ChartType;
@@ -16,35 +16,43 @@ import jakarta.annotation.security.PermitAll;
 @PermitAll
 
 @Route(value = "dashboard", layout = MainLayout.class)
-@PageTitle("Dashboard | Vaadin CRM")
+@PageTitle("Dashboard | Ubytovací systém")
 public class DashboardView extends VerticalLayout {
-    private final CrmService service;
-     public DashboardView(CrmService service) {
+    private final Service service;
+
+    public DashboardView(Service service) {
 
         this.service = service;
         addClassName("dashboard-view");
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        add(getContactStats(), getCompaniesChart() );
+        add(getContactStats(), getCountriesChart());
     }
-
+    // Gets countries of guests and returns numbers - Czech language logic - 1/2,3,4/5+
     private Component getContactStats() {
-        Span stats = new Span(service.countContacts() + " contacts");
+        String guestWord;
+        switch (service.countGuests()) {
+            case 1: guestWord = "host";
+            break;
+            case 2, 3, 4: guestWord = "hosté";
+            break;
+            default: guestWord = "hostů";
+        }
+        Span stats = new Span(service.countGuests() + " " + guestWord);
         stats.addClassNames(
                 LumoUtility.FontSize.XLARGE,
                 LumoUtility.Margin.Top.MEDIUM);
         return stats;
     }
 
-    private Chart getCompaniesChart() {
+    private Chart getCountriesChart() {
         Chart chart = new Chart(ChartType.PIE);
 
         DataSeries dataSeries = new DataSeries();
-        service.findAllCompanies( ).forEach(company ->
-                dataSeries.add(new DataSeriesItem(company.getCompanyName(), company.getEmployeeCount())));
+        service.findAllCompanies().forEach(company ->
+                dataSeries.add(new DataSeriesItem(company.getCountryName(), company.getGuestCount())));
         chart.getConfiguration().setSeries(dataSeries);
         return chart;
     }
-
 
 
 }

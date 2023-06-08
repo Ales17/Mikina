@@ -1,7 +1,7 @@
 package com.example.application.views;
 
 import com.example.application.security.SecurityService;
-import com.example.application.views.contact.ContactView;
+import com.example.application.views.guest.GuestView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -9,7 +9,6 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.Router;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
@@ -23,13 +22,13 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeader() {
-        H1 logo = new H1("Vaadin CRM");
+        H1 logo = new H1("Ubytovací systém");
         logo.addClassNames(
                 LumoUtility.FontSize.LARGE,
                 LumoUtility.Margin.MEDIUM);
 
         String u = securityService.getAuthenticatedUser().getUsername();
-        Button logout = new Button("Log out (" + u +")", e -> securityService.logout());
+        Button logout = new Button("Odhlášení (" + u + ")", e -> securityService.logout());
 
         var header = new HorizontalLayout(new DrawerToggle(), logo, logout);
 
@@ -46,9 +45,9 @@ public class MainLayout extends AppLayout {
 
     private void createDrawer() {
         addToDrawer(new VerticalLayout(
-                new RouterLink("Contact List", ContactView.class),
                 new RouterLink("Dashboard", DashboardView.class),
-                new RouterLink("Company List", CompanyView.class)
+                new RouterLink("Seznam hostů", GuestView.class),
+                new RouterLink("Seznam zemí", CountryView.class)
         ));
     }
 }
