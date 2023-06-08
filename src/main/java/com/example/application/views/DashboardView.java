@@ -15,8 +15,8 @@ import jakarta.annotation.security.PermitAll;
 
 @PermitAll
 
-@Route(value = "dashboard", layout = MainLayout.class)
-@PageTitle("Dashboard | Ubytovací systém")
+@Route(value = "", layout = MainLayout.class)
+@PageTitle("Hlavní panel | Ubytovací systém")
 public class DashboardView extends VerticalLayout {
     private final Service service;
 

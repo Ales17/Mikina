@@ -46,7 +46,7 @@ public class MainLayout extends AppLayout {
 
     private void createDrawer() {
         addToDrawer(new VerticalLayout(
-                new RouterLink("Dashboard", DashboardView.class),
+                new RouterLink("Hlavní panel", DashboardView.class),
                 new RouterLink("Seznam hostů", GuestView.class),
                 new RouterLink("Seznam zemí", CountryView.class)
         ));

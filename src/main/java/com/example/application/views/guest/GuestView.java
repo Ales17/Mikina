@@ -17,7 +17,7 @@ import jakarta.annotation.security.PermitAll;
 
 
 @PermitAll
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "guest", layout = MainLayout.class)
 @PageTitle("Seznam hostů | Ubytovací systém")
 public class GuestView extends VerticalLayout {
     Grid<Guest> grid = new Grid<>(Guest.class);
