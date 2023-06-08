@@ -1,4 +1,4 @@
-package com.example.application.views;
+package com.example.application.views.country;
 
 import com.example.application.data.entity.Country;
 import com.vaadin.flow.component.Component;
@@ -15,7 +15,9 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
 public class CountryForm extends FormLayout {
-    TextField companyName = new TextField("Company Name");
+    TextField countryName = new TextField("Název země");
+
+
 
     Button save = new Button("Save");
     Button delete = new Button("Delete");
@@ -26,11 +28,10 @@ public class CountryForm extends FormLayout {
         addClassName("company-form");
         binder.bindInstanceFields(this);
 
-        add(companyName,
-                createButtonsLayout());
+        add(countryName, createButtonsLayout());
     }
 
-    public void setCompany(Country country) {
+    public void setCountry(Country country) {
         binder.setBean(country);
     }
 
@@ -68,32 +69,32 @@ public class CountryForm extends FormLayout {
     }
 
     // Events
-    public static abstract class CompanyFormEvent extends ComponentEvent<CountryForm> {
+    public static abstract class CountryFormEvent extends ComponentEvent<CountryForm> {
         private Country country;
 
-        protected CompanyFormEvent(CountryForm source, Country country) {
+        protected CountryFormEvent(CountryForm source, Country country) {
             super(source, false);
             this.country = country;
         }
 
-        public Country getCompany() {
+        public Country getCountry() {
             return country;
         }
     }
 
-    public static class SaveEvent extends CompanyFormEvent {
+    public static class SaveEvent extends CountryFormEvent {
         SaveEvent(CountryForm source, Country country) {
             super(source, country);
         }
     }
 
-    public static class DeleteEvent extends CompanyFormEvent {
+    public static class DeleteEvent extends CountryFormEvent {
         DeleteEvent(CountryForm source, Country country) {
             super(source, country);
         }
     }
 
-    public static class CloseEvent extends CompanyFormEvent {
+    public static class CloseEvent extends CountryFormEvent {
         CloseEvent(CountryForm source) {
             super(source, null);
         }

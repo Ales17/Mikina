@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Formula;
 
 import java.util.LinkedList;
@@ -11,9 +12,24 @@ import java.util.List;
 
 @Entity
 public class Country extends AbstractEntity {
-
+    // source https://www.czso.cz/csu/czso/ciselnik_zemi_-czem-
+    @NotNull
     private String countryName;
 
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public void setGuestCount(int guestCount) {
+        this.guestCount = guestCount;
+    }
+
+    @NotNull
+    private String countryCode;
     @OneToMany(mappedBy = "country")
     @Nullable
     private List<Guest> guests = new LinkedList<>();
@@ -33,8 +49,8 @@ public class Country extends AbstractEntity {
         return guests;
     }
 
-    public void setGuests(List<Guest> employees) {
-        this.guests = employees;
+    public void setGuests(List<Guest> guests) {
+        this.guests = guests;
     }
 
 

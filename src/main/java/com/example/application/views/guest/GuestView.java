@@ -58,7 +58,6 @@ public class GuestView extends VerticalLayout {
         grid.addClassNames("Guest-grid");
         grid.setSizeFull();
         grid.setColumns("firstName", "lastName", "email", "birthDate", "dateArrived", "dateLeft" );
-        // set column names Jméno, Příjmení, Email, Datum narození
         grid.getColumnByKey("firstName").setHeader("Jméno");
         grid.getColumnByKey("lastName").setHeader("Příjmení");
         grid.getColumnByKey("email").setHeader("Email");
@@ -68,12 +67,11 @@ public class GuestView extends VerticalLayout {
         grid.addColumn(Guest -> Guest.getStatus().getName()).setHeader("Status");
         grid.addColumn(Guest -> Guest.getCountry().getCountryName()).setHeader("Země");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
-
         grid.asSingleSelect().addValueChangeListener(event ->
                 editGuest(event.getValue()));
     }
     private void configureForm() {
-        form = new GuestForm(service.findAllCompanies(), service.findAllStatuses());
+        form = new GuestForm(service.findAllCountries(), service.findAllStatuses());
         form.setWidth("25em");
         form.addSaveListener(this::saveGuest);
         form.addDeleteListener(this::deleteGuest);
@@ -91,11 +89,6 @@ public class GuestView extends VerticalLayout {
         updateList();
         closeEditor();
     }
-
-
-
-
-
 
     private void editGuest(Guest guest) {
         if (guest == null) {

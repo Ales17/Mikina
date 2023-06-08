@@ -48,7 +48,7 @@ public class DashboardView extends VerticalLayout {
         Chart chart = new Chart(ChartType.PIE);
 
         DataSeries dataSeries = new DataSeries();
-        service.findAllCompanies().forEach(company ->
+        service.findAllCountries().forEach(company ->
                 dataSeries.add(new DataSeriesItem(company.getCountryName(), company.getGuestCount())));
         chart.getConfiguration().setSeries(dataSeries);
         return chart;

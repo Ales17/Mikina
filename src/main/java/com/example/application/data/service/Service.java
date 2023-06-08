@@ -32,12 +32,12 @@ public class Service {
         }
     }
 
-    public List<Country> findAllCompanies() {
+    public List<Country> findAllCountries() {
         return countryRepository.findAll();
 
     }
 
-    public List<Country> findCompaniesByName(String filter) {
+    public List<Country> fincCountriesByName(String filter) {
         return countryRepository.search(filter);
     }
 
@@ -63,7 +63,7 @@ public class Service {
     }
 
 
-    public void saveCompany(Country country) {
+    public void saveCountry(Country country) {
         if (country == null) {
             System.err.println("Company is null. Are you sure you have connected your form to the application?");
             return;
@@ -71,7 +71,7 @@ public class Service {
         countryRepository.save(country);
     }
 
-    public void deleteCompany(Country country) {
+    public void deleteCountry(Country country) {
         countryRepository.delete(country);
     }
 }
