@@ -113,9 +113,9 @@ public class CountryView extends VerticalLayout {
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
-        Button addGuestButton = new Button("Přidat kontakt");
+        //Button addGuestButton = new Button("Přidat zemi");
         //addGuestButton.addClickListener(click -> addGuest());
-        var toolbar = new HorizontalLayout(filterText, addGuestButton);
+        var toolbar = new HorizontalLayout(filterText/*, addGuestButton*/);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

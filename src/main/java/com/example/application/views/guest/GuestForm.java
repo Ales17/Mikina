@@ -19,6 +19,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class GuestForm extends FormLayout {
@@ -33,6 +34,7 @@ public class GuestForm extends FormLayout {
     DatePicker dateArrived = new DatePicker("Datum příjezdu");
     DatePicker dateLeft = new DatePicker("Datum odjezdu");
 
+    TextField idNumber = new TextField("Číslo dokladu");
 
 
     Button save = new Button("Uložit");
@@ -53,8 +55,15 @@ public class GuestForm extends FormLayout {
                 lastName,
                 email,
                 country,
-                status, birthDate, dateArrived, dateLeft,
+                status, birthDate, dateArrived, dateLeft, idNumber,
                 createButtonsLayout());
+        // Validation
+        // Range between dateArrived and dateLeft
+        dateArrived.addValueChangeListener(e->dateLeft.setMin(e.getValue()));
+        dateLeft.addValueChangeListener(e->dateArrived.setMax(e.getValue()));
+        // Birthdate can not be later than today
+        birthDate.setMax(LocalDate.now());
+
     }
 
     public void setGuest(Guest guest) {
@@ -79,6 +88,7 @@ public class GuestForm extends FormLayout {
     }
 
     private void validateAndSave() {
+
         if (binder.isValid()) {
             fireEvent(new SaveEvent(this, binder.getBean()));
         }

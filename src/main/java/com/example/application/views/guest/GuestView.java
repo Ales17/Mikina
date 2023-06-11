@@ -33,6 +33,7 @@ public class GuestView extends VerticalLayout {
         configureForm();
         add(getToolbar(), getContent());
         updateList();
+        // Editor will be closed at the start
         closeEditor();
     }
     private Component getToolbar() {
@@ -48,6 +49,7 @@ public class GuestView extends VerticalLayout {
     }
     private HorizontalLayout getContent() {
         HorizontalLayout content = new HorizontalLayout(grid, form);
+        // Set flex grow
         content.setFlexGrow(2, grid);
         content.setFlexGrow(1, form);
         content.addClassNames("content");
@@ -57,14 +59,18 @@ public class GuestView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("Guest-grid");
         grid.setSizeFull();
-        grid.setColumns("firstName", "lastName", "email", "birthDate", "dateArrived", "dateLeft" );
+        // When setting columns update this list
+        grid.setColumns("firstName", "lastName", "email", "birthDate", "dateArrived", "dateLeft", "idNumber" );
+        // Then add a new column also here
         grid.getColumnByKey("firstName").setHeader("Jméno");
         grid.getColumnByKey("lastName").setHeader("Příjmení");
         grid.getColumnByKey("email").setHeader("Email");
         grid.getColumnByKey("birthDate").setHeader("Datum narození");
         grid.getColumnByKey("dateArrived").setHeader("Datum příchodu");
         grid.getColumnByKey("dateLeft").setHeader("Datum odchodu");
+        grid.getColumnByKey("idNumber").setHeader("Číslo dokladu");
         grid.addColumn(Guest -> Guest.getStatus().getName()).setHeader("Status");
+
         grid.addColumn(Guest -> Guest.getCountry().getCountryName()).setHeader("Země");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->

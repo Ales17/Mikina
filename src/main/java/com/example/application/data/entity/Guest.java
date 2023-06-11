@@ -69,7 +69,16 @@ public class Guest extends AbstractEntity {
         this.firstName = firstName;
     }
 
+    public String getIdNumber() {
+        return idNumber;
+    }
 
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    @NotEmpty
+    private String idNumber;
 
     public LocalDate getBirthDate() {
         return birthDate;
