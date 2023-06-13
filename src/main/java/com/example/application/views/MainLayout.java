@@ -1,6 +1,6 @@
 package com.example.application.views;
 
-import com.example.application.security.SecurityService;
+import com.example.application.security.AuthenticatedUser;
 import com.example.application.views.country.CountryView;
 import com.example.application.views.guest.GuestView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -11,13 +11,16 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class MainLayout extends AppLayout {
-    private final SecurityService securityService;
+    private AuthenticatedUser authenticatedUser;
+    private AccessAnnotationChecker accessChecker;
 
-    public MainLayout(SecurityService securityService) {
-        this.securityService = securityService;
+    public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
+        this.authenticatedUser = authenticatedUser;
+        this.accessChecker = accessChecker;
         createHeader();
         createDrawer();
     }
@@ -28,8 +31,12 @@ public class MainLayout extends AppLayout {
                 LumoUtility.FontSize.LARGE,
                 LumoUtility.Margin.MEDIUM);
 
-        String u = securityService.getAuthenticatedUser().getUsername();
-        Button logout = new Button("Odhlášení (" + u + ")", e -> securityService.logout());
+        //String u = securityService.getAuthenticatedUser().getUsername();
+        //Button logout = new Button("Odhlášení (" + u + ")", e -> securityService.logout());
+        Button logout = new Button("Odhlásit se (" + authenticatedUser.getUsername() + ")",  e -> {
+
+            authenticatedUser.logout();
+        });
 
         var header = new HorizontalLayout(new DrawerToggle(), logo, logout);
 

@@ -48,12 +48,10 @@ public class Guest extends AbstractEntity {
     @JsonIgnoreProperties({"employees"})
     private Country country;
 
-    @NotNull
     @ManyToOne
     private Status status;
 
     @Email
-    @NotEmpty
     private String email = "";
 
     @Override

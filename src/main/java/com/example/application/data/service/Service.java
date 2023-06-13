@@ -51,7 +51,7 @@ public class Service {
 
     public void saveGuest(Guest guest) {
         if (guest == null) {
-            System.err.println("Contact is null. Are you sure you have connected your form to the application?");
+            System.err.println("Host je null. Jsi si jistý, že jsi připojil formulář k aplikaci?");
             return;
         }
         guestRepository.save(guest);
@@ -65,7 +65,7 @@ public class Service {
 
     public void saveCountry(Country country) {
         if (country == null) {
-            System.err.println("Company is null. Are you sure you have connected your form to the application?");
+            System.err.println("Země je null. Jsi si jistý, že jsi připojil formulář k aplikaci?");
             return;
         }
         countryRepository.save(country);

@@ -5,6 +5,7 @@ import com.example.application.data.service.Service;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -83,6 +84,9 @@ public class GuestView extends VerticalLayout {
         form.addDeleteListener(this::deleteGuest);
         form.addCloseListener(e -> closeEditor());
     }
+
+
+
 
     private void saveGuest(GuestForm.SaveEvent event) {
         service.saveGuest(event.getGuest());
