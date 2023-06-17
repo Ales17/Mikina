@@ -17,18 +17,17 @@ import com.vaadin.flow.shared.Registration;
 public class CountryForm extends FormLayout {
     TextField countryName = new TextField("Název země");
 
+    TextField countryCode = new TextField("Kód země");
 
-
-    Button save = new Button("Save");
-    Button delete = new Button("Delete");
-    Button close = new Button("Cancel");
+    Button save = new Button("Uložit");
+    Button delete = new Button("Smazat");
+    Button close = new Button("Storno");
     Binder<Country> binder = new BeanValidationBinder<>(Country.class);
 
     public CountryForm() {
-        addClassName("company-form");
+        addClassName("country-form");
         binder.bindInstanceFields(this);
-
-        add(countryName, createButtonsLayout());
+        add(countryName, countryCode, createButtonsLayout());
     }
 
     public void setCountry(Country country) {
@@ -43,10 +42,10 @@ public class CountryForm extends FormLayout {
         save.addClickShortcut(Key.ENTER);
         close.addClickShortcut(Key.ESCAPE);
 
-        save.addClickListener(click -> validateAndSave());
-        delete.addClickListener(click -> fireEvent(new DeleteEvent(this, binder.getBean())));
-
-        binder.addStatusChangeListener(evt -> save.setEnabled(binder.isValid()));
+        save.addClickListener(event -> validateAndSave());
+        delete.addClickListener(event -> fireEvent(new DeleteEvent(this, binder.getBean())));
+        close.addClickListener(event -> fireEvent(new CloseEvent(this)));
+        binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
         return new HorizontalLayout(save, delete, close);
     }
 

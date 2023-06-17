@@ -34,7 +34,10 @@ public class Service {
 
     public List<Country> findAllCountries() {
         return countryRepository.findAll();
+    }
 
+    public List<Country> findGuestsCountries() {
+        return countryRepository.findGuestsCountries();
     }
 
     public List<Country> fincCountriesByName(String filter) {

@@ -14,10 +14,10 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 
 
-
-@PermitAll
+@RolesAllowed("ROLE_ADMIN")
 @Route(value = "guest", layout = MainLayout.class)
 @PageTitle("Seznam hostů | Ubytovací systém")
 public class GuestView extends VerticalLayout {
@@ -52,7 +52,7 @@ public class GuestView extends VerticalLayout {
         HorizontalLayout content = new HorizontalLayout(grid, form);
         // Set flex grow
         content.setFlexGrow(2, grid);
-        content.setFlexGrow(1, form);
+        content.setFlexGrow(3, form);
         content.addClassNames("content");
         content.setSizeFull();
         return content;

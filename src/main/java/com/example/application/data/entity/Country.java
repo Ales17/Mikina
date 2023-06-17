@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 public class Country extends AbstractEntity {
-    // source https://www.czso.cz/csu/czso/ciselnik_zemi_-czem-
+    // source of country list https://www.czso.cz/csu/czso/ciselnik_zemi_-czem-
     @NotNull
     private String countryName;
 
