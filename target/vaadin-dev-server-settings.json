@@ -1,0 +1,18 @@
+{
+  "frontendFolder": "C:/Users/Asus/Coding/vaadin_playground/frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "C:/Users/Asus/Coding/vaadin_playground/frontend/generated/jar-resources",
+  "staticOutput": "C:/Users/Asus/Coding/vaadin_playground/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "C:\\Users\\Asus\\Coding\\vaadin_playground\\target\\classes\\META-INF\\VAADIN\\config",
+  "frontendBundleOutput": "C:\\Users\\Asus\\Coding\\vaadin_playground\\target\\classes\\META-INF\\VAADIN\\webapp",
+  "devBundleOutput": "C:/Users/Asus/Coding/vaadin_playground/src/main/dev-bundle/webapp",
+  "devBundleStatsOutput": "C:/Users/Asus/Coding/vaadin_playground/src/main/dev-bundle/config",
+  "jarResourcesFolder": "C:/Users/Asus/Coding/vaadin_playground/frontend/generated/jar-resources",
+  "generatedFlowImportsFolder": "target/frontend",
+  "themeName": "flowcrmtutorial",
+  "clientServiceWorkerSource": "C:\\Users\\Asus\\Coding\\vaadin_playground\\target\\sw.ts",
+  "pwaEnabled": true,
+  "offlineEnabled": true,
+  "offlinePath": "'offline.html'"
+}

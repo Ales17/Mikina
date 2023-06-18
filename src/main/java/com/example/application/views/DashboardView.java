@@ -7,14 +7,14 @@ import com.vaadin.flow.component.charts.model.ChartType;
 import com.vaadin.flow.component.charts.model.DataSeries;
 import com.vaadin.flow.component.charts.model.DataSeriesItem;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 
-@PermitAll
-
+@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "", layout = MainLayout.class)
 @PageTitle("Hlavní panel | Ubytovací systém")
 public class DashboardView extends VerticalLayout {
@@ -25,10 +25,12 @@ public class DashboardView extends VerticalLayout {
         this.service = service;
         addClassName("dashboard-view");
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        add(getContactStats(), getCountriesChart());
+        add(getStats(), getCountriesChart());
     }
-    // Gets countries of guests and returns numbers - Czech language logic - 1/2,3,4/5+
-    private Component getContactStats() {
+
+
+
+    private Component getStats() {
         String guestWord;
         switch (service.countGuests()) {
             case 1: guestWord = "host";
@@ -47,15 +49,10 @@ public class DashboardView extends VerticalLayout {
     private Chart getCountriesChart() {
         Chart chart = new Chart(ChartType.PIE);
         DataSeries dataSeries = new DataSeries();
-        service.findGuestsCountries().forEach(company ->
-
-                dataSeries.add(new DataSeriesItem(company.getCountryName(), company.getGuestCount()))
-
-
+        service.findGuestsCountries().forEach(country ->
+                dataSeries.add(new DataSeriesItem(country.getCountryName(), country.getGuestCount()))
         );
-
         chart.getConfiguration().setSeries(dataSeries);
-
         return chart;
     }
 

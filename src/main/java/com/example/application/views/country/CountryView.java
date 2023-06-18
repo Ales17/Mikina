@@ -12,87 +12,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 
-@PermitAll
+@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "country", layout = MainLayout.class)
-/*@PageTitle("Seznam zemí | Ubytovací systém")
 public class CountryView extends VerticalLayout {
-    Service service;
-    Grid<Country> grid = new Grid<>(Country.class);
-    TextField filterText = new TextField();
-   // CountryForm form;
-
-    public CountryView(Service service) {
-        this.service = service;
-        setSizeFull();
-        configureGrid();
-        configureForm();
-        add(getToolbar(), getContent());
-        //updateList();
-        //closeEditor();
-    }
-
-    private HorizontalLayout getContent() {
-        HorizontalLayout content = new HorizontalLayout(grid*//*, form*//*);
-        content.setFlexGrow(2, grid);
-       // content.setFlexGrow(1, form);
-        content.setSizeFull();
-        return content;
-    }
-
-    private Component getToolbar() {
-        filterText.setPlaceholder("Filtrovat podle názvu...");
-        filterText.setClearButtonVisible(true);
-        filterText.setValueChangeMode(ValueChangeMode.LAZY);
-        filterText.addValueChangeListener(event -> filterCompanies(event.getValue()));
-
-
-        Button addCompanyButton = new Button("Přidat zemi");
-        var toolbar = new HorizontalLayout(filterText, addCompanyButton);
-        return toolbar;
-    }
-
-    private void filterCompanies(String filter) {
-        grid.setItems(service.findCompaniesByName(filter));
-    }
-
-    private void configureGrid() {
-        grid.setItems(service.findAllCountries());
-        grid.getColumnByKey("countryName").setHeader("Název země");
-        //grid.getColumnByKey("countryCode").setHeader("Kód země (ISO)");
-    }
-
-    private void configureForm() {
-        *//*form = new CountryForm();
-        form.setWidth("25em");
-        form.addSaveListener(this::saveCountry);
-        form.addDeleteListener(this::deleteCountry);
-        form.addCloseListener(e -> closeEditor());*//*
-        System.out.println("CONF FORM");
-    }
-
-    private void deleteCountry(CountryForm.DeleteEvent saveEvent) {
-        service.deleteCountry(saveEvent.getCountry());
-        updateList();
-        closeEditor();
-    }
-
-    private void saveCountry(CountryForm.SaveEvent event) {
-        service.saveCountry(event.getCountry());
-        updateList();
-        closeEditor();
-    }
-
-    private void closeEditor() {
-   *//*     form.setCountry(null);
-        form.setVisible(false);*//*
-    }
-
-
-    private void updateList() {
-        grid.setItems(service.findAllCountries());
-    }
-}*/public class CountryView extends VerticalLayout {
     Grid<Country> grid = new Grid<>(Country.class);
     TextField filterText = new TextField();
     CountryForm form;
@@ -174,11 +98,6 @@ public class CountryView extends VerticalLayout {
         form.setCountry(null);
         form.setVisible(false);
         removeClassName("editing");
-    }
-
-   private void addCountry() {
-        grid.asSingleSelect().clear();
-        editCountry(new Country());
     }
 
 

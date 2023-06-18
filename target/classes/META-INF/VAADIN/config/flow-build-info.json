@@ -1,0 +1,17 @@
+{
+  "productionMode": false,
+  "eagerServerLoad": false,
+  "npmFolder": "C:\\Users\\Asus\\Coding\\vaadin_playground",
+  "node.version": "v18.14.1",
+  "node.download.root": "https://nodejs.org/dist/",
+  "generatedFolder": "C:\\Users\\Asus\\Coding\\vaadin_playground\\target\\frontend",
+  "frontendFolder": "C:\\Users\\Asus\\Coding\\vaadin_playground\\frontend",
+  "connect.javaSourceFolder": "C:\\Users\\Asus\\Coding\\vaadin_playground\\src\\main\\java",
+  "javaResourceFolder": "C:\\Users\\Asus\\Coding\\vaadin_playground\\src\\main\\resources",
+  "connect.applicationProperties": "C:\\Users\\Asus\\Coding\\vaadin_playground\\src\\main\\resources\\application.properties",
+  "connect.openApiFile": "C:\\Users\\Asus\\Coding\\vaadin_playground\\target\\generated-resources\\openapi.json",
+  "project.frontend.generated": "C:\\Users\\Asus\\Coding\\vaadin_playground\\frontend\\generated",
+  "pnpm.enable": false,
+  "require.home.node": false,
+  "build.folder": "target"
+}

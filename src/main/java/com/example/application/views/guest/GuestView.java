@@ -17,7 +17,7 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
 
-@RolesAllowed("ROLE_ADMIN")
+@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "guest", layout = MainLayout.class)
 @PageTitle("Seznam hostů | Ubytovací systém")
 public class GuestView extends VerticalLayout {
