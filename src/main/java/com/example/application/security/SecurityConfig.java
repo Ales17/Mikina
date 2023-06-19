@@ -1,5 +1,6 @@
 package com.example.application.security;
 
+import com.example.application.views.login.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
@@ -21,28 +23,11 @@ public class SecurityConfig extends VaadinWebSecurity {
         http.authorizeHttpRequests()
                 .requestMatchers("/images/*.png").permitAll();  
         super.configure(http);
-        setLoginView(http, com.example.application.views.LoginView.class);
+        setLoginView(http, LoginView.class);
     }
-
-    /*@Bean
-    public UserDetailsService users() {
-        // The builder will ensure the passwords are encoded before saving in memory
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
-        UserDetails user = users
-                .username("user")
-                .password("heslo")
-                .roles("USER")
-                .build();
-        UserDetails admin = users
-                .username("admin")
-                .password("heslo")
-                .roles("USER", "ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user, admin);
-    }*/
-
     @Bean
     UserDetailsManager users(DataSource dataSource) {
+                UserDetails user = User.withDefaultPasswordEncoder().password("kocka").username("mikina").roles("USER").build();
 //               UserDetails user  = User.builder().username("ales")
 //                .password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
 //                .roles("USER")
@@ -55,6 +40,7 @@ public class SecurityConfig extends VaadinWebSecurity {
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
 //        users.createUser(user);
 //        users.createUser(admin);
+        users.createUser(user);
         return users;
     }
 }

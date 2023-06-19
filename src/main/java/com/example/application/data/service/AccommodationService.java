@@ -10,15 +10,15 @@ import com.example.application.data.repository.StatusRepository;
 import java.util.List;
 
 @org.springframework.stereotype.Service
-public class Service {
+public class AccommodationService {
 
     private final GuestRepository guestRepository;
     private final CountryRepository countryRepository;
     private final StatusRepository statusRepository;
 
-    public Service(GuestRepository guestRepository,
-                   CountryRepository countryRepository,
-                   StatusRepository statusRepository) {
+    public AccommodationService(GuestRepository guestRepository,
+                                CountryRepository countryRepository,
+                                StatusRepository statusRepository) {
         this.guestRepository = guestRepository;
         this.countryRepository = countryRepository;
         this.statusRepository = statusRepository;

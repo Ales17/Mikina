@@ -1,4 +1,4 @@
-package com.example.application.views;
+package com.example.application.views.login;
 
 import com.mysql.cj.log.Log;
 import com.vaadin.flow.component.html.H1;
@@ -27,16 +27,18 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("Ubytovací systém");
         i18n.getHeader().setDescription("Vítejte ales/password, admin/password");
-        //i18n.setAdditionalInformation(null);
+
         LoginI18n.Form i18nForm = i18n.getForm();
         i18nForm.setTitle("Přihlášení");
         i18nForm.setUsername("Uživatelské jméno");
         i18nForm.setPassword("Heslo");
         i18nForm.setSubmit("Přihlásit se");
         i18n.setForm(i18nForm);
+
         setForgotPasswordButtonVisible(false);
         setOpened(true);
         setI18n(i18n);
+
         LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
         i18nErrorMessage.setTitle("Chyba");
         i18nErrorMessage.setMessage(

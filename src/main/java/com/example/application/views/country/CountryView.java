@@ -1,17 +1,15 @@
 package com.example.application.views.country;
 
 import com.example.application.data.entity.Country;
-import com.example.application.data.service.Service;
+import com.example.application.data.service.AccommodationService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
@@ -20,10 +18,10 @@ public class CountryView extends VerticalLayout {
     Grid<Country> grid = new Grid<>(Country.class);
     TextField filterText = new TextField();
     CountryForm form;
-    Service service;
+    AccommodationService accommodationService;
 
-    public CountryView(Service service) {
-        this.service = service;
+    public CountryView(AccommodationService accommodationService) {
+        this.accommodationService = accommodationService;
         addClassName("list-view");
         setSizeFull();
         configureGrid();
@@ -73,13 +71,13 @@ public class CountryView extends VerticalLayout {
     }
 
     private void saveCountry(CountryForm.SaveEvent event) {
-        service.saveCountry(event.getCountry());
+        accommodationService.saveCountry(event.getCountry());
         updateList();
         closeEditor();
     }
 
     private void deleteCountry(CountryForm.DeleteEvent event) {
-        service.deleteCountry(event.getCountry());
+        accommodationService.deleteCountry(event.getCountry());
         updateList();
         closeEditor();
     }
@@ -102,6 +100,6 @@ public class CountryView extends VerticalLayout {
 
 
     private void updateList() {
-        grid.setItems(service.fincCountriesByName(filterText.getValue()));
+        grid.setItems(accommodationService.fincCountriesByName(filterText.getValue()));
     }
 }

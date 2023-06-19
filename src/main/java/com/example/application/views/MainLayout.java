@@ -2,6 +2,7 @@ package com.example.application.views;
 
 import com.example.application.security.SecurityService;
 import com.example.application.views.country.CountryView;
+import com.example.application.views.dashboard.DashboardView;
 import com.example.application.views.guest.GuestView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -31,11 +32,10 @@ public class MainLayout extends AppLayout {
         Tabs tabs = new Tabs();
         tabs.add(
                 createTab(VaadinIcon.DASHBOARD, "Hlavní panel", DashboardView.class),
-                createTab(VaadinIcon.BOOK, "Ubytovací kniha", GuestView.class)
+                createTab(VaadinIcon.BOOK, "Ubytovací kniha", GuestView.class),
+                createTab(VaadinIcon.GLOBE_WIRE, "Země", CountryView.class)
+
         );
-        if(securityService.getAuthenticatedUser().getAuthorities().equals("ROLE_ADMIN")) {
-            tabs.add(createTab(VaadinIcon.GLOBE_WIRE, "Země", CountryView.class));
-        }
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }

@@ -7,6 +7,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 
 import java.time.LocalDate;
 
@@ -48,11 +49,12 @@ public class Guest extends AbstractEntity {
     @JsonIgnoreProperties({"employees"})
     private Country country;
 
+
     @ManyToOne
     private Status status;
 
-    @Email
-    private String email = "";
+   /* @Email
+    private String email = "";*/
 
     @Override
     public String toString() {
@@ -97,9 +99,6 @@ public class Guest extends AbstractEntity {
     public Country getCountry() {
         return country;
     }
-
-
-
     public void setCountry(Country country) {
         this.country = country;
     }
@@ -112,11 +111,11 @@ public class Guest extends AbstractEntity {
         this.status = status;
     }
 
-    public String getEmail() {
+    /*public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
+    }*/
 }

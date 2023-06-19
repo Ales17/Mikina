@@ -25,7 +25,7 @@ import java.util.List;
 public class GuestForm extends FormLayout {
     TextField firstName = new TextField("Jméno");
     TextField lastName = new TextField("Příjmení");
-    EmailField email = new EmailField("Email");
+    //EmailField email = new EmailField("Email");
     ComboBox<Status> status = new ComboBox<>("Status");
     ComboBox<Country> country = new ComboBox<>("Země");
 
@@ -43,7 +43,7 @@ public class GuestForm extends FormLayout {
     Binder<Guest> binder = new BeanValidationBinder<>(Guest.class);
 
     public GuestForm(List<Country> countries, List<Status> statuses) {
-        addClassName("Guest-form");
+        addClassName("guest-form");
         binder.bindInstanceFields(this);
 
         country.setItems(countries);
@@ -53,7 +53,7 @@ public class GuestForm extends FormLayout {
 
         add(firstName,
                 lastName,
-                email,
+        //        email,
                 country,
                 status, birthDate, dateArrived, dateLeft, idNumber,
                 createButtonsLayout());
@@ -75,20 +75,16 @@ public class GuestForm extends FormLayout {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
         save.addClickShortcut(Key.ENTER);
         close.addClickShortcut(Key.ESCAPE);
-
         save.addClickListener(event -> validateAndSave());
         delete.addClickListener(event -> fireEvent(new DeleteEvent(this, binder.getBean())));
         close.addClickListener(event -> fireEvent(new CloseEvent(this)));
-
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
         return new HorizontalLayout(save, delete, close);
     }
 
     private void validateAndSave() {
-
         if (binder.isValid()) {
             fireEvent(new SaveEvent(this, binder.getBean()));
         }

@@ -1,11 +1,10 @@
 package com.example.application.views.guest;
 
 import com.example.application.data.entity.Guest;
-import com.example.application.data.service.Service;
+import com.example.application.data.service.AccommodationService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -13,21 +12,20 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
 
-@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+@RolesAllowed("ROLE_ADMIN")
 @Route(value = "guest", layout = MainLayout.class)
 @PageTitle("Seznam hostů | Ubytovací systém")
 public class GuestView extends VerticalLayout {
     Grid<Guest> grid = new Grid<>(Guest.class);
     TextField filterText = new TextField();
     GuestForm form;
-    Service service;
+    AccommodationService accommodationService;
 
-    public GuestView(Service service) {
-        this.service = service;
+    public GuestView(AccommodationService accommodationService) {
+        this.accommodationService = accommodationService;
         addClassName("list-view");
         setSizeFull();
         configureGrid();
@@ -61,11 +59,11 @@ public class GuestView extends VerticalLayout {
         grid.addClassNames("Guest-grid");
         grid.setSizeFull();
         // When setting columns update this list
-        grid.setColumns("firstName", "lastName", "email", "birthDate", "dateArrived", "dateLeft", "idNumber" );
+        grid.setColumns("firstName", "lastName", /*"email",*/ "birthDate", "dateArrived", "dateLeft", "idNumber" );
         // Then add a new column also here
         grid.getColumnByKey("firstName").setHeader("Jméno");
         grid.getColumnByKey("lastName").setHeader("Příjmení");
-        grid.getColumnByKey("email").setHeader("Email");
+        //grid.getColumnByKey("email").setHeader("Email");
         grid.getColumnByKey("birthDate").setHeader("Datum narození");
         grid.getColumnByKey("dateArrived").setHeader("Datum příchodu");
         grid.getColumnByKey("dateLeft").setHeader("Datum odchodu");
@@ -78,7 +76,7 @@ public class GuestView extends VerticalLayout {
                 editGuest(event.getValue()));
     }
     private void configureForm() {
-        form = new GuestForm(service.findAllCountries(), service.findAllStatuses());
+        form = new GuestForm(accommodationService.findAllCountries(), accommodationService.findAllStatuses());
         form.setWidth("25em");
         form.addSaveListener(this::saveGuest);
         form.addDeleteListener(this::deleteGuest);
@@ -89,13 +87,13 @@ public class GuestView extends VerticalLayout {
 
 
     private void saveGuest(GuestForm.SaveEvent event) {
-        service.saveGuest(event.getGuest());
+        accommodationService.saveGuest(event.getGuest());
         updateList();
         closeEditor();
     }
 
     private void deleteGuest(GuestForm.DeleteEvent event) {
-        service.deleteGuest(event.getGuest());
+        accommodationService.deleteGuest(event.getGuest());
         updateList();
         closeEditor();
     }
@@ -123,6 +121,6 @@ public class GuestView extends VerticalLayout {
 
 
     private void updateList() {
-        grid.setItems(service.findAllGuests(filterText.getValue()));
+        grid.setItems(accommodationService.findAllGuests(filterText.getValue()));
     }
 }
