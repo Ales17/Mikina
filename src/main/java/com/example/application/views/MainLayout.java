@@ -18,7 +18,14 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-
+/**
+ * MainLayout
+ * <p>
+ *     Layout of the application.
+ *     Contains header and drawer.
+ *     Header contains title, toggle button and logout button.
+ * </p>
+ */
 public class MainLayout extends AppLayout {
     private final SecurityService securityService;
 
@@ -32,7 +39,7 @@ public class MainLayout extends AppLayout {
         Tabs tabs = new Tabs();
         tabs.add(
                 createTab(VaadinIcon.DASHBOARD, "Hlavní panel", DashboardView.class),
-                createTab(VaadinIcon.BOOK, "Ubytovací kniha", GuestView.class),
+                createTab(VaadinIcon.BOOK, "Evidenční kniha", GuestView.class),
                 createTab(VaadinIcon.GLOBE_WIRE, "Země", CountryView.class)
 
         );

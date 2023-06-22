@@ -14,8 +14,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 
-
-@RolesAllowed("ROLE_ADMIN")
+/**
+ * GuestView shows a list of guests.
+ */
+@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "guest", layout = MainLayout.class)
 @PageTitle("Seznam hostů | Ubytovací systém")
 public class GuestView extends VerticalLayout {
@@ -35,6 +37,7 @@ public class GuestView extends VerticalLayout {
         // Editor will be closed at the start
         closeEditor();
     }
+
     private Component getToolbar() {
         filterText.setPlaceholder("Filtrovat dle jména...");
         filterText.setClearButtonVisible(true);
@@ -46,6 +49,7 @@ public class GuestView extends VerticalLayout {
         toolbar.addClassName("toolbar");
         return toolbar;
     }
+
     private HorizontalLayout getContent() {
         HorizontalLayout content = new HorizontalLayout(grid, form);
         // Set flex grow
@@ -55,11 +59,12 @@ public class GuestView extends VerticalLayout {
         content.setSizeFull();
         return content;
     }
+
     private void configureGrid() {
-        grid.addClassNames("Guest-grid");
+        grid.addClassNames("guest-grid");
         grid.setSizeFull();
         // When setting columns update this list
-        grid.setColumns("firstName", "lastName", /*"email",*/ "birthDate", "dateArrived", "dateLeft", "idNumber" );
+        grid.setColumns("firstName", "lastName", /*"email",*/ "birthDate", "dateArrived", "dateLeft", "idNumber");
         // Then add a new column also here
         grid.getColumnByKey("firstName").setHeader("Jméno");
         grid.getColumnByKey("lastName").setHeader("Příjmení");
@@ -75,6 +80,7 @@ public class GuestView extends VerticalLayout {
         grid.asSingleSelect().addValueChangeListener(event ->
                 editGuest(event.getValue()));
     }
+
     private void configureForm() {
         form = new GuestForm(accommodationService.findAllCountries(), accommodationService.findAllStatuses());
         form.setWidth("25em");
@@ -82,8 +88,6 @@ public class GuestView extends VerticalLayout {
         form.addDeleteListener(this::deleteGuest);
         form.addCloseListener(e -> closeEditor());
     }
-
-
 
 
     private void saveGuest(GuestForm.SaveEvent event) {

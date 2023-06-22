@@ -10,6 +10,9 @@ import com.example.application.data.repository.StatusRepository;
 import java.util.List;
 
 @org.springframework.stereotype.Service
+/**
+ * Service class for Accommodation entities.
+ */
 public class AccommodationService {
 
     private final GuestRepository guestRepository;

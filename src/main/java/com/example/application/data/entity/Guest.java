@@ -118,4 +118,5 @@ public class Guest extends AbstractEntity {
     public void setEmail(String email) {
         this.email = email;
     }*/
+
 }

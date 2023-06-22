@@ -14,6 +14,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.RolesAllowed;
 
+/**
+ * DashboardView shows statistics about the guests.
+ */
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "", layout = MainLayout.class)
 @PageTitle("Hlavní panel | Ubytovací systém")
@@ -47,6 +50,8 @@ public class DashboardView extends VerticalLayout {
     }
 
     private Chart getCountriesChart() {
+        System.out.println(accommodationService.findAllCountries()
+        );
         Chart chart = new Chart(ChartType.PIE);
         DataSeries dataSeries = new DataSeries();
         accommodationService.findGuestsCountries().forEach(country ->

@@ -12,6 +12,9 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 
+/**
+ * A view for managing countries.
+ */
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "country", layout = MainLayout.class)
 public class CountryView extends VerticalLayout {

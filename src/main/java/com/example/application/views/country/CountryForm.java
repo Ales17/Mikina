@@ -14,6 +14,9 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
+/**
+ * A form for editing a single country.
+ */
 public class CountryForm extends FormLayout {
     TextField countryName = new TextField("Název země");
 

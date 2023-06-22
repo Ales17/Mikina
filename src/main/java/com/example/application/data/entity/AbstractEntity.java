@@ -2,6 +2,9 @@ package com.example.application.data.entity;
 
 import jakarta.persistence.*;
 
+/**
+ * Base class for entities.
+ */
 @MappedSuperclass
 public abstract class AbstractEntity {
 

@@ -57,4 +57,9 @@ public class Country extends AbstractEntity {
     public int getGuestCount() {
         return guestCount;
     }
+
+    @Override
+    public String toString() {
+        return countryName + "\n";
+    }
 }

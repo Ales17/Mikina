@@ -10,7 +10,7 @@
   "devBundleStatsOutput": "C:/Users/Asus/Coding/vaadin_playground/src/main/dev-bundle/config",
   "jarResourcesFolder": "C:/Users/Asus/Coding/vaadin_playground/./frontend/generated/jar-resources",
   "generatedFlowImportsFolder": "target/frontend",
-  "themeName": "flowcrmtutorial",
+  "themeName": "",
   "clientServiceWorkerSource": "C:\\Users\\Asus\\Coding\\vaadin_playground\\target\\sw.ts",
   "pwaEnabled": true,
   "offlineEnabled": true,

@@ -9,11 +9,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
 import javax.sql.DataSource;
 
+/**
+ * Security configuration
+ */
 @EnableWebSecurity 
 @Configuration
 public class SecurityConfig extends VaadinWebSecurity { 
@@ -27,8 +33,12 @@ public class SecurityConfig extends VaadinWebSecurity {
     }
     @Bean
     UserDetailsManager users(DataSource dataSource) {
-                UserDetails user = User.withDefaultPasswordEncoder().password("kocka").username("mikina").roles("USER").build();
-//               UserDetails user  = User.builder().username("ales")
+      /*  PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        UserDetails user = User.withUsername("spring")
+                .password(encoder.encode("secret"))
+                .roles("USER")
+                .build();*/
+        //               UserDetails user  = User.builder().username("ales")
 //                .password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
 //                .roles("USER")
 //                .build();
@@ -40,7 +50,9 @@ public class SecurityConfig extends VaadinWebSecurity {
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
 //        users.createUser(user);
 //        users.createUser(admin);
-        users.createUser(user);
+       // users.createUser(user);
         return users;
     }
+
+
 }

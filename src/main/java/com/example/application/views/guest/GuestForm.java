@@ -22,6 +22,9 @@ import com.vaadin.flow.shared.Registration;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * GuestForm is a form for editing Guest entities.
+ */
 public class GuestForm extends FormLayout {
     TextField firstName = new TextField("Jméno");
     TextField lastName = new TextField("Příjmení");
@@ -35,8 +38,6 @@ public class GuestForm extends FormLayout {
     DatePicker dateLeft = new DatePicker("Datum odjezdu");
 
     TextField idNumber = new TextField("Číslo dokladu");
-
-
     Button save = new Button("Uložit");
     Button delete = new Button("Smazat");
     Button close = new Button("Storno");
