@@ -12,7 +12,7 @@
   "generatedFlowImportsFolder": "target/frontend",
   "themeName": "",
   "clientServiceWorkerSource": "C:\\Users\\Asus\\Coding\\vaadin_playground\\target\\sw.ts",
-  "pwaEnabled": true,
-  "offlineEnabled": true,
+  "pwaEnabled": false,
+  "offlineEnabled": false,
   "offlinePath": "'offline.html'"
 }

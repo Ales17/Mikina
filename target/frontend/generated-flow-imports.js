@@ -4,6 +4,11 @@ export const addCssBlock = function(block, before = false) {
  document.head[before ? 'insertBefore' : 'appendChild'](tpl.content, document.head.firstChild);
 };
 
+import { css, unsafeCSS, registerStyles } from '@vaadin/vaadin-themable-mixin';
+import $cssFromFile_0 from 'Frontend/generated/jar-resources/com/github/appreciated/apexcharts/apexcharts-wrapper-styles.css?inline';
+const $css_0 = typeof $cssFromFile_0  === 'string' ? unsafeCSS($cssFromFile_0) : $cssFromFile_0;
+registerStyles('', $css_0, {moduleId: 'apex-charts-style'});
+
 import '@vaadin/grid/theme/lumo/vaadin-grid.js';
 import '@vaadin/tooltip/theme/lumo/vaadin-tooltip.js';
 import '@vaadin/grid/theme/lumo/vaadin-grid-column.js';
@@ -79,6 +84,7 @@ import '@vaadin/vaadin-lumo-styles/typography.js';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset.js';
 import '@vaadin/vertical-layout/theme/lumo/vaadin-vertical-layout.js';
 import '@vaadin/virtual-list/vaadin-virtual-list.js';
+import 'Frontend/generated/jar-resources/com/github/appreciated/apexcharts/apexcharts-wrapper.ts';
 import 'Frontend/generated/jar-resources/comboBoxConnector.js';
 import 'Frontend/generated/jar-resources/contextMenuConnector.js';
 import 'Frontend/generated/jar-resources/contextMenuTargetConnector.js';
@@ -93,6 +99,7 @@ import 'Frontend/generated/jar-resources/lumo-includes.ts';
 import 'Frontend/generated/jar-resources/menubarConnector.js';
 import 'Frontend/generated/jar-resources/messageListConnector.js';
 import 'Frontend/generated/jar-resources/selectConnector.js';
+import 'Frontend/generated/jar-resources/so/chart/chart.js';
 import 'Frontend/generated/jar-resources/tooltip.ts';
 import 'Frontend/generated/jar-resources/vaadin-big-decimal-field.js';
 import 'Frontend/generated/jar-resources/vaadin-grid-flow-selection-column.js';
