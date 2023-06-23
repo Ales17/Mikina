@@ -71,12 +71,9 @@
     "@vaadin/vaadin-usage-statistics": "2.1.2",
     "@vaadin/vertical-layout": "24.0.3",
     "@vaadin/virtual-list": "24.0.3",
-    "apexcharts": "3.35.0",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
-    "echarts": "5.4.1",
     "lit": "2.6.1",
-    "onecolor": "3.1.0",
     "proj4": "2.8.1"
   },
   "devDependencies": {
@@ -166,12 +163,9 @@
       "@vaadin/vaadin-usage-statistics": "2.1.2",
       "@vaadin/vertical-layout": "24.0.3",
       "@vaadin/virtual-list": "24.0.3",
-      "apexcharts": "3.35.0",
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
-      "echarts": "5.4.1",
       "lit": "2.6.1",
-      "onecolor": "3.1.0",
       "proj4": "2.8.1"
     },
     "devDependencies": {
@@ -190,7 +184,7 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "6cd67d414f824bd3b04dc6b176d3ada4f42c8f360c342b56181d1b653b166efe"
+    "hash": "6008a3f331b8a6caad2b47f860892e7e250fca21de3c08496b25a86e21eb1842"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -265,9 +259,6 @@
     "@vaadin/grid-pro": "$@vaadin/grid-pro",
     "@vaadin/map": "$@vaadin/map",
     "@vaadin/rich-text-editor": "$@vaadin/rich-text-editor",
-    "proj4": "$proj4",
-    "apexcharts": "$apexcharts",
-    "onecolor": "$onecolor",
-    "echarts": "$echarts"
+    "proj4": "$proj4"
   }
 }
