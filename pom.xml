@@ -4,13 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
      <groupId>com.example.application</groupId>
     <artifactId>vaadin</artifactId>
-    <name>flowcrmtutorial</name>
+    <name>vaadinapp</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
         <vaadin.version>24.0.5</vaadin.version>
         <selenium.version>4.8.3</selenium.version>
+        <java.version>20</java.version>
     </properties>
 
     <parent>
@@ -142,6 +143,25 @@
                         <goals>
                             <goal>prepare-frontend</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <id>tomcat-run</id>
+                        <goals>
+                            <goal>exec-war-only</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <path>/</path>
+                            <enableNaming>false</enableNaming>
+                            <finalName>webapp.jar</finalName>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
