@@ -24,7 +24,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("Ubytovací systém");
-        i18n.getHeader().setDescription("Vítejte ales/password, admin/password");
+        i18n.getHeader().setDescription("Vítejte\nales/password\nadmin/password");
 
         LoginI18n.Form i18nForm = i18n.getForm();
         i18nForm.setTitle("Přihlášení");
@@ -40,7 +40,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
         i18nErrorMessage.setTitle("Chyba");
         i18nErrorMessage.setMessage(
-                "Zkontrolute, zda jste zadali správné uživatelské jméno a heslo.");
+                "Zkontrolujte, zda jste zadali správné uživatelské jméno a heslo.");
         i18n.setErrorMessage(i18nErrorMessage);
     }
 

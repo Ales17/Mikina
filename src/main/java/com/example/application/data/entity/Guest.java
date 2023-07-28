@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.Null;
 import java.time.LocalDate;
 
 @Entity
+@Table(name="guest")
 public class Guest extends AbstractEntity {
 
     @NotEmpty
@@ -49,12 +51,9 @@ public class Guest extends AbstractEntity {
     @JsonIgnoreProperties({"employees"})
     private Country country;
 
-
+/*
     @ManyToOne
-    private Status status;
-
-   /* @Email
-    private String email = "";*/
+    private Status status;*/
 
     @Override
     public String toString() {
@@ -103,20 +102,12 @@ public class Guest extends AbstractEntity {
         this.country = country;
     }
 
-    public Status getStatus() {
+   /* public Status getStatus() {
         return status;
     }
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    /*public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }*/
 
 }

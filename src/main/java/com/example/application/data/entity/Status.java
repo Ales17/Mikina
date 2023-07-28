@@ -10,10 +10,6 @@ public class Status extends AbstractEntity {
 
     }
 
-    public Status(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
     }

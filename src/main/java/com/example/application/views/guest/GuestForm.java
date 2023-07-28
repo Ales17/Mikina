@@ -29,34 +29,29 @@ public class GuestForm extends FormLayout {
     TextField firstName = new TextField("Jméno");
     TextField lastName = new TextField("Příjmení");
     //EmailField email = new EmailField("Email");
-    ComboBox<Status> status = new ComboBox<>("Status");
+   // ComboBox<Status> status = new ComboBox<>("Status");
     ComboBox<Country> country = new ComboBox<>("Země");
-
     DatePicker birthDate = new DatePicker("Datum narození");
-
     DatePicker dateArrived = new DatePicker("Datum příjezdu");
     DatePicker dateLeft = new DatePicker("Datum odjezdu");
-
     TextField idNumber = new TextField("Číslo dokladu");
     Button save = new Button("Uložit");
     Button delete = new Button("Smazat");
     Button close = new Button("Storno");
     Binder<Guest> binder = new BeanValidationBinder<>(Guest.class);
-
     public GuestForm(List<Country> countries, List<Status> statuses) {
         addClassName("guest-form");
         binder.bindInstanceFields(this);
-
         country.setItems(countries);
         country.setItemLabelGenerator(Country::getCountryName);
-        status.setItems(statuses);
-        status.setItemLabelGenerator(Status::getName);
-
+        //status.setItems(statuses);
+        //status.setItemLabelGenerator(Status::getName);
         add(firstName,
                 lastName,
         //        email,
                 country,
-                status, birthDate, dateArrived, dateLeft, idNumber,
+             //   status,
+                birthDate, dateArrived, dateLeft, idNumber,
                 createButtonsLayout());
         // Validation
         // Range between dateArrived and dateLeft
@@ -64,9 +59,7 @@ public class GuestForm extends FormLayout {
         dateLeft.addValueChangeListener(e->dateArrived.setMax(e.getValue()));
         // Birthdate can not be later than today
         birthDate.setMax(LocalDate.now());
-
     }
-
     public void setGuest(Guest guest) {
         binder.setBean(guest);
     }

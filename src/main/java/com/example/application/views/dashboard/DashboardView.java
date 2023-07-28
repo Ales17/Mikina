@@ -1,5 +1,6 @@
 package com.example.application.views.dashboard;
 
+import com.example.application.data.entity.Guest;
 import com.example.application.data.service.AccommodationService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
@@ -13,6 +14,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.RolesAllowed;
+import org.vaadin.reports.PrintPreviewReport;
 
 /**
  * DashboardView shows statistics about the guests.

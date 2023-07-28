@@ -7,6 +7,7 @@ import com.example.application.data.repository.CountryRepository;
 import com.example.application.data.repository.GuestRepository;
 import com.example.application.data.repository.StatusRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @org.springframework.stereotype.Service
@@ -27,12 +28,14 @@ public class AccommodationService {
         this.statusRepository = statusRepository;
     }
 
-    public List<Guest> findAllGuests(String stringFilter) {
+    public List<Guest> searchForGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
-            return guestRepository.findAll();
+            return guestRepository.search("%", arrivedFilter, leftFilter);
         } else {
-            return guestRepository.search(stringFilter);
+            return guestRepository.search(stringFilter, arrivedFilter, leftFilter);
         }
+
+
     }
 
     public List<Country> findAllCountries() {
@@ -79,5 +82,9 @@ public class AccommodationService {
 
     public void deleteCountry(Country country) {
         countryRepository.delete(country);
+    }
+
+    public List<Guest> findAllGuests2() {
+        return guestRepository.findAll();
     }
 }
