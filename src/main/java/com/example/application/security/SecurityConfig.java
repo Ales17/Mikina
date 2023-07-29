@@ -33,10 +33,14 @@ public class SecurityConfig extends VaadinWebSecurity {
     }
     @Bean
     UserDetailsManager users(DataSource dataSource) {
-      /*  PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        UserDetails user = User.withUsername("spring")
-                .password(encoder.encode("secret"))
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+     /*   UserDetails user = User.withUsername("ales")
+                .password(encoder.encode("pass"))
                 .roles("USER")
+                .build();
+        UserDetails admin = User.withUsername("admin")
+                .password(encoder.encode("pass"))
+                .roles("ADMIN","USER")
                 .build();*/
         //               UserDetails user  = User.builder().username("ales")
 //                .password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
@@ -48,8 +52,8 @@ public class SecurityConfig extends VaadinWebSecurity {
 //                .roles("USER", "ADMIN")
 //                .build();
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-//        users.createUser(user);
-//        users.createUser(admin);
+   /*     users.createUser(user);
+        users.createUser(admin);*/
        // users.createUser(user);
         return users;
     }

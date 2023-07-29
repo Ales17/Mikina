@@ -63,8 +63,8 @@ public class MainLayout extends AppLayout {
     private void createHeader() {
         DrawerToggle toggle = new DrawerToggle();
         H1 title = new H1("Ubytovací systém");
-        title.getStyle().set("font-size", "var(--lumo-font-size-1)").set(
-                "margin", "0");
+        title.getStyle().set("font-size", "var(--lumo-font-size-1)")/*.set(
+                "margin", "0")*/;
         String u = securityService.getAuthenticatedUser().getUsername();
         Button logout = new Button("Odhlásit se (" + u + ")", e -> securityService.logout());
         var header = new HorizontalLayout(toggle, title, logout);

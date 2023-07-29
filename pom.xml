@@ -52,11 +52,6 @@
 
         <!-- https://mvnrepository.com/artifact/cz.geek/ubyport -->
 
-        <dependency>
-            <groupId>org.vaadin.reportui</groupId>
-            <artifactId>report-ui</artifactId>
-            <version>4.0.2</version>
-        </dependency>
 
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -107,6 +102,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.3</version>
         </dependency>
 
         <dependency>

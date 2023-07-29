@@ -24,7 +24,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("Ubytovací systém");
-        i18n.getHeader().setDescription("Vítejte\nales/password\nadmin/password");
+        i18n.getHeader().setDescription("Vítejte-ales/pass-admin/pass");
 
         LoginI18n.Form i18nForm = i18n.getForm();
         i18nForm.setTitle("Přihlášení");
