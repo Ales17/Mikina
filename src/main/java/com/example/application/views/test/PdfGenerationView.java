@@ -1,5 +1,8 @@
 package com.example.application.views.test;
 
+import com.example.application.data.entity.Guest;
+import com.example.application.data.service.AccommodationService;
+import com.example.application.views.MainLayout;
 import com.example.application.views.test.PdfGeneratorService;
 import com.itextpdf.text.DocumentException;
 import com.vaadin.flow.component.button.Button;
@@ -14,38 +17,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
-@Route(value = "pdf")
+@Route(value = "pdf", layout = MainLayout.class)
 @AnonymousAllowed
 public class PdfGenerationView extends VerticalLayout {
 
     private final PdfGeneratorService pdfGeneratorService;
+    private AccommodationService accommodationService;
+
 
     @Autowired
-    public PdfGenerationView(PdfGeneratorService pdfGeneratorService) {
+    public PdfGenerationView(PdfGeneratorService pdfGeneratorService, AccommodationService accommodationService) {
         this.pdfGeneratorService = pdfGeneratorService;
 
-        Button generatePdfButton = new Button("Generate PDF", event -> {
-            String content = "Příliš žluťoučký kůň úpěl ďábelské ódy.";
+        Button generatePdfButton = new Button("Generovat PDF", event -> {
+            String content = "Apartmány u Mikiny, Nové Splavy, Záhlučí 67, 36174.";
             try {
-                byte[] pdfBytes = pdfGeneratorService.generatePdf(content);
-
+                byte[] pdfBytes = pdfGeneratorService.generatePdf(content, accommodationService.findAllGuests2());
                 LocalDateTime datetime1 = LocalDateTime.now();
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formatDateTime = datetime1.format(format);
                 // Stažení PDF souboru
-
-
-
-                StreamResource resource = new StreamResource("report" + formatDateTime +".pdf", () -> new ByteArrayInputStream(pdfBytes));
-                Anchor anchor = new Anchor(resource, "Click to download");
+                StreamResource resource = new StreamResource("report_" + formatDateTime +".pdf", () -> new ByteArrayInputStream(pdfBytes));
+                Anchor anchor = new Anchor(resource, "Stáhnout PDF");
                 anchor.getElement().setAttribute("download", true);
-                anchor.setTarget("_blank"); // Volitelně: otevřít v nové záložce
+                anchor.setTarget("_blank");
                 add(anchor);
-
             } catch (DocumentException e) {
                 e.printStackTrace();
-                Notification.show("Error generating PDF", 5000, Notification.Position.MIDDLE);
+                Notification.show("Chyba při generování PDF", 5000, Notification.Position.MIDDLE);
             }
         });
 
