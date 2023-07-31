@@ -17,6 +17,7 @@ import jakarta.annotation.security.RolesAllowed;
 import software.xdev.vaadin.grid_exporter.GridExporter;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 /**
  * GuestView shows a list of guests.
@@ -31,8 +32,10 @@ public class GuestView extends VerticalLayout {
     DatePicker filterLeft = new DatePicker("Datum odchodu");
     GuestForm form;
     AccommodationService accommodationService;
-    LocalDate arrivedDebug = LocalDate.of(2023, 07, 01);
-    LocalDate leftDebug = LocalDate.of(2023, 07, 31);
+
+
+    LocalDate arrivedDebug = LocalDate.now().withDayOfMonth(1);   //LocalDate.of(2023, 07, 01);
+    LocalDate leftDebug = YearMonth.now().atEndOfMonth();  //LocalDate.of(2023, 07, 31);
 
     public GuestView(AccommodationService accommodationService) {
         this.accommodationService = accommodationService;
@@ -44,13 +47,6 @@ public class GuestView extends VerticalLayout {
         updateList();
         // Editor will be closed at the start
         closeEditor();
-
-    }
-
-    private void export() {
-        GridExporter
-                .newWithDefaults(this.grid)
-                .open();
     }
 
     private Component getToolbar() {
@@ -66,21 +62,28 @@ public class GuestView extends VerticalLayout {
         filterArrived.addValueChangeListener(e -> filterLeft.setMin(e.getValue()));
         filterLeft.addValueChangeListener(e -> filterArrived.setMax(e.getValue()));
         Button addGuestButton = new Button("Přidat hosta");
-        Button exportButton = new Button("Exportovat");
+        Button exportButton = new Button("Vymazat filtr");
 
         addGuestButton.addClickListener(click -> addGuest());
-        exportButton.addClickListener(click -> export());
+        exportButton.addClickListener(click -> resetFilters());
         var toolbar = new HorizontalLayout(filterText, filterArrived, filterLeft, addGuestButton, exportButton);
         toolbar.setAlignItems(Alignment.END);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
 
+
+    private void resetFilters() {
+        filterArrived.setValue(null);
+        filterLeft.setValue(null);
+        filterText.setValue("");
+
+    }
+
     private HorizontalLayout getContent() {
         HorizontalLayout content = new HorizontalLayout(grid, form);
-        // Set flex grow
         content.setFlexGrow(2, grid);
-        content.setFlexGrow(3, form);
+        content.setFlexGrow(4, form);
         content.addClassNames("content");
         content.setSizeFull();
         return content;
@@ -100,7 +103,6 @@ public class GuestView extends VerticalLayout {
         grid.getColumnByKey("dateLeft").setHeader("Datum odchodu");
         grid.getColumnByKey("idNumber").setHeader("Číslo dokladu");
         //grid.addColumn(Guest -> Guest.getStatus().getName()).setHeader("Status");
-
         grid.addColumn(Guest -> Guest.getCountry().getCountryName()).setHeader("Země");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
@@ -108,8 +110,9 @@ public class GuestView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new GuestForm(accommodationService.findAllCountries(), accommodationService.findAllStatuses());
-        form.setWidth("25em");
+        form = new GuestForm(accommodationService.findAllCountries());
+        //form.setWidth("25em");
+        form.setWidth("30em");
         form.addSaveListener(this::saveGuest);
         form.addDeleteListener(this::deleteGuest);
         form.addCloseListener(e -> closeEditor());

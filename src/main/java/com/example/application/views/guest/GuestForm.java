@@ -12,8 +12,9 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -21,6 +22,8 @@ import com.vaadin.flow.shared.Registration;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.aspectj.lang.reflect.DeclareAnnotation.Kind.Type;
 
 /**
  * GuestForm is a form for editing Guest entities.
@@ -30,6 +33,7 @@ public class GuestForm extends FormLayout {
     TextField lastName = new TextField("Příjmení");
     //EmailField email = new EmailField("Email");
    // ComboBox<Status> status = new ComboBox<>("Status");
+    TextField address = new TextField("Adresa");
     ComboBox<Country> country = new ComboBox<>("Země");
     DatePicker birthDate = new DatePicker("Datum narození");
     DatePicker dateArrived = new DatePicker("Datum příjezdu");
@@ -39,7 +43,9 @@ public class GuestForm extends FormLayout {
     Button delete = new Button("Smazat");
     Button close = new Button("Storno");
     Binder<Guest> binder = new BeanValidationBinder<>(Guest.class);
-    public GuestForm(List<Country> countries, List<Status> statuses) {
+    public GuestForm(List<Country> countries) {
+
+
         addClassName("guest-form");
         binder.bindInstanceFields(this);
         country.setItems(countries);
@@ -49,6 +55,7 @@ public class GuestForm extends FormLayout {
         add(firstName,
                 lastName,
         //        email,
+                address,
                 country,
              //   status,
                 birthDate, dateArrived, dateLeft, idNumber,
@@ -59,6 +66,11 @@ public class GuestForm extends FormLayout {
         dateLeft.addValueChangeListener(e->dateArrived.setMax(e.getValue()));
         // Birthdate can not be later than today
         birthDate.setMax(LocalDate.now());
+        setResponsiveSteps(
+                new ResponsiveStep("0",1),
+                new ResponsiveStep("500px",2)
+        );
+        setColspan(address, 2);
     }
     public void setGuest(Guest guest) {
         binder.setBean(guest);

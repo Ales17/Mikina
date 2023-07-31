@@ -4,6 +4,7 @@ import com.example.application.security.SecurityService;
 import com.example.application.views.country.CountryView;
 import com.example.application.views.dashboard.DashboardView;
 import com.example.application.views.guest.GuestView;
+import com.example.application.views.test.PdfGenerationView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -40,7 +41,8 @@ public class MainLayout extends AppLayout {
         tabs.add(
                 createTab(VaadinIcon.DASHBOARD, "Hlavní panel", DashboardView.class),
                 createTab(VaadinIcon.BOOK, "Evidenční kniha", GuestView.class),
-                createTab(VaadinIcon.GLOBE_WIRE, "Země", CountryView.class)
+                createTab(VaadinIcon.GLOBE_WIRE, "Země", CountryView.class),
+                createTab(VaadinIcon.ANCHOR, "Testovací", PdfGenerationView.class)
 
         );
         tabs.setOrientation(Tabs.Orientation.VERTICAL);

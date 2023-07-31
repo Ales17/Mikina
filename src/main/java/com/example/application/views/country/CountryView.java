@@ -103,6 +103,6 @@ public class CountryView extends VerticalLayout {
 
 
     private void updateList() {
-        grid.setItems(accommodationService.fincCountriesByName(filterText.getValue()));
+        grid.setItems(accommodationService.findCountriesByName(filterText.getValue()));
     }
 }

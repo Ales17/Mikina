@@ -22,8 +22,16 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
             "or lower(c.lastName) like lower(concat('%', :searchTerm, '%'))) AND (c.dateArrived >= :arrived AND c.dateLeft <= :left)")
     List<Guest> search(@Param("searchTerm") String searchTerm, @Param("arrived") LocalDate arrived, @Param("left") LocalDate left);
 
+    @Query("SELECT c FROM Guest c " +
+            "WHERE (:searchTerm IS NULL OR lower(c.firstName) LIKE lower(:searchTerm) OR lower(c.lastName) LIKE lower(:searchTerm)) " +
+            "AND (:arrivedFilter IS NULL OR c.dateArrived BETWEEN :arrivedFilter AND :leftFilter) " +
+            "AND (:leftFilter IS NULL OR c.dateLeft BETWEEN :arrivedFilter AND :leftFilter)")
+    List<Guest> searchImproved(@Param("searchTerm") String searchTerm, @Param("arrivedFilter") LocalDate arrivedFilter, @Param("leftFilter") LocalDate leftFilter);
+    @Query("SELECT c FROM Guest c " +
+            "WHERE (:searchTerm IS NULL OR lower(c.firstName) LIKE lower(:searchTerm) OR lower(c.lastName) LIKE lower(:searchTerm)) " +
+            "AND (:arrivedFilter IS NULL OR c.dateArrived >= :arrivedFilter) " +
+            "AND (:leftFilter IS NULL OR c.dateLeft <= :leftFilter)")
+    List<Guest> searchGuests(@Param("searchTerm") String searchTerm, @Param("arrivedFilter") LocalDate arrivedFilter, @Param("leftFilter") LocalDate leftFilter);
 
 
-    @Query("select c from Guest c where c.dateArrived >= :arrived and c.dateLeft <= :left and (lower(c.firstName) like lower(concat('%', :searchTerm, '%')) or lower(c.lastName) like lower(concat('%', :searchTerm, '%')) )")
-    List<Guest> search2(@Param("searchTerm") String searchTerm,@Param("arrived")LocalDate arrived, @Param("left")LocalDate left);
 }

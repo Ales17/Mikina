@@ -29,14 +29,11 @@ public class AccommodationService {
     }
 
     public List<Guest> searchForGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter) {
-        if (stringFilter == null || stringFilter.isEmpty()) {
-            return guestRepository.search("%", arrivedFilter, leftFilter);
-        } else {
-            return guestRepository.search(stringFilter, arrivedFilter, leftFilter);
-        }
-
-
+        String searchTerm = (stringFilter != null && !stringFilter.isEmpty()) ? "%" + stringFilter.toLowerCase() + "%" : null;
+        return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter);
     }
+
+
 
     public List<Country> findAllCountries() {
         return countryRepository.findAll();
@@ -46,7 +43,7 @@ public class AccommodationService {
         return countryRepository.findGuestsCountries();
     }
 
-    public List<Country> fincCountriesByName(String filter) {
+    public List<Country> findCountriesByName(String filter) {
         return countryRepository.search(filter);
     }
 

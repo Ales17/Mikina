@@ -6,9 +6,11 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.lowagie.text.Table;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,111 +22,98 @@ public class PdfGeneratorService {
         // Downloaded font because the iText does not support Czech  by default
         FontFactory.register("arial.ttf");
         Font font = FontFactory.getFont("arial", BaseFont.IDENTITY_H,
-                BaseFont.EMBEDDED, 12);
+                BaseFont.EMBEDDED, 10);
         // Init doc and rotate it (landscape)
         Document document = new Document(PageSize.A4.rotate());
+        document.setMargins(10, 10, 10, 10);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, outputStream);
         // Opening doc
         document.open();
-        // Looping through the guestlist and adding information
-
-
-
-        PdfPTable table = new PdfPTable(3); // 3 columns.
-        table.setWidthPercentage(100); //Width 100%
-        table.setSpacingBefore(10f); //Space before table
-        table.setSpacingAfter(10f); //Space after table
-        float[] columnWidths = {1f, 1f, .5f};
-        table.setWidths(columnWidths);
-
+        document.add(new Paragraph(content, font));
+        // Init table with num of columns
+        PdfPTable table = new PdfPTable(6);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10f);
+        table.setSpacingAfter(10f);
+        //float[] columnWidths = {.8f, .8f, .4f, .3f, .3f, .3f};
+        //table.setWidths(columnWidths);
+// 1 = ALIGN_CENTER
+        // 5 = ALIGN_MIDDLE
+        // Header cells
         PdfPHeaderCell h1 = new PdfPHeaderCell();
         h1.setPhrase(new Phrase("Jméno", font));
-        h1.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         PdfPHeaderCell h2 = new PdfPHeaderCell();
-        h2.setHorizontalAlignment(Element.ALIGN_CENTER);
         h2.setPhrase(new Phrase("Příjmení", font));
 
         PdfPHeaderCell h3 = new PdfPHeaderCell();
-        h3.setPhrase(new Phrase("Země", font));
-        h3.setHorizontalAlignment(Element.ALIGN_CENTER);
+        h3.setPhrase(new Phrase("Doklad",font));
+
+        PdfPHeaderCell h4 = new PdfPHeaderCell();
+        h4.setPhrase(new Phrase("Datum narození", font));
+
+        PdfPHeaderCell h5 = new PdfPHeaderCell();
+        h5.setPhrase(new Phrase("Datum příchodu", font));
+
+        PdfPHeaderCell h6 = new PdfPHeaderCell();
+        h6.setPhrase(new Phrase("Datum příchodu", font));
+        //
+        h1.setVerticalAlignment(5);
+        h2.setVerticalAlignment(5);
+        h3.setVerticalAlignment(5);
+        h4.setVerticalAlignment(5);
+        h5.setVerticalAlignment(5);
+        h6.setVerticalAlignment(5);
+
+        //
+        h1.setPadding(10);
+        h2.setPadding(10);
+        h3.setPadding(10);
+        h4.setPadding(10);
+        h5.setPadding(10);
+        h6.setPadding(10);
+        // Adding header cells
         table.addCell(h1);
         table.addCell(h2);
         table.addCell(h3);
+        table.addCell(h4);
+        table.addCell(h5);
+        table.addCell(h6);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.YYYY");
+        for (Guest g : guests
+        ) {
+            PdfPCell c1 = new PdfPCell(new Paragraph(g.getFirstName(), font));
+            PdfPCell c2 = new PdfPCell(new Paragraph(g.getLastName(), font));
+            PdfPCell c3 = new PdfPCell(new Paragraph(g.getIdNumber(),font));
+            PdfPCell c4 = new PdfPCell(new Paragraph(formatter.format(g.getBirthDate()), font));
+            PdfPCell c5 = new PdfPCell(new Paragraph(formatter.format(g.getDateArrived()), font));
+            PdfPCell c6 = new PdfPCell(new Paragraph(formatter.format(g.getDateLeft()), font));
 
-        for (Guest g: guests
-             ) {
-            /*document.add(new Paragraph(g.getFirstName() + " " + g.getLastName(), font));*/
-            PdfPCell c1 = new PdfPCell(new Paragraph(g.getFirstName(),font));
-            //c1.setBorderColor(BaseColor.BLACK);
+
+            c1.setVerticalAlignment(5);
+            c2.setVerticalAlignment(5);
+            c3.setVerticalAlignment(5);
+            c4.setVerticalAlignment(5);
+            c5.setVerticalAlignment(5);
+            c6.setVerticalAlignment(5);
+
             c1.setPadding(10);
-            //c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-            c1.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-            PdfPCell c2 = new PdfPCell(new Paragraph(g.getLastName(),font));
-            //c2.setBorderColor(BaseColor.BLACK);
             c2.setPadding(10);
-            //c2.setHorizontalAlignment(Element.ALIGN_CENTER);
-            c2.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-            PdfPCell c3 = new PdfPCell(new Paragraph(g.getCountry().getCountryName(),font));
-            //c3.setBorderColor(BaseColor.BLACK);
             c3.setPadding(10);
-            //c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-            c3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            c4.setPadding(10);
+            c5.setPadding(10);
+            c6.setPadding(10);
 
             table.addCell(c1);
             table.addCell(c2);
             table.addCell(c3);
+            table.addCell(c4);
+            table.addCell(c5);
+            table.addCell(c6);
         }
-
-        //Set Column widths
         document.add(table);
-
-        document.add(new Paragraph(content, font));
-
-          /*  PdfPTable table = new PdfPTable(3); // 3 columns.
-            table.setWidthPercentage(100); //Width 100%
-            table.setSpacingBefore(10f); //Space before table
-            table.setSpacingAfter(10f); //Space after table
-
-            //Set Column widths
-            float[] columnWidths = {1f, 1f, 1f};
-            table.setWidths(columnWidths);
-
-            PdfPCell cell1 = new PdfPCell(new Paragraph("Cell 1"));
-            cell1.setBorderColor(BaseColor.BLUE);
-            cell1.setPaddingLeft(10);
-            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-            cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-            PdfPCell cell2 = new PdfPCell(new Paragraph("Cell 2"));
-            cell2.setBorderColor(BaseColor.GREEN);
-            cell2.setPaddingLeft(10);
-            cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
-            cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-            PdfPCell cell3 = new PdfPCell(new Paragraph("Cell 3"));
-            cell3.setBorderColor(BaseColor.RED);
-            cell3.setPaddingLeft(10);
-            cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
-            cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-            //To avoid having the cell border and the content overlap, if you are having thick cell borders
-            //cell1.setUserBorderPadding(true);
-            //cell2.setUserBorderPadding(true);
-            //cell3.setUserBorderPadding(true);
-
-            table.addCell(cell1);
-            table.addCell(cell2);
-            table.addCell(cell3);
-
-            document.add(table);*/
-
-            document.close();
-        //System.out.println(Arrays.toString(outputStream.toByteArray()));
-            return outputStream.toByteArray();
-        }
+        document.close();
+        return outputStream.toByteArray();
     }
-
+}
