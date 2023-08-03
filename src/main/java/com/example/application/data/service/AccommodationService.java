@@ -33,8 +33,6 @@ public class AccommodationService {
         return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter);
     }
 
-
-
     public List<Country> findAllCountries() {
         return countryRepository.findAll();
     }

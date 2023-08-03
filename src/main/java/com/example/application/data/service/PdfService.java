@@ -1,23 +1,16 @@
-package com.example.application.views.test;
+package com.example.application.data.service;
 
 import com.example.application.data.entity.Guest;
-import com.example.application.data.service.AccommodationService;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import com.lowagie.text.Table;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class PdfGeneratorService {
-
+public class PdfService {
     public byte[] generatePdf(String content, List<Guest> guests) throws DocumentException {
         // Downloaded font because the iText does not support Czech  by default
         FontFactory.register("arial.ttf");
@@ -28,7 +21,7 @@ public class PdfGeneratorService {
         document.setMargins(10, 10, 10, 10);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, outputStream);
-        // Opening doc
+
         document.open();
         document.add(new Paragraph(content, font));
         // Init table with num of columns
@@ -38,9 +31,7 @@ public class PdfGeneratorService {
         table.setSpacingAfter(10f);
         //float[] columnWidths = {.8f, .8f, .4f, .3f, .3f, .3f};
         //table.setWidths(columnWidths);
-// 1 = ALIGN_CENTER
-        // 5 = ALIGN_MIDDLE
-        // Header cells
+
         PdfPHeaderCell h1 = new PdfPHeaderCell();
         h1.setPhrase(new Phrase("Jméno", font));
 
@@ -58,7 +49,7 @@ public class PdfGeneratorService {
 
         PdfPHeaderCell h6 = new PdfPHeaderCell();
         h6.setPhrase(new Phrase("Datum příchodu", font));
-        //
+
         h1.setVerticalAlignment(5);
         h2.setVerticalAlignment(5);
         h3.setVerticalAlignment(5);
@@ -66,14 +57,13 @@ public class PdfGeneratorService {
         h5.setVerticalAlignment(5);
         h6.setVerticalAlignment(5);
 
-        //
         h1.setPadding(10);
         h2.setPadding(10);
         h3.setPadding(10);
         h4.setPadding(10);
         h5.setPadding(10);
         h6.setPadding(10);
-        // Adding header cells
+
         table.addCell(h1);
         table.addCell(h2);
         table.addCell(h3);
@@ -89,7 +79,6 @@ public class PdfGeneratorService {
             PdfPCell c4 = new PdfPCell(new Paragraph(formatter.format(g.getBirthDate()), font));
             PdfPCell c5 = new PdfPCell(new Paragraph(formatter.format(g.getDateArrived()), font));
             PdfPCell c6 = new PdfPCell(new Paragraph(formatter.format(g.getDateLeft()), font));
-
 
             c1.setVerticalAlignment(5);
             c2.setVerticalAlignment(5);

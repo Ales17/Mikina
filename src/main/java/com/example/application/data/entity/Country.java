@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@Table(name="country")
+@Table(name = "country")
 public class Country extends AbstractEntity {
     // source of country list https://www.czso.cz/csu/czso/ciselnik_zemi_-czem-
     @NotNull
@@ -36,7 +36,7 @@ public class Country extends AbstractEntity {
     @Nullable
     private List<Guest> guests = new LinkedList<>();
 
-    @Formula("(select count(c.id) from Guest c where c.country_id = id)")
+    @Formula("(select count(c.id) from guest c where c.country_id = id)")
     private int guestCount;
 
     public String getCountryName() {

@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Null;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="guest")
+@Table(name = "guest")
 public class Guest extends AbstractEntity {
 
     @NotEmpty
@@ -28,6 +28,15 @@ public class Guest extends AbstractEntity {
 
     private LocalDate dateLeft;
 
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public LocalDate getDateArrived() {
         return dateArrived;
