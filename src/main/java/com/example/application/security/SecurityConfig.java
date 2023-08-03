@@ -26,8 +26,11 @@ public class SecurityConfig extends VaadinWebSecurity {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests()
-                .requestMatchers("/images/*.png").permitAll();  
+//        http.authorizeHttpRequests()
+//                .requestMatchers("/images/*.png").permitAll();
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/images/*.png").permitAll()
+                .anyRequest().authenticated());
         super.configure(http);
         setLoginView(http, LoginView.class);
     }
@@ -35,26 +38,20 @@ public class SecurityConfig extends VaadinWebSecurity {
     UserDetailsManager users(DataSource dataSource) {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
      /*   UserDetails user = User.withUsername("ales")
-                .password(encoder.encode("pass"))
+                .password(encoder.encode("##########"))
                 .roles("USER")
                 .build();
         UserDetails admin = User.withUsername("admin")
-                .password(encoder.encode("pass"))
+                .password(encoder.encode("##########"))
                 .roles("ADMIN","USER")
                 .build();*/
-        //               UserDetails user  = User.builder().username("ales")
-//                .password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
-//                .roles("USER")
-//                .build();
-//        UserDetails admin = User.builder()
-//                .username("admin")
-//                .password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
-//                .roles("USER", "ADMIN")
-//                .build();
+
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
    /*     users.createUser(user);
         users.createUser(admin);*/
        // users.createUser(user);
+
+
         return users;
     }
 

@@ -23,8 +23,8 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
-        i18n.getHeader().setTitle("Ubytovací systém");
-        i18n.getHeader().setDescription("Vítejte-ales/pass-admin/pass");
+        i18n.getHeader().setTitle("Vítejte");
+        i18n.getHeader().setDescription("Ubytovací systém Mikina");
 
         LoginI18n.Form i18nForm = i18n.getForm();
         i18nForm.setTitle("Přihlášení");
