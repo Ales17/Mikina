@@ -7,15 +7,42 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class PdfService {
-    public byte[] generatePdf(String content, List<Guest> guests) throws DocumentException {
-        // Downloaded font because the iText does not support Czech  by default
+    private final int FONT_SIZE = 10;
+    private final String[] headerLabelsArr = {"Jméno", "Příjmení", "Doklad", "Datum narození", "Datum příchodu", "Datum odchodu"};
+    private final List<String> headerLabels = Arrays.asList(headerLabelsArr);
+    private final Font font;
+    // Format date as wanted
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    public PdfService() {
         FontFactory.register("arial.ttf");
-        Font font = FontFactory.getFont("arial", BaseFont.IDENTITY_H,
-                BaseFont.EMBEDDED, 10);
+        // iText does not support Czech by default
+        font = FontFactory.getFont("arial", BaseFont.IDENTITY_H,
+                BaseFont.EMBEDDED, FONT_SIZE);
+    }
+
+    private PdfPHeaderCell getHeaderCell(String text) {
+        PdfPHeaderCell headerCell = new PdfPHeaderCell();
+        headerCell.setPhrase(new Phrase(text, font));
+        headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        headerCell.setPadding(10);
+        return headerCell;
+    }
+
+    private PdfPCell getTableCell(String text) {
+        PdfPCell tableCell = new PdfPCell(new Paragraph(text, font));
+        tableCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        tableCell.setPadding(10);
+        return tableCell;
+    }
+
+
+    public byte[] generatePdf(String content, List<Guest> guests) throws DocumentException {
         // Init doc and rotate it (landscape)
         Document document = new Document(PageSize.A4.rotate());
         document.setMargins(10, 10, 10, 10);
@@ -32,74 +59,18 @@ public class PdfService {
         //float[] columnWidths = {.8f, .8f, .4f, .3f, .3f, .3f};
         //table.setWidths(columnWidths);
 
-        PdfPHeaderCell h1 = new PdfPHeaderCell();
-        h1.setPhrase(new Phrase("Jméno", font));
+        for (String cell : headerLabels) {
+            table.addCell(getHeaderCell(cell));
+        }
 
-        PdfPHeaderCell h2 = new PdfPHeaderCell();
-        h2.setPhrase(new Phrase("Příjmení", font));
-
-        PdfPHeaderCell h3 = new PdfPHeaderCell();
-        h3.setPhrase(new Phrase("Doklad",font));
-
-        PdfPHeaderCell h4 = new PdfPHeaderCell();
-        h4.setPhrase(new Phrase("Datum narození", font));
-
-        PdfPHeaderCell h5 = new PdfPHeaderCell();
-        h5.setPhrase(new Phrase("Datum příchodu", font));
-
-        PdfPHeaderCell h6 = new PdfPHeaderCell();
-        h6.setPhrase(new Phrase("Datum příchodu", font));
-
-        h1.setVerticalAlignment(5);
-        h2.setVerticalAlignment(5);
-        h3.setVerticalAlignment(5);
-        h4.setVerticalAlignment(5);
-        h5.setVerticalAlignment(5);
-        h6.setVerticalAlignment(5);
-
-        h1.setPadding(10);
-        h2.setPadding(10);
-        h3.setPadding(10);
-        h4.setPadding(10);
-        h5.setPadding(10);
-        h6.setPadding(10);
-
-        table.addCell(h1);
-        table.addCell(h2);
-        table.addCell(h3);
-        table.addCell(h4);
-        table.addCell(h5);
-        table.addCell(h6);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.YYYY");
         for (Guest g : guests
         ) {
-            PdfPCell c1 = new PdfPCell(new Paragraph(g.getFirstName(), font));
-            PdfPCell c2 = new PdfPCell(new Paragraph(g.getLastName(), font));
-            PdfPCell c3 = new PdfPCell(new Paragraph(g.getIdNumber(),font));
-            PdfPCell c4 = new PdfPCell(new Paragraph(formatter.format(g.getBirthDate()), font));
-            PdfPCell c5 = new PdfPCell(new Paragraph(formatter.format(g.getDateArrived()), font));
-            PdfPCell c6 = new PdfPCell(new Paragraph(formatter.format(g.getDateLeft()), font));
-
-            c1.setVerticalAlignment(5);
-            c2.setVerticalAlignment(5);
-            c3.setVerticalAlignment(5);
-            c4.setVerticalAlignment(5);
-            c5.setVerticalAlignment(5);
-            c6.setVerticalAlignment(5);
-
-            c1.setPadding(10);
-            c2.setPadding(10);
-            c3.setPadding(10);
-            c4.setPadding(10);
-            c5.setPadding(10);
-            c6.setPadding(10);
-
-            table.addCell(c1);
-            table.addCell(c2);
-            table.addCell(c3);
-            table.addCell(c4);
-            table.addCell(c5);
-            table.addCell(c6);
+            table.addCell(getTableCell(g.getFirstName()));
+            table.addCell(getTableCell(g.getLastName()));
+            table.addCell(getTableCell(g.getIdNumber()));
+            table.addCell(getTableCell(formatter.format(g.getBirthDate())));
+            table.addCell(getTableCell(formatter.format(g.getDateArrived())));
+            table.addCell(getTableCell(formatter.format(g.getDateLeft())));
         }
         document.add(table);
         document.close();
