@@ -1,4 +1,4 @@
-package com.example.application.views.test;
+package com.example.application.test;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
