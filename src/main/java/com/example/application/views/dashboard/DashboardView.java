@@ -1,6 +1,5 @@
 package com.example.application.views.dashboard;
 
-import com.example.application.data.entity.Guest;
 import com.example.application.data.service.AccommodationService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
@@ -33,15 +32,17 @@ public class DashboardView extends VerticalLayout {
     }
 
 
-
     private Component getStats() {
         String guestWord;
         switch (accommodationService.countGuests()) {
-            case 1: guestWord = "host";
-            break;
-            case 2, 3, 4: guestWord = "hosté";
-            break;
-            default: guestWord = "hostů";
+            case 1:
+                guestWord = "host";
+                break;
+            case 2, 3, 4:
+                guestWord = "hosté";
+                break;
+            default:
+                guestWord = "hostů";
         }
         Span stats = new Span(accommodationService.countGuests() + " " + guestWord);
         stats.addClassNames(
@@ -51,8 +52,6 @@ public class DashboardView extends VerticalLayout {
     }
 
     private Chart getCountriesChart() {
-        System.out.println(accommodationService.findAllCountries()
-        );
         Chart chart = new Chart(ChartType.PIE);
         DataSeries dataSeries = new DataSeries();
         accommodationService.findGuestsCountries().forEach(country ->

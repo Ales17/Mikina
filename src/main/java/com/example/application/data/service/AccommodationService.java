@@ -2,7 +2,6 @@ package com.example.application.data.service;
 
 import com.example.application.data.entity.Country;
 import com.example.application.data.entity.Guest;
-import com.example.application.data.entity.Status;
 import com.example.application.data.repository.CountryRepository;
 import com.example.application.data.repository.GuestRepository;
 import com.example.application.data.repository.StatusRepository;
@@ -20,12 +19,14 @@ public class AccommodationService {
     private final CountryRepository countryRepository;
     private final StatusRepository statusRepository;
 
+
     public AccommodationService(GuestRepository guestRepository,
                                 CountryRepository countryRepository,
                                 StatusRepository statusRepository) {
         this.guestRepository = guestRepository;
         this.countryRepository = countryRepository;
         this.statusRepository = statusRepository;
+
     }
 
     public List<Guest> searchForGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter) {
@@ -62,11 +63,6 @@ public class AccommodationService {
     }
 
 
-    public List<Status> findAllStatuses() {
-        return statusRepository.findAll();
-    }
-
-
     public void saveCountry(Country country) {
         if (country == null) {
             System.err.println("Země je null. Jsi si jistý, že jsi připojil formulář k aplikaci?");
@@ -79,7 +75,9 @@ public class AccommodationService {
         countryRepository.delete(country);
     }
 
-    public List<Guest> findAllGuests2() {
+    public List<Guest> findAllGuests() {
         return guestRepository.findAll();
     }
+
+
 }

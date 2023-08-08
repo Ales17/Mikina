@@ -2,7 +2,6 @@ package com.example.application.views.guest;
 
 import com.example.application.data.entity.Country;
 import com.example.application.data.entity.Guest;
-import com.example.application.data.entity.Status;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -12,18 +11,15 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
+import cz.geek.ubyport.StatniPrislusnost;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static org.aspectj.lang.reflect.DeclareAnnotation.Kind.Type;
 
 /**
  * GuestForm is a form for editing Guest entities.
@@ -32,9 +28,10 @@ public class GuestForm extends FormLayout {
     TextField firstName = new TextField("Jméno");
     TextField lastName = new TextField("Příjmení");
     //EmailField email = new EmailField("Email");
-   // ComboBox<Status> status = new ComboBox<>("Status");
+    // ComboBox<Status> status = new ComboBox<>("Status");
     TextField address = new TextField("Adresa");
     ComboBox<Country> country = new ComboBox<>("Země");
+    ComboBox<StatniPrislusnost> nationality = new ComboBox<>("Ubyport");
     DatePicker birthDate = new DatePicker("Datum narození");
     DatePicker dateArrived = new DatePicker("Datum příjezdu");
     DatePicker dateLeft = new DatePicker("Datum odjezdu");
@@ -43,35 +40,40 @@ public class GuestForm extends FormLayout {
     Button delete = new Button("Smazat");
     Button close = new Button("Storno");
     Binder<Guest> binder = new BeanValidationBinder<>(Guest.class);
-    public GuestForm(List<Country> countries) {
+
+    public GuestForm(List<Country> countries, List<StatniPrislusnost> ubyportNationality) {
 
 
         addClassName("guest-form");
         binder.bindInstanceFields(this);
         country.setItems(countries);
         country.setItemLabelGenerator(Country::getCountryName);
+        nationality.setItems(ubyportNationality);
+        nationality.setItemLabelGenerator(StatniPrislusnost::getTitle);
         //status.setItems(statuses);
         //status.setItemLabelGenerator(Status::getName);
         add(firstName,
                 lastName,
-        //        email,
+                //        email,
                 address,
+                nationality,
                 country,
-             //   status,
+                //   status,
                 birthDate, dateArrived, dateLeft, idNumber,
                 createButtonsLayout());
         // Validation
         // Range between dateArrived and dateLeft
-        dateArrived.addValueChangeListener(e->dateLeft.setMin(e.getValue()));
-        dateLeft.addValueChangeListener(e->dateArrived.setMax(e.getValue()));
+        dateArrived.addValueChangeListener(e -> dateLeft.setMin(e.getValue()));
+        dateLeft.addValueChangeListener(e -> dateArrived.setMax(e.getValue()));
         // Birthdate can not be later than today
         birthDate.setMax(LocalDate.now());
         setResponsiveSteps(
-                new ResponsiveStep("0",1),
-                new ResponsiveStep("500px",2)
+                new ResponsiveStep("0", 1),
+                new ResponsiveStep("500px", 2)
         );
         setColspan(address, 2);
     }
+
     public void setGuest(Guest guest) {
         binder.setBean(guest);
     }

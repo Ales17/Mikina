@@ -7,14 +7,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class PdfService {
     private final int FONT_SIZE = 10;
-    private final String[] headerLabelsArr = {"Jméno", "Příjmení", "Doklad", "Datum narození", "Datum příchodu", "Datum odchodu"};
-    private final List<String> headerLabels = Arrays.asList(headerLabelsArr);
+    private final String[] HEADER_CELLS = {"Jméno", "Příjmení", "Doklad", "Datum narození", "Datum příchodu", "Datum odchodu", "Země", "Adresa"};
     private final Font font;
     // Format date as wanted
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -27,20 +25,19 @@ public class PdfService {
     }
 
     private PdfPHeaderCell getHeaderCell(String text) {
-        PdfPHeaderCell headerCell = new PdfPHeaderCell();
-        headerCell.setPhrase(new Phrase(text, font));
-        headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        headerCell.setPadding(10);
-        return headerCell;
+        PdfPHeaderCell hCell = new PdfPHeaderCell();
+        hCell.setPhrase(new Phrase(text, font));
+        hCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        hCell.setPadding(9);
+        return hCell;
     }
 
     private PdfPCell getTableCell(String text) {
-        PdfPCell tableCell = new PdfPCell(new Paragraph(text, font));
-        tableCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        tableCell.setPadding(10);
-        return tableCell;
+        PdfPCell tCell = new PdfPCell(new Paragraph(text, font));
+        tCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        tCell.setPadding(9);
+        return tCell;
     }
-
 
     public byte[] generatePdf(String content, List<Guest> guests) throws DocumentException {
         // Init doc and rotate it (landscape)
@@ -52,17 +49,25 @@ public class PdfService {
         document.open();
         document.add(new Paragraph(content, font));
         // Init table with num of columns
-        PdfPTable table = new PdfPTable(6);
+        PdfPTable table = new PdfPTable(8);
         table.setWidthPercentage(100);
         table.setSpacingBefore(10f);
         table.setSpacingAfter(10f);
-        //float[] columnWidths = {.8f, .8f, .4f, .3f, .3f, .3f};
-        //table.setWidths(columnWidths);
+        float[] columnWidths = {
+                1f,
+                1f,
+                1f,
+                1f,
+                1f,
+                1f,
+                1f,
+                1.5f
+        };
+        table.setWidths(columnWidths);
 
-        for (String cell : headerLabels) {
-            table.addCell(getHeaderCell(cell));
+        for (String c : HEADER_CELLS) {
+            table.addCell(getHeaderCell(c));
         }
-
         for (Guest g : guests
         ) {
             table.addCell(getTableCell(g.getFirstName()));
@@ -71,6 +76,8 @@ public class PdfService {
             table.addCell(getTableCell(formatter.format(g.getBirthDate())));
             table.addCell(getTableCell(formatter.format(g.getDateArrived())));
             table.addCell(getTableCell(formatter.format(g.getDateLeft())));
+            table.addCell(getTableCell(g.getNationality().getKod()));
+            table.addCell(getTableCell(g.getAddress()));
         }
         document.add(table);
         document.close();

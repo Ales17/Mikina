@@ -1,14 +1,10 @@
 package com.example.application.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
+import cz.geek.ubyport.StatniPrislusnost;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 
 import java.time.LocalDate;
 
@@ -29,6 +25,8 @@ public class Guest extends AbstractEntity {
     private LocalDate dateLeft;
 
     private String address;
+    @Enumerated(EnumType.ORDINAL)
+    private StatniPrislusnost nationality;
 
     public String getAddress() {
         return address;
@@ -50,9 +48,9 @@ public class Guest extends AbstractEntity {
         return dateLeft;
     }
 
-    public void setDateLeft(LocalDate dateLeft) {
-        this.dateLeft = dateLeft;
-    }
+    @NotEmpty
+    private String idNumber;
+
 
     @ManyToOne
     @JoinColumn(name = "country_id")
@@ -60,9 +58,9 @@ public class Guest extends AbstractEntity {
     @JsonIgnoreProperties({"employees"})
     private Country country;
 
-/*
-    @ManyToOne
-    private Status status;*/
+    public void setDateLeft(LocalDate dateLeft) {
+        this.dateLeft = dateLeft;
+    }
 
     @Override
     public String toString() {
@@ -85,9 +83,6 @@ public class Guest extends AbstractEntity {
         this.idNumber = idNumber;
     }
 
-    @NotEmpty
-    private String idNumber;
-
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -107,16 +102,18 @@ public class Guest extends AbstractEntity {
     public Country getCountry() {
         return country;
     }
+
     public void setCountry(Country country) {
         this.country = country;
     }
 
-   /* public Status getStatus() {
-        return status;
+    public StatniPrislusnost getNationality() {
+        return nationality;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }*/
+    public void setNationality(StatniPrislusnost nationality) {
+        this.nationality = nationality;
+    }
+
 
 }

@@ -1,19 +1,19 @@
-import { LitElement, html, css } from 'lit';
-import {property, customElement} from 'lit/decorators.js';
+import {html, LitElement} from 'lit';
 import * as echarts from 'echarts/dist/echarts.min';
 
 export class SOChart extends LitElement {
 
     static get properties() {
         return {
-            minw: { type: String },
-            maxw: { type: String },
-            minh: { type: String },
-            maxh: { type: String },
-            width: { type: String },
-            height: { type: String }
+            minw: {type: String},
+            maxw: {type: String},
+            minh: {type: String},
+            maxh: {type: String},
+            width: {type: String},
+            height: {type: String}
         };
     }
+
     render() {
         return html`<div id="${this.idChart}"
                          style="min-width:${this.minw};max-width:${this.maxw};width:${this.width};min-height:${this.minh};max-height:${this.maxh};height:${this.height};">
@@ -32,11 +32,11 @@ export class SOChart extends LitElement {
         this.width = "33vw";
         this.height = "33vh";
         this.events = [];
-        
+
         // Keep a reference to pending resize event. We use this to not trigger too many render events on continuous resize
         this.pendingResizeEvent = null;
         this.resizeListener = (event) => {
-            if(this.chart && this.chart != null) {
+            if (this.chart && this.chart != null) {
                 // Clear previous pending event (if any) and register a new one. This way only last one will trigger
                 if (this.pendingResizeEvent) {
                     clearTimeout(this.pendingResizeEvent);
@@ -50,7 +50,7 @@ export class SOChart extends LitElement {
     }
 
     addEvent(event, data) {
-        this.events.push({ event, data })
+        this.events.push({event, data})
     }
 
     connectedCallback() {
@@ -66,20 +66,20 @@ export class SOChart extends LitElement {
     }
 
     updated(changedProps) {
-        if(this.chart && this.chart != null && !changedProps.has("idChart")) {
+        if (this.chart && this.chart != null && !changedProps.has("idChart")) {
             this.chart.resize();
         }
     }
 
     clearChart() {
-        if(this.chart == null) {
+        if (this.chart == null) {
             return;
         }
         this.chart.clear();
     }
 
     destroyChart() {
-        if(this.chart == null) {
+        if (this.chart == null) {
             return;
         }
         this.chart.dispose();
@@ -92,18 +92,18 @@ export class SOChart extends LitElement {
     }
 
     updateChart(full, options, theme) {
-        if(full) {
+        if (full) {
             this.allOptions = options;
         }
         var json = JSON.parse(options);
         this._stuff(json);
-        if(!this.chart || this.chart == null) {
+        if (!this.chart || this.chart == null) {
             this.chart = echarts.init(this.shadowRoot.getElementById(this.idChart), theme);
         }
         this.events.forEach(event => {
-            this.chart.on(event.event, { name: event.data }, params => {
-               this.$server.runEvent(event.event, event.data);
-           })
+            this.chart.on(event.event, {name: event.data}, params => {
+                this.$server.runEvent(event.event, event.data);
+            })
         });
         this.chart.setOption(json);
     }
@@ -113,7 +113,7 @@ export class SOChart extends LitElement {
     }
 
     updateData(serial, data) {
-        if(typeof serial !== 'undefined') {
+        if (typeof serial !== 'undefined') {
             this.initData(serial, data);
         }
         var json = JSON.parse(this.allOptions);
@@ -127,7 +127,7 @@ export class SOChart extends LitElement {
 
     pushData(data) {
         data = JSON.parse(data)["d"];
-        for(let k in data) {
+        for (let k in data) {
             this.data[k].push(data[k]);
             this.data[k].shift();
         }
@@ -136,7 +136,7 @@ export class SOChart extends LitElement {
 
     appendData(data) {
         data = JSON.parse(data)["d"];
-        for(let k in data) {
+        for (let k in data) {
             this.data[k].push(data[k]);
         }
         this.updateData();
@@ -160,10 +160,10 @@ export class SOChart extends LitElement {
 
     _stuffFunc(obj) {
         var o;
-        for(let k in obj) {
+        for (let k in obj) {
             o = obj[k];
-            if(typeof o === 'object') {
-                if(typeof o.function === 'object') {
+            if (typeof o === 'object') {
+                if (typeof o.function === 'object') {
                     obj[k] = new Function(o.function.params, o.function.body);
                 } else {
                     this._stuffFunc(o);
@@ -174,10 +174,10 @@ export class SOChart extends LitElement {
 
     _stuffFuncP(obj) {
         var o;
-        for(let k in obj) {
+        for (let k in obj) {
             o = obj[k];
-            if(typeof o === 'object') {
-                if(typeof o.functionP === 'object') {
+            if (typeof o === 'object') {
+                if (typeof o.functionP === 'object') {
                     obj[k] = p => this._formatter(p, o.functionP.body);
                 } else {
                     this._stuffFuncP(o);
@@ -188,11 +188,11 @@ export class SOChart extends LitElement {
 
     _stuffRenderer(obj) {
         var o;
-        for(let k in obj) {
+        for (let k in obj) {
             o = obj[k];
-            if(k === "renderItem") {
+            if (k === "renderItem") {
                 obj[k] = this._renderer(o);
-            } else if(typeof o === 'object') {
+            } else if (typeof o === 'object') {
                 this._stuffRenderer(o);
             }
         }
@@ -200,17 +200,17 @@ export class SOChart extends LitElement {
 
     _stuffData(obj) {
         var o;
-        for(let k in obj) {
+        for (let k in obj) {
             o = obj[k];
-            if(k === "data") {
-                if(Array.isArray(o)) {
+            if (k === "data") {
+                if (Array.isArray(o)) {
                     o.forEach((v, i, a) => {
                         a[i] = this.data["d" + v];
                     });
                 } else {
                     obj[k] = this.data["d" + o];
                 }
-            } else if(typeof o === 'object') {
+            } else if (typeof o === 'object') {
                 this._stuffData(o);
             }
         }
@@ -218,47 +218,47 @@ export class SOChart extends LitElement {
 
     _stuffDataSet(obj) {
         obj = obj.dataset;
-        for(let k in obj.source) {
+        for (let k in obj.source) {
             obj.source[k] = this.data["d" + obj.source[k]];
         }
     }
 
     _formatter(p, v) {
         let s = "", len = v.length;
-        for(let i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             let o = v[i];
-            if(typeof o === 'string') {
+            if (typeof o === 'string') {
                 s = s + o;
             } else {
                 let k = p.dataIndex;
-                if(k == null) {
+                if (k == null) {
                     k = p[0].dataIndex;
-                    if(k == null) {
+                    if (k == null) {
                         continue;
                     }
                 }
                 let d;
-                if(typeof o === 'object') {
+                if (typeof o === 'object') {
                     d = this.data["d" + o[0]];
-                    if(d == null) {
+                    if (d == null) {
                         continue;
                     }
                     d = d[k];
-                    if(d == null) {
+                    if (d == null) {
                         continue;
                     }
                     d = d[o[1]];
-                    if(d == null) {
+                    if (d == null) {
                         continue;
                     }
                     s = s + d;
                 } else {
                     d = this.data["d" + o];
-                    if(d == null) {
+                    if (d == null) {
                         continue;
                     }
                     d = d[k];
-                    if(d == null) {
+                    if (d == null) {
                         continue;
                     }
                     s = s + d;
@@ -290,7 +290,7 @@ export class SOChart extends LitElement {
         var barWidth = end[0] - start[0];
         var barHeight = api.size([0, 1])[1];
         var shiftY = 0;
-        if(color === prefixColor) { // Not a Gantt chart
+        if (color === prefixColor) { // Not a Gantt chart
             shiftY = 0;
         } else {
             shiftY = -(barHeight / 2);
@@ -300,7 +300,7 @@ export class SOChart extends LitElement {
         var y = start[1] - (barHeight / 2) + shiftY;
         x += 3;
         barWidth -= 3;
-        if(barWidth < 0) {
+        if (barWidth < 0) {
             barWidth = 0;
         }
         var rectSystem = {
@@ -324,7 +324,7 @@ export class SOChart extends LitElement {
         };
         rectBox = echarts.graphic.clipRectByRect(rectBox, rectSystem);
         var rectPercent;
-        if(donePercentage >= 0 && donePercentage < 100) {
+        if (donePercentage >= 0 && donePercentage < 100) {
             var completedWidth = (barWidth + 3) * donePercentage / 100;
             rectPercent = {
                 x: x + completedWidth - 3,
@@ -335,7 +335,7 @@ export class SOChart extends LitElement {
             rectPercent = echarts.graphic.clipRectByRect(rectPercent, rectSystem);
         }
         var hideText;
-        if(shiftY == 0) { // Not a Gantt chart
+        if (shiftY == 0) { // Not a Gantt chart
             hideText = !rectPrefix;
         } else {
             hideText = !rectBox;
@@ -401,16 +401,16 @@ export class SOChart extends LitElement {
         var barHeight = api.size([0, 1])[1];
         var y = api.coord([0, index])[1] - barHeight;
         let ry = y + 0.2 * barHeight, ty1 = y + 0.6 * barHeight, ty2 = y + 0.8 * barHeight, rh = 0.8 * barHeight;
-        if(ry < minY) {
+        if (ry < minY) {
             let d = minY - ry;
             ry = minY;
             rh -= d;
         }
         var rect = {
-           x: 10,
-           y: ry,
-           width: width - 10,
-           height: rh
+            x: 10,
+            y: ry,
+            width: width - 10,
+            height: rh
         };
         let elements = {
             type: 'group',
@@ -419,10 +419,10 @@ export class SOChart extends LitElement {
                 type: 'rect', // Top curtain
                 z2: 1,
                 shape: {
-                  x: 0,
-                  y: 0,
-                  width: params.coordSys.x + params.coordSys.width,
-                  height: minY
+                    x: 0,
+                    y: 0,
+                    width: params.coordSys.x + params.coordSys.width,
+                    height: minY
                 },
                 style: {
                     fill: '#FFFFFF'
@@ -431,10 +431,10 @@ export class SOChart extends LitElement {
                 type: 'rect', // Bottom curtain
                 z2: 1,
                 shape: {
-                  x: 0,
-                  y: params.coordSys.y + params.coordSys.height,
-                  width: params.coordSys.x + params.coordSys.width,
-                  height: 100
+                    x: 0,
+                    y: params.coordSys.y + params.coordSys.height,
+                    width: params.coordSys.x + params.coordSys.width,
+                    height: 100
                 },
                 style: {
                     fill: '#FFFFFF'
@@ -443,10 +443,10 @@ export class SOChart extends LitElement {
                 type: 'rect', // Left curtain
                 z2: 1,
                 shape: {
-                  x: 0,
-                  y: 0,
-                  width: width + 15,
-                  height: minY + params.coordSys.height
+                    x: 0,
+                    y: 0,
+                    width: width + 15,
+                    height: minY + params.coordSys.height
                 },
                 style: {
                     fill: '#FFFFFF'
@@ -455,10 +455,10 @@ export class SOChart extends LitElement {
                 type: 'rect', // Right curtain
                 z2: 1,
                 shape: {
-                  x: params.coordSys.x + params.coordSys.width,
-                  y: 0,
-                  width: 100,
-                  height: minY + params.coordSys.height
+                    x: params.coordSys.x + params.coordSys.width,
+                    y: 0,
+                    width: 100,
+                    height: minY + params.coordSys.height
                 },
                 style: {
                     fill: '#FFFFFF'
@@ -496,12 +496,12 @@ export class SOChart extends LitElement {
                 }
             }]
         };
-        if(connected == 1) {
+        if (connected == 1) {
             rect = {
-               x: 10,
-               y: y,
-               width: 10,
-               height: 0.2 * barHeight
+                x: 10,
+                y: y,
+                width: 10,
+                height: 0.2 * barHeight
             };
             elements.children.push({
                 type: 'rect',
@@ -551,7 +551,7 @@ export class SOChart extends LitElement {
         var y = (start[1] - barHeight) - (barHeight / 3);
         var dependencies = JSON.parse(api.value(3).replaceAll('^', '"')).d;
         let links = []
-        for(let j = 0; j < dependencies.length; j++){
+        for (let j = 0; j < dependencies.length; j++) {
             var parent = dependencies[j];
             var indexParent = parent[0];
             var startParent = api.coord([parent[1], indexParent]);
@@ -561,15 +561,15 @@ export class SOChart extends LitElement {
             var xParent = startParent[0];
             var yParent = (startParent[1] - barHeightParent) - (barHeightParent / 3);
             let arrow = {}
-            if(x < (xParent + barWidthParent / 2)) {
-                if(y > yParent) {
+            if (x < (xParent + barWidthParent / 2)) {
+                if (y > yParent) {
                     arrow = {
                         type: 'polygon',
                         ignore: ignore(xParent + barWidthParent / 2, y),
                         shape: {
                             points: [[xParent + barWidthParent / 2 - 5, y - 10],
-                                    [xParent + barWidthParent / 2 + 5, y - 10],
-                                    [xParent + barWidthParent / 2, y]]
+                                [xParent + barWidthParent / 2 + 5, y - 10],
+                                [xParent + barWidthParent / 2, y]]
                         },
                         style: api.style({
                             fill: "#000",
@@ -581,8 +581,8 @@ export class SOChart extends LitElement {
                         ignore: ignore(xParent + barWidthParent / 2, y + barHeightParent),
                         shape: {
                             points: [[xParent + barWidthParent / 2 - 5, (y + barHeightParent + 10)],
-                                    [xParent + barWidthParent / 2 + 5, (y + barHeightParent + 10)],
-                                    [xParent + barWidthParent / 2, (y + barHeightParent)]]
+                                [xParent + barWidthParent / 2 + 5, (y + barHeightParent + 10)],
+                                [xParent + barWidthParent / 2, (y + barHeightParent)]]
                         },
                         style: api.style({
                             fill: "#000",
@@ -595,14 +595,15 @@ export class SOChart extends LitElement {
                     ignore: ignore(x, y + barHeight / 2),
                     shape: {
                         points: [[x - 5, (y + barHeight / 2) - 5],
-                                [x - 5, (y + barHeight / 2) + 5],
-                                [x + 5, (y + barHeight / 2)]]
+                            [x - 5, (y + barHeight / 2) + 5],
+                            [x + 5, (y + barHeight / 2)]]
                     },
                     style: api.style({
                         fill: "#000",
                     })
                 }
-            };
+            }
+            ;
             let circleBottom = {
                 type: 'ring',
                 ignore: ignore(xParent + barWidthParent / 2, yParent + barHeightParent),
@@ -715,7 +716,7 @@ export class SOChart extends LitElement {
         let text = api.value(1);
         var textWidth = echarts.format.getTextRect(text).width;
         var elements = [];
-        if(textWidth > 0) {
+        if (textWidth > 0) {
             elements.push({
                 type: 'text',
                 style: {

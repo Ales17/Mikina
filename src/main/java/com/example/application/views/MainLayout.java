@@ -1,10 +1,10 @@
 package com.example.application.views;
 
 import com.example.application.security.SecurityService;
+import com.example.application.test.PdfGenerationView;
 import com.example.application.views.country.CountryView;
 import com.example.application.views.dashboard.DashboardView;
 import com.example.application.views.guest.GuestView;
-import com.example.application.test.PdfGenerationView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -19,12 +19,13 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+
 /**
  * MainLayout
  * <p>
- *     Layout of the application.
- *     Contains header and drawer.
- *     Header contains title, toggle button and logout button.
+ * Layout of the application.
+ * Contains header and drawer.
+ * Header contains title, toggle button and logout button.
  * </p>
  */
 public class MainLayout extends AppLayout {
@@ -68,7 +69,7 @@ public class MainLayout extends AppLayout {
         title.getStyle().set("font-size", "var(--lumo-font-size-1)")/*.set("margin", "0")*/;
         String loggedUser = securityService.getAuthenticatedUser().getUsername();
         Button logout = new Button("Odhlásit se (" + loggedUser + ")", e -> securityService.logout());
-        logout.getStyle().set("margin-right","16px");
+        logout.getStyle().set("margin-right", "16px");
         var header = new HorizontalLayout(toggle, title, logout);
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(title);

@@ -1,7 +1,9 @@
 package com.example.application.test;
 
+import com.beust.ah.A;
 import com.example.application.data.service.AccommodationService;
 import com.example.application.data.service.PdfService;
+import com.example.application.data.service.UbyportService;
 import com.example.application.views.MainLayout;
 import com.itextpdf.text.DocumentException;
 import com.vaadin.flow.component.button.Button;
@@ -11,9 +13,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import jakarta.annotation.security.RolesAllowed;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -23,22 +27,22 @@ public class PdfGenerationView extends VerticalLayout {
 
     private final PdfService pdfService;
     private AccommodationService accommodationService;
-
+    private UbyportService ubyportService;
 
     @Autowired
-    public PdfGenerationView(PdfService pdfService, AccommodationService accommodationService, AccommodationService accommodationService1) {
+    public PdfGenerationView(PdfService pdfService, AccommodationService accommodationService, UbyportService ubyportService) {
         this.pdfService = pdfService;
-        this.accommodationService = accommodationService1;
-
+        this.accommodationService = accommodationService;
+        this.ubyportService = ubyportService;
         Button generatePdfButton = new Button("Generovat PDF", event -> {
             String content = "Apartmány u Mikiny, Nové Splavy, Záhlučí 67, 36174.";
             try {
-                byte[] pdfBytes = pdfService.generatePdf(content, accommodationService.findAllGuests2());
+                byte[] pdfBytes = pdfService.generatePdf(content, accommodationService.findAllGuests());
                 LocalDateTime datetime1 = LocalDateTime.now();
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formatDateTime = datetime1.format(format);
                 // Stažení PDF souboru
-                StreamResource resource = new StreamResource("report_" + formatDateTime +".pdf", () -> new ByteArrayInputStream(pdfBytes));
+                StreamResource resource = new StreamResource("report_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
                 Anchor anchor = new Anchor(resource, "Stáhnout PDF");
                 anchor.getElement().setAttribute("download", true);
                 anchor.setTarget("_blank");
@@ -50,5 +54,22 @@ public class PdfGenerationView extends VerticalLayout {
         });
 
         add(generatePdfButton);
+
+        Button generateUnlButton = new Button("Generovat UNL", event->{
+            try {
+                byte[] unlBytes = ubyportService.getUbyportStream(accommodationService.findAllGuests()).toByteArray();
+                StreamResource resource = new StreamResource("ubyport.unl", () -> new ByteArrayInputStream(unlBytes));
+                Anchor anchor = new Anchor(resource, "Stáhnout UNL");
+                anchor.getElement().setAttribute("download", true);
+                anchor.setTarget("_blank");
+                add(anchor);
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
+        });
+        add(generateUnlButton);
+
+
     }
 }

@@ -2,6 +2,7 @@ package com.example.application.views.guest;
 
 import com.example.application.data.entity.Guest;
 import com.example.application.data.service.AccommodationService;
+import com.example.application.data.service.UbyportService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -17,6 +18,7 @@ import jakarta.annotation.security.RolesAllowed;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Arrays;
 
 /**
  * GuestView shows a list of guests.
@@ -31,13 +33,14 @@ public class GuestView extends VerticalLayout {
     DatePicker filterLeft = new DatePicker("Datum odchodu");
     GuestForm form;
     AccommodationService accommodationService;
-
+    UbyportService ubyportService;
 
     LocalDate arrivedDebug = LocalDate.now().withDayOfMonth(1);   //LocalDate.of(2023, 07, 01);
     LocalDate leftDebug = YearMonth.now().atEndOfMonth();  //LocalDate.of(2023, 07, 31);
 
-    public GuestView(AccommodationService accommodationService) {
+    public GuestView(AccommodationService accommodationService, UbyportService ubyportService) {
         this.accommodationService = accommodationService;
+        this.ubyportService = ubyportService;
         addClassName("list-view");
         setSizeFull();
         configureGrid();
@@ -46,6 +49,7 @@ public class GuestView extends VerticalLayout {
         updateList();
         // Editor will be closed at the start
         closeEditor();
+        System.out.println(ubyportService.getUbyport(accommodationService.findAllGuests()));
     }
 
     private Component getToolbar() {
@@ -92,7 +96,7 @@ public class GuestView extends VerticalLayout {
         grid.addClassNames("guest-grid");
         grid.setSizeFull();
         // When setting columns update this list
-        grid.setColumns("firstName", "lastName", "birthDate", "dateArrived", "dateLeft", "idNumber");
+        grid.setColumns("firstName", "lastName", "birthDate", "dateArrived", "dateLeft", "idNumber", "nationality");
         // Then add a new column also here
         grid.getColumnByKey("firstName").setHeader("Jméno");
         grid.getColumnByKey("lastName").setHeader("Příjmení");
@@ -101,6 +105,7 @@ public class GuestView extends VerticalLayout {
         grid.getColumnByKey("dateArrived").setHeader("Datum příchodu");
         grid.getColumnByKey("dateLeft").setHeader("Datum odchodu");
         grid.getColumnByKey("idNumber").setHeader("Číslo dokladu");
+        grid.getColumnByKey("nationality").setHeader("Stát");
         //grid.addColumn(Guest -> Guest.getStatus().getName()).setHeader("Status");
         grid.addColumn(Guest -> Guest.getCountry().getCountryName()).setHeader("Země");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
@@ -109,7 +114,7 @@ public class GuestView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new GuestForm(accommodationService.findAllCountries());
+        form = new GuestForm(accommodationService.findAllCountries(), ubyportService.list);
         //form.setWidth("25em");
         form.setWidth("30em");
         form.addSaveListener(this::saveGuest);
@@ -155,4 +160,6 @@ public class GuestView extends VerticalLayout {
     private void updateList() {
         grid.setItems(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue()));
     }
+
+
 }

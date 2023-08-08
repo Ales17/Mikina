@@ -9,6 +9,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.internal.RouteUtil;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+
 /**
  * LoginView shows the login form and fires the login event.
  */
@@ -19,7 +20,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
     //private final LoginForm login = new LoginForm();
 
-    public LoginView(){
+    public LoginView() {
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
@@ -47,7 +48,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         // inform the user about an authentication error
-       if(beforeEnterEvent.getLocation()
+        if (beforeEnterEvent.getLocation()
                 .getQueryParameters()
                 .getParameters()
                 .containsKey("error")) {

@@ -14,6 +14,7 @@ public class MyDialog extends Div {
     AccommodationService accommodationService;
 
     GuestForm form;
+
     public MyDialog(AccommodationService accommodationService) {
         this.accommodationService = accommodationService;
 
@@ -22,7 +23,7 @@ public class MyDialog extends Div {
 
         dialog.setHeaderTitle("Karta hosta");
 
-        form = new GuestForm(accommodationService.findAllCountries());
+        //form = new GuestForm(accommodationService.findAllCountries());
         dialog.add(form);
 
         Button button = new Button("Show dialog", e -> dialog.open());

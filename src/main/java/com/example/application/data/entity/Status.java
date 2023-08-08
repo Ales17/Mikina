@@ -7,7 +7,6 @@ public class Status extends AbstractEntity {
     private String name;
 
     public Status() {
-
     }
 
     public String getName() {

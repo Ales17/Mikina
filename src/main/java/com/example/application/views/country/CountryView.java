@@ -33,6 +33,7 @@ public class CountryView extends VerticalLayout {
         updateList();
         closeEditor();
     }
+
     private Component getToolbar() {
         filterText.setPlaceholder("Filtrovat dle jména...");
         filterText.setClearButtonVisible(true);
@@ -44,6 +45,7 @@ public class CountryView extends VerticalLayout {
         toolbar.addClassName("toolbar");
         return toolbar;
     }
+
     private HorizontalLayout getContent() {
         HorizontalLayout content = new HorizontalLayout(grid, form);
         content.setFlexGrow(2, grid);
@@ -52,23 +54,25 @@ public class CountryView extends VerticalLayout {
         content.setSizeFull();
         return content;
     }
+
     private void configureGrid() {
         grid.addClassNames("Guest-grid");
         grid.setSizeFull();
-        grid.setColumns("countryName" , "countryCode");
+        grid.setColumns("countryName", "countryCode");
         grid.getColumnByKey("countryName").setHeader("Název země");
         grid.getColumnByKey("countryCode").setHeader("Kód země (ISO)");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
-       grid.asSingleSelect().addValueChangeListener(event -> editCountry(event.getValue()));
-         //      editGuest(event.getValue()));
+        grid.asSingleSelect().addValueChangeListener(event -> editCountry(event.getValue()));
+        //      editGuest(event.getValue()));
     }
+
     private void configureForm() {
-     form = new CountryForm();
+        form = new CountryForm();
         form.addClassNames("Guest-form");
         form.setWidth("25em");
 
-       form.setWidth("25em");
-       form.addSaveListener(this::saveCountry);
+        form.setWidth("25em");
+        form.addSaveListener(this::saveCountry);
         form.addDeleteListener(this::deleteCountry);
         form.addCloseListener(e -> closeEditor());
     }
