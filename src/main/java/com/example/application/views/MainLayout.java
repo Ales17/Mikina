@@ -69,7 +69,7 @@ public class MainLayout extends AppLayout {
         title.getStyle().set("font-size", "var(--lumo-font-size-1)")/*.set("margin", "0")*/;
         String loggedUser = securityService.getAuthenticatedUser().getUsername();
         Button logout = new Button("Odhlásit se (" + loggedUser + ")", e -> securityService.logout());
-        logout.getStyle().set("margin-right", "16px");
+        logout.getStyle().set("margin-right", "var(--lumo-space-m)");
         var header = new HorizontalLayout(toggle, title, logout);
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(title);

@@ -15,9 +15,6 @@ public class UbyportService {
     public final List<StatniPrislusnost> countryList = Arrays.asList(StatniPrislusnost.values());
 
     public ByteArrayOutputStream getUbyportStream(List<Guest> guests) throws IOException {
-        for (StatniPrislusnost s : countryList) {
-            System.out.println(s.getTitle() + " " + s.getKod());
-        }
         UbyportUbytovatel ubytovatel = new UbyportUbytovatel();
         ubytovatel.setIdub("id1");
         ubytovatel.setZkratka("abbr1");
@@ -46,7 +43,6 @@ public class UbyportService {
             ubytovany.setPoznamka("");
             ubyport.add(ubytovany);
         }
-
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         ubyport.export(byteArray);
         return byteArray;
