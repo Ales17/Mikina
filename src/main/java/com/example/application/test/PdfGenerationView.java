@@ -1,6 +1,5 @@
 package com.example.application.test;
 
-import com.beust.ah.A;
 import com.example.application.data.service.AccommodationService;
 import com.example.application.data.service.PdfService;
 import com.example.application.data.service.UbyportService;
@@ -13,7 +12,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import jakarta.annotation.security.RolesAllowed;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
@@ -24,10 +22,10 @@ import java.time.format.DateTimeFormatter;
 @Route(value = "pdf", layout = MainLayout.class)
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 public class PdfGenerationView extends VerticalLayout {
-
     private final PdfService pdfService;
-    private AccommodationService accommodationService;
     private UbyportService ubyportService;
+    private AccommodationService accommodationService;
+
 
     @Autowired
     public PdfGenerationView(PdfService pdfService, AccommodationService accommodationService, UbyportService ubyportService) {
@@ -44,7 +42,7 @@ public class PdfGenerationView extends VerticalLayout {
                 // Stažení PDF souboru
                 StreamResource resource = new StreamResource("report_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
                 Anchor anchor = new Anchor(resource, "Stáhnout PDF");
-                anchor.getElement().setAttribute("download", true);
+                //anchor.getElement().setAttribute("download", true);
                 anchor.setTarget("_blank");
                 add(anchor);
             } catch (DocumentException e) {
@@ -55,13 +53,12 @@ public class PdfGenerationView extends VerticalLayout {
 
         add(generatePdfButton);
 
-        Button generateUnlButton = new Button("Generovat UNL", event->{
+        Button generateUnlButton = new Button("Generovat UNL", event -> {
             try {
-                byte[] unlBytes = ubyportService.getUbyportStream(accommodationService.findAllGuests()).toByteArray();
+                byte[] unlBytes = ubyportService.getUbyportStream(accommodationService.findAllForeigners()).toByteArray();
                 StreamResource resource = new StreamResource("ubyport.unl", () -> new ByteArrayInputStream(unlBytes));
                 Anchor anchor = new Anchor(resource, "Stáhnout UNL");
                 anchor.getElement().setAttribute("download", true);
-                anchor.setTarget("_blank");
                 add(anchor);
             } catch (IOException e) {
                 e.printStackTrace();

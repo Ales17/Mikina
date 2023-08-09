@@ -1,6 +1,5 @@
 package com.example.application.views.guest;
 
-import com.example.application.data.entity.Country;
 import com.example.application.data.entity.Guest;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -30,7 +29,7 @@ public class GuestForm extends FormLayout {
     //EmailField email = new EmailField("Email");
     // ComboBox<Status> status = new ComboBox<>("Status");
     TextField address = new TextField("Adresa");
-    ComboBox<Country> country = new ComboBox<>("Země");
+    //ComboBox<Country> country = new ComboBox<>("Země");
     ComboBox<StatniPrislusnost> nationality = new ComboBox<>("Ubyport");
     DatePicker birthDate = new DatePicker("Datum narození");
     DatePicker dateArrived = new DatePicker("Datum příjezdu");
@@ -41,13 +40,13 @@ public class GuestForm extends FormLayout {
     Button close = new Button("Storno");
     Binder<Guest> binder = new BeanValidationBinder<>(Guest.class);
 
-    public GuestForm(List<Country> countries, List<StatniPrislusnost> ubyportNationality) {
+    public GuestForm(List<StatniPrislusnost> ubyportNationality) {
 
 
         addClassName("guest-form");
         binder.bindInstanceFields(this);
-        country.setItems(countries);
-        country.setItemLabelGenerator(Country::getCountryName);
+       /* country.setItems(countries);
+        country.setItemLabelGenerator(Country::getCountryName);*/
         nationality.setItems(ubyportNationality);
         nationality.setItemLabelGenerator(StatniPrislusnost::getTitle);
         //status.setItems(statuses);
@@ -57,7 +56,7 @@ public class GuestForm extends FormLayout {
                 //        email,
                 address,
                 nationality,
-                country,
+                //country,
                 //   status,
                 birthDate, dateArrived, dateLeft, idNumber,
                 createButtonsLayout());

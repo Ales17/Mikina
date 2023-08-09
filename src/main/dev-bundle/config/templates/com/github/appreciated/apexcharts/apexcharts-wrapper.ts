@@ -42,13 +42,6 @@ export class ApexChartsWrapper extends LitElement {
     height?: string;
     debug?: string;
 
-    render() {
-        return html`
-            <style include="apex-charts-style"></style>
-            <slot></slot>
-        `;
-    }
-
     static get properties() {
         return {
             annotations: {
@@ -127,6 +120,13 @@ export class ApexChartsWrapper extends LitElement {
                 type: String
             }
         };
+    }
+
+    render() {
+        return html`
+            <style include="apex-charts-style"></style>
+            <slot></slot>
+        `;
     }
 
     firstUpdated(_changedProperties: PropertyValues) {

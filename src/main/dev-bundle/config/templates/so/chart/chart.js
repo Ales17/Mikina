@@ -3,23 +3,6 @@ import * as echarts from 'echarts/dist/echarts.min';
 
 export class SOChart extends LitElement {
 
-    static get properties() {
-        return {
-            minw: {type: String},
-            maxw: {type: String},
-            minh: {type: String},
-            maxh: {type: String},
-            width: {type: String},
-            height: {type: String}
-        };
-    }
-
-    render() {
-        return html`<div id="${this.idChart}"
-                         style="min-width:${this.minw};max-width:${this.maxw};width:${this.width};min-height:${this.minh};max-height:${this.maxh};height:${this.height};">
-        </div>`;
-    }
-
     constructor() {
         super();
         this.idChart = null;
@@ -47,6 +30,23 @@ export class SOChart extends LitElement {
                 }, 500);
             }
         };
+    }
+
+    static get properties() {
+        return {
+            minw: {type: String},
+            maxw: {type: String},
+            minh: {type: String},
+            maxh: {type: String},
+            width: {type: String},
+            height: {type: String}
+        };
+    }
+
+    render() {
+        return html`<div id="${this.idChart}"
+                         style="min-width:${this.minw};max-width:${this.maxw};width:${this.width};min-height:${this.minh};max-height:${this.maxh};height:${this.height};">
+        </div>`;
     }
 
     addEvent(event, data) {

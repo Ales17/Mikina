@@ -29,18 +29,19 @@ public class AccommodationService {
 
     }
 
-    public List<Guest> searchForGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter) {
+    public List<Guest> searchForGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter, boolean foreignersOnly) {
         String searchTerm = (stringFilter != null && !stringFilter.isEmpty()) ? "%" + stringFilter.toLowerCase() + "%" : null;
-        return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter);
+            return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter, foreignersOnly);
+    }
+
+    public List<Guest> findAllForeigners() {
+        return guestRepository.findAllForeigners();
     }
 
     public List<Country> findAllCountries() {
         return countryRepository.findAll();
     }
 
-    public List<Country> findGuestsCountries() {
-        return countryRepository.findGuestsCountries();
-    }
 
     public List<Country> findCountriesByName(String filter) {
         return countryRepository.search(filter);

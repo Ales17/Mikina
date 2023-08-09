@@ -1,10 +1,11 @@
 package com.example.application.data.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import cz.geek.ubyport.StatniPrislusnost;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -27,6 +28,8 @@ public class Guest extends AbstractEntity {
     private String address;
     @Enumerated(EnumType.ORDINAL)
     private StatniPrislusnost nationality;
+    @NotEmpty
+    private String idNumber;
 
     public String getAddress() {
         return address;
@@ -47,16 +50,6 @@ public class Guest extends AbstractEntity {
     public LocalDate getDateLeft() {
         return dateLeft;
     }
-
-    @NotEmpty
-    private String idNumber;
-
-
-    @ManyToOne
-    @JoinColumn(name = "country_id")
-    @NotNull
-    @JsonIgnoreProperties({"employees"})
-    private Country country;
 
     public void setDateLeft(LocalDate dateLeft) {
         this.dateLeft = dateLeft;
@@ -97,14 +90,6 @@ public class Guest extends AbstractEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
     }
 
     public StatniPrislusnost getNationality() {

@@ -2,16 +2,9 @@ package com.example.application.views.dashboard;
 
 import com.example.application.data.service.AccommodationService;
 import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.charts.Chart;
-import com.vaadin.flow.component.charts.model.ChartType;
-import com.vaadin.flow.component.charts.model.DataSeries;
-import com.vaadin.flow.component.charts.model.DataSeriesItem;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.RolesAllowed;
 
 /**
@@ -28,11 +21,11 @@ public class DashboardView extends VerticalLayout {
         this.accommodationService = accommodationService;
         addClassName("dashboard-view");
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        add(getStats(), getCountriesChart());
+        //      add(getStats(), getCountriesChart());
     }
 
 
-    private Component getStats() {
+ /*   private Component getStats() {
         String guestWord;
         switch (accommodationService.countGuests()) {
             case 1:
@@ -60,6 +53,6 @@ public class DashboardView extends VerticalLayout {
         chart.getConfiguration().setSeries(dataSeries);
         return chart;
     }
-
+*/
 
 }

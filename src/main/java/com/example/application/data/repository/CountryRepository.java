@@ -21,11 +21,5 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
             "like lower(concat('%', :searchTerm, '%'))")
     List<Country> search(@Param("searchTerm") String searchTerm);
 
-    /**
-     * Find all countries with guests
-     *
-     * @return List of countries
-     */
-    @Query("SELECT f from Country  f where f.guestCount > 0")
-    List<Country> findGuestsCountries();
+
 }
