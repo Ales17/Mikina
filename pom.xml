@@ -3,7 +3,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example.application</groupId>
+    <groupId>cz.ales17.mikina</groupId>
     <artifactId>mikina_app</artifactId>
     <name>mikina_app</name>
     <version>1.0-SNAPSHOT</version>
@@ -38,7 +38,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <dependencies><!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+    <dependencies>
 
         <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
         <dependency>
@@ -46,14 +46,13 @@
             <artifactId>joda-time</artifactId>
             <version>1.6</version>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/cz.geek/ubyport -->
         <dependency>
             <groupId>cz.geek</groupId>
             <artifactId>ubyport</artifactId>
             <version>1.0.0</version>
         </dependency>
-
+        <!--MySQL connector-->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -101,13 +100,6 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.3</version>
         </dependency><!-- https://mvnrepository.com/artifact/com.itextpdf/itext-core -->
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itext-core</artifactId>
-            <version>8.0.1</version>
-            <type>pom</type>
-        </dependency>
-
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-testbench-junit5</artifactId>
