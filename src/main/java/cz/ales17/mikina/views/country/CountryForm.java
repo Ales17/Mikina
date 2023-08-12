@@ -1,6 +1,5 @@
 package cz.ales17.mikina.views.country;
 
-import cz.ales17.mikina.data.entity.Country;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -13,6 +12,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
+import cz.ales17.mikina.data.entity.Country;
 
 /**
  * A form for editing a single country.
@@ -72,7 +72,7 @@ public class CountryForm extends FormLayout {
 
     // Events
     public static abstract class CountryFormEvent extends ComponentEvent<CountryForm> {
-        private Country country;
+        private final Country country;
 
         protected CountryFormEvent(CountryForm source, Country country) {
             super(source, false);

@@ -1,10 +1,5 @@
 package cz.ales17.mikina.views.guest;
 
-import cz.ales17.mikina.data.entity.Guest;
-import cz.ales17.mikina.data.service.PdfService;
-import cz.ales17.mikina.data.service.UbyportService;
-import cz.ales17.mikina.data.service.AccommodationService;
-import cz.ales17.mikina.views.MainLayout;
 import com.itextpdf.text.DocumentException;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -22,6 +17,11 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import cz.ales17.mikina.data.entity.Guest;
+import cz.ales17.mikina.data.service.AccommodationService;
+import cz.ales17.mikina.data.service.PdfService;
+import cz.ales17.mikina.data.service.UbyportService;
+import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
 import java.io.ByteArrayInputStream;
@@ -68,7 +68,6 @@ public class GuestView extends VerticalLayout {
         configureDialog();
 
 
-
         add(getToolbar(), getContent());
         updateList();
         // Editor will be closed at the start
@@ -86,7 +85,7 @@ public class GuestView extends VerticalLayout {
         String formatDateTime = LocalDateTime.now().format(formatter);
         try {
             // Generating PDF using the service
-            byte[] pdfBytes = pdfService.generatePdf("Some info", guests);
+            byte[] pdfBytes = pdfService.generatePdf("Apartmány u Mikiny", guests);
             // Downloading the PDF
             StreamResource resource = new StreamResource("ubytovaci-kniha_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
             //anchor.getElement().setAttribute("download", true);
@@ -95,7 +94,7 @@ public class GuestView extends VerticalLayout {
             pdfBtn.setEnabled(true);
         } catch (DocumentException e) {
             e.printStackTrace();
-            Notification.show("Chyba při generování PDF", 5000, Notification.Position.MIDDLE);
+            pdfBtn.setText("Chyba při generování PDF");
             pdfBtn.setEnabled(false);
         }
     }
@@ -110,6 +109,7 @@ public class GuestView extends VerticalLayout {
             unlBtn.setEnabled(true);
         } catch (IOException e) {
             e.printStackTrace();
+            unlBtn.setText("Chyba při generování UNL");
             unlBtn.setEnabled(false);
         }
     }
@@ -153,7 +153,7 @@ public class GuestView extends VerticalLayout {
     }
 
     private void configureDialog() {
-        Button close = new Button("Storno", e->exportDialog.close());
+        Button close = new Button("Storno", e -> exportDialog.close());
         exportDialog.setHeaderTitle("Exportovat");
         pdfBtn.add(new Button("PDF", new Icon(VaadinIcon.DOWNLOAD_ALT)));
         pdfBtn.setEnabled(false);

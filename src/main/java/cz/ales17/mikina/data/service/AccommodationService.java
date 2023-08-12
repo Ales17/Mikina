@@ -18,6 +18,7 @@ public class AccommodationService {
     private final GuestRepository guestRepository;
     private final CountryRepository countryRepository;
     private final StatusRepository statusRepository;
+
     public AccommodationService(GuestRepository guestRepository,
                                 CountryRepository countryRepository,
                                 StatusRepository statusRepository) {
@@ -28,7 +29,7 @@ public class AccommodationService {
 
     public List<Guest> searchForGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter, boolean foreignersOnly) {
         String searchTerm = (stringFilter != null && !stringFilter.isEmpty()) ? "%" + stringFilter.toLowerCase() + "%" : null;
-            return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter, foreignersOnly);
+        return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter, foreignersOnly);
     }
 
     public List<Guest> findAllForeigners() {
@@ -41,10 +42,6 @@ public class AccommodationService {
 
     public List<Country> findCountriesByName(String filter) {
         return countryRepository.search(filter);
-    }
-
-    public int countGuests() {
-        return (int) guestRepository.count();
     }
 
     public void deleteGuest(Guest guest) {

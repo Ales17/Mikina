@@ -12,9 +12,21 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route("dialog")
 public class MyDialog extends Dialog {
-     public Anchor pdfBtn = new Anchor("#");
+    public Anchor pdfBtn = new Anchor("#");
     public Anchor unlBtn = new Anchor("#");
-    public Button close = new Button("Storno", e-> close());
+    public Button close = new Button("Storno", e -> close());
+
+    public MyDialog() {
+        setHeaderTitle("Exportovat");
+        pdfBtn.add(new Button("PDF", new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        pdfBtn.setEnabled(false);
+        unlBtn.add(new Button("UNL (Ubyport)", new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        unlBtn.setEnabled(false);
+        HorizontalLayout dialogToolbar = new HorizontalLayout();
+        dialogToolbar.add(pdfBtn, unlBtn, close);
+        add(dialogToolbar);
+        open();
+    }
 
     public Anchor getPdfBtn() {
         return pdfBtn;
@@ -39,19 +51,6 @@ public class MyDialog extends Dialog {
     public void setClose(Button close) {
         this.close = close;
     }
-
-    public MyDialog(   ) {
-         setHeaderTitle("Exportovat");
-        pdfBtn.add(new Button("PDF", new Icon(VaadinIcon.DOWNLOAD_ALT)));
-        pdfBtn.setEnabled(false);
-        unlBtn.add(new Button("UNL (Ubyport)", new Icon(VaadinIcon.DOWNLOAD_ALT)));
-        unlBtn.setEnabled(false);
-        HorizontalLayout dialogToolbar = new HorizontalLayout();
-        dialogToolbar.add(pdfBtn, unlBtn, close);
-        add(dialogToolbar);
-        open();
-    }
-
 
 
 }

@@ -21,5 +21,4 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
             "like lower(concat('%', :searchTerm, '%'))")
     List<Country> search(@Param("searchTerm") String searchTerm);
 
-
 }

@@ -1,24 +1,33 @@
 package cz.ales17.mikina.views;
 
-import cz.ales17.mikina.test.PdfGenerationView;
-import cz.ales17.mikina.views.dashboard.DashboardView;
-import cz.ales17.mikina.views.guest.GuestView;
-import cz.ales17.mikina.security.SecurityService;
-import cz.ales17.mikina.views.country.CountryView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.security.AuthenticatedUser;
+ import cz.ales17.mikina.test.PdfGenerationView;
+import cz.ales17.mikina.views.country.CountryView;
+import cz.ales17.mikina.views.dashboard.DashboardView;
+import cz.ales17.mikina.views.guest.GuestView;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.io.ByteArrayInputStream;
+import java.util.Optional;
 
 /**
  * MainLayout
@@ -29,10 +38,14 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
  * </p>
  */
 public class MainLayout extends AppLayout {
-    private final SecurityService securityService;
+    private AuthenticatedUser authenticatedUser;
+    private AccessAnnotationChecker accessChecker;
 
-    public MainLayout(SecurityService securityService) {
-        this.securityService = securityService;
+    public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
+        this.authenticatedUser = authenticatedUser;
+        this.accessChecker = accessChecker;
+
+
         createHeader();
         createDrawer();
     }
@@ -44,7 +57,6 @@ public class MainLayout extends AppLayout {
                 createTab(VaadinIcon.BOOK, "Evidenční kniha", GuestView.class),
                 createTab(VaadinIcon.GLOBE_WIRE, "Země", CountryView.class),
                 createTab(VaadinIcon.ANCHOR, "Testovací", PdfGenerationView.class)
-
         );
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
@@ -67,10 +79,9 @@ public class MainLayout extends AppLayout {
         DrawerToggle toggle = new DrawerToggle();
         H1 title = new H1("Ubytovací systém");
         title.getStyle().set("font-size", "var(--lumo-font-size-1)")/*.set("margin", "0")*/;
-        String loggedUser = securityService.getAuthenticatedUser().getUsername();
-        Button logout = new Button("Odhlásit se (" + loggedUser + ")", e -> securityService.logout());
-        logout.getStyle().set("margin-right", "var(--lumo-space-m)");
-        var header = new HorizontalLayout(toggle, title, logout);
+
+
+        var header = new HorizontalLayout(toggle, title, createUserInfo());
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(title);
         header.setWidthFull();
@@ -82,7 +93,50 @@ public class MainLayout extends AppLayout {
 
     private void createDrawer() {
         Tabs tabs = getTabs();
-        addToDrawer(tabs);
+
         setPrimarySection(Section.DRAWER);
+
+        addToDrawer(tabs);
+    }
+
+
+    private Footer createUserInfo() {
+        Footer layout = new Footer();
+
+        Optional<User> maybeUser = authenticatedUser.get();
+        if (maybeUser.isPresent()) {
+            User user = maybeUser.get();
+
+            Avatar avatar = new Avatar(user.getName());
+            StreamResource resource = new StreamResource("profile-pic",
+                    () -> new ByteArrayInputStream(user.getProfilePicture()));
+            avatar.setImageResource(resource);
+            avatar.setThemeName("xsmall");
+            avatar.getElement().setAttribute("tabindex", "-1");
+
+            MenuBar userMenu = new MenuBar();
+            userMenu.setThemeName("tertiary-inline contrast");
+
+            MenuItem userName = userMenu.addItem("");
+            Div div = new Div();
+            div.add(avatar);
+            div.add(user.getName());
+            div.add(new Icon("lumo", "dropdown"));
+            div.getElement().getStyle().set("display", "flex");
+            div.getElement().getStyle().set("align-items", "center");
+            div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
+            userName.add(div);
+            userName.getSubMenu().addItem("Sign out", e -> {
+                authenticatedUser.logout();
+            });
+
+            layout.add(userMenu);
+            layout.getStyle().set("margin-right", "var(--lumo-space-m)");
+        } else {
+            Anchor loginLink = new Anchor("login", "Sign in");
+            layout.add(loginLink);
+        }
+
+        return layout;
     }
 }

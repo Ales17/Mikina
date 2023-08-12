@@ -1,6 +1,5 @@
 package cz.ales17.mikina.views.guest;
 
-import cz.ales17.mikina.data.entity.Guest;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -15,6 +14,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
+import cz.ales17.mikina.data.entity.Guest;
 import cz.geek.ubyport.StatniPrislusnost;
 
 import java.time.LocalDate;

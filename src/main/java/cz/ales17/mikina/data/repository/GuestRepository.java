@@ -26,7 +26,6 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
     List<Guest> searchGuests(@Param("searchTerm") String searchTerm, @Param("arrivedFilter") LocalDate arrivedFilter, @Param("leftFilter") LocalDate leftFilter, boolean foreignersOnly);
 
 
-
     @Query("SELECT c from Guest c where c.nationality <> 0")
     List<Guest> findAllForeigners();
 

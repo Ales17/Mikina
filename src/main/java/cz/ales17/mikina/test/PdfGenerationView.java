@@ -1,9 +1,5 @@
 package cz.ales17.mikina.test;
 
-import cz.ales17.mikina.data.service.UbyportService;
-import cz.ales17.mikina.data.service.AccommodationService;
-import cz.ales17.mikina.data.service.PdfService;
-import cz.ales17.mikina.views.MainLayout;
 import com.itextpdf.text.DocumentException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Anchor;
@@ -11,6 +7,10 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import cz.ales17.mikina.data.service.AccommodationService;
+import cz.ales17.mikina.data.service.PdfService;
+import cz.ales17.mikina.data.service.UbyportService;
+import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,8 +23,8 @@ import java.time.format.DateTimeFormatter;
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 public class PdfGenerationView extends VerticalLayout {
     private final PdfService pdfService;
-    private UbyportService ubyportService;
-    private AccommodationService accommodationService;
+    private final UbyportService ubyportService;
+    private final AccommodationService accommodationService;
 
 
     @Autowired
@@ -40,7 +40,7 @@ public class PdfGenerationView extends VerticalLayout {
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formatDateTime = datetime1.format(format);
                 // Stažení PDF souboru
-                StreamResource resource = new StreamResource("report_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
+                StreamResource resource = new StreamResource("ubytovaci_kniha" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
                 Anchor anchor = new Anchor(resource, "Stáhnout PDF");
                 //anchor.getElement().setAttribute("download", true);
                 anchor.setTarget("_blank");
