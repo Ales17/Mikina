@@ -26,11 +26,8 @@ import java.util.List;
 public class GuestForm extends FormLayout {
     TextField firstName = new TextField("Jméno");
     TextField lastName = new TextField("Příjmení");
-    //EmailField email = new EmailField("Email");
-    // ComboBox<Status> status = new ComboBox<>("Status");
     TextField address = new TextField("Adresa");
-    //ComboBox<Country> country = new ComboBox<>("Země");
-    ComboBox<StatniPrislusnost> nationality = new ComboBox<>("Ubyport");
+    ComboBox<StatniPrislusnost> nationality = new ComboBox<>("Stát pobytu");
     DatePicker birthDate = new DatePicker("Datum narození");
     DatePicker dateArrived = new DatePicker("Datum příjezdu");
     DatePicker dateLeft = new DatePicker("Datum odjezdu");
@@ -45,20 +42,16 @@ public class GuestForm extends FormLayout {
 
         addClassName("guest-form");
         binder.bindInstanceFields(this);
-       /* country.setItems(countries);
-        country.setItemLabelGenerator(Country::getCountryName);*/
         nationality.setItems(ubyportNationality);
         nationality.setItemLabelGenerator(StatniPrislusnost::getTitle);
-        //status.setItems(statuses);
-        //status.setItemLabelGenerator(Status::getName);
         add(firstName,
                 lastName,
-                //        email,
                 address,
                 nationality,
-                //country,
-                //   status,
-                birthDate, dateArrived, dateLeft, idNumber,
+                birthDate,
+                dateArrived,
+                dateLeft,
+                idNumber,
                 createButtonsLayout());
         // Validation
         // Range between dateArrived and dateLeft

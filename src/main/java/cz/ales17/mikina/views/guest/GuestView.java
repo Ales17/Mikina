@@ -3,13 +3,13 @@ package cz.ales17.mikina.views.guest;
 import com.itextpdf.text.DocumentException;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -49,13 +49,13 @@ public class GuestView extends VerticalLayout {
     private final LocalDate currentMonthEnd = YearMonth.now().atEndOfMonth();
     private final Grid<Guest> grid = new Grid<>(Guest.class);
     private final TextField filterText = new TextField("Vyhledávání");
-    private final DatePicker filterArrived = new DatePicker("Datum příchodu");
-    private final DatePicker filterLeft = new DatePicker("Datum odchodu");
+    private final DatePicker filterArrived = new DatePicker("Den příchodu");
+    private final DatePicker filterLeft = new DatePicker("Den odchodu");
     private final Anchor pdfBtn = new Anchor("#");
     private final Anchor unlBtn = new Anchor("#");
 
     Dialog exportDialog = new Dialog();
-    Button openDialogBtn = new Button("Exportovat", e -> exportDialog.open());
+    Button openDialogBtn = new Button("Export", e -> exportDialog.open());
     private GuestForm form;
 
     public GuestView(AccommodationService accommodationService, UbyportService ubyportService, PdfService pdfService) {
@@ -69,7 +69,6 @@ public class GuestView extends VerticalLayout {
         configureForm();
         configureDialog();
 
-
         add(getToolbar(), getContent());
         updateList();
         // Editor will be closed at the start
@@ -78,11 +77,11 @@ public class GuestView extends VerticalLayout {
     }
 
     private void addExportBtns() {
-        loadPdf(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false));
-        loadUbyport(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), true));
+        preparePdfExport(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false));
+        prepareUbyportExport(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), true));
     }
 
-    private void loadPdf(List<Guest> guests) {
+    private void preparePdfExport(List<Guest> guests) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
         String formatDateTime = LocalDateTime.now().format(formatter);
         try {
@@ -101,7 +100,7 @@ public class GuestView extends VerticalLayout {
         }
     }
 
-    private void loadUbyport(List<Guest> foreignGuestList) {
+    private void prepareUbyportExport(List<Guest> foreignGuestList) {
         try {
             ByteArrayOutputStream ubyportExport = ubyportService.getUbyportStream(foreignGuestList);
             byte[] unlBytes = ubyportExport.toByteArray();
@@ -125,14 +124,15 @@ public class GuestView extends VerticalLayout {
         filterLeft.setValue(currentMonthEnd);
         filterArrived.addValueChangeListener(e -> updateList());
         filterLeft.addValueChangeListener(e -> updateList());
-        // Validation
+        // Date alidation
         filterArrived.addValueChangeListener(e -> filterLeft.setMin(e.getValue()));
         filterLeft.addValueChangeListener(e -> filterArrived.setMax(e.getValue()));
         Button addGuestButton = new Button("Přidat hosta");
         Button filterReset = new Button("Vymazat filtr");
         addGuestButton.addClickListener(click -> addGuest());
         filterReset.addClickListener(click -> resetFilters());
-        var toolbar = new HorizontalLayout(filterText, filterArrived, filterLeft, addGuestButton, filterReset, openDialogBtn);
+        filterReset.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        var toolbar = new HorizontalLayout(filterText, filterArrived, filterLeft, filterReset, addGuestButton,  openDialogBtn);
         toolbar.setAlignItems(Alignment.END);
         toolbar.addClassName("toolbar");
         return toolbar;
@@ -178,19 +178,13 @@ public class GuestView extends VerticalLayout {
         grid.addColumn(new LocalDateRenderer<>(Guest::getDateLeft, () -> DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Datum odchodu");
         grid.getColumnByKey("firstName").setHeader("Jméno");
         grid.getColumnByKey("lastName").setHeader("Příjmení");
-        grid.addColumn(new LocalDateRenderer<>(
-                        Guest::getBirthDate,
-                        () -> DateTimeFormatter.ofLocalizedDate(
-                                FormatStyle.MEDIUM)))
-                .setHeader("Datum narození");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
                 editGuest(event.getValue()));
     }
 
     private void configureForm() {
-        form = new GuestForm(ubyportService.countryList);
-        //form.setWidth("25em");
+        form = new GuestForm(ubyportService.getCountryList());
         form.setWidth("30em");
         form.addSaveListener(this::saveGuest);
         form.addDeleteListener(this::deleteGuest);

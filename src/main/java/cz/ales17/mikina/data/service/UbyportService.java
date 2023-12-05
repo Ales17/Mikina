@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class UbyportService {
 
-    public final List<StatniPrislusnost> countryList = Arrays.asList(StatniPrislusnost.values());
+    private final List<StatniPrislusnost> countryList = Arrays.asList(StatniPrislusnost.values());
 
     public ByteArrayOutputStream getUbyportStream(List<Guest> guests) throws IOException {
         UbyportUbytovatel ubytovatel = new UbyportUbytovatel();
@@ -36,7 +36,7 @@ public class UbyportService {
             ubytovany.setJmeno(g.getFirstName());
             ubytovany.setNarozeni(g.getBirthDate());
             ubytovany.setStatniPrislusnost(g.getNationality());
-            ubytovany.setBydliste("Bydl");
+            ubytovany.setBydliste(g.getAddress());
             ubytovany.setDoklad(g.getIdNumber());
             ubytovany.setViza("");
             ubytovany.setUcelPobytu(UcelPobytu.U10);
@@ -46,5 +46,9 @@ public class UbyportService {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         ubyport.export(byteArray);
         return byteArray;
+    }
+
+    public List<StatniPrislusnost> getCountryList() {
+        return countryList;
     }
 }
