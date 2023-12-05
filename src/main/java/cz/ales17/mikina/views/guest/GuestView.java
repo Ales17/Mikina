@@ -13,6 +13,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 
 /**
@@ -168,15 +170,19 @@ public class GuestView extends VerticalLayout {
         grid.addClassNames("guest-grid");
         grid.setSizeFull();
         // When setting columns update this list
-        grid.setColumns("firstName", "lastName", "birthDate", "dateArrived", "dateLeft", "idNumber", "nationality");
-        // Then add a new column also here
+        grid.setColumns("firstName", "lastName");
+        grid.addColumn(new LocalDateRenderer<>(Guest::getBirthDate, () -> DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Datum narození");
+        grid.addColumn(Guest::getIdNumber).setHeader("Číslo dokladu");
+        grid.addColumn(Guest::getNationality).setHeader("Stát");
+        grid.addColumn(new LocalDateRenderer<>(Guest::getDateArrived, () -> DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Datum příchodu");
+        grid.addColumn(new LocalDateRenderer<>(Guest::getDateLeft, () -> DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Datum odchodu");
         grid.getColumnByKey("firstName").setHeader("Jméno");
         grid.getColumnByKey("lastName").setHeader("Příjmení");
-        grid.getColumnByKey("birthDate").setHeader("Datum narození");
-        grid.getColumnByKey("dateArrived").setHeader("Datum příchodu");
-        grid.getColumnByKey("dateLeft").setHeader("Datum odchodu");
-        grid.getColumnByKey("idNumber").setHeader("Číslo dokladu");
-        grid.getColumnByKey("nationality").setHeader("Stát");
+        grid.addColumn(new LocalDateRenderer<>(
+                        Guest::getBirthDate,
+                        () -> DateTimeFormatter.ofLocalizedDate(
+                                FormatStyle.MEDIUM)))
+                .setHeader("Datum narození");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
                 editGuest(event.getValue()));
