@@ -4,7 +4,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
@@ -20,11 +19,11 @@ import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import cz.ales17.mikina.data.entity.User;
 import cz.ales17.mikina.security.AuthenticatedUser;
- import cz.ales17.mikina.test.PdfGenerationView;
+import cz.ales17.mikina.test.PdfGenerationView;
 import cz.ales17.mikina.views.country.CountryView;
 import cz.ales17.mikina.views.dashboard.DashboardView;
 import cz.ales17.mikina.views.guest.GuestView;
-import org.springframework.security.core.userdetails.UserDetails;
+import cz.ales17.mikina.views.user.UserView;
 
 import java.io.ByteArrayInputStream;
 import java.util.Optional;
@@ -126,9 +125,11 @@ public class MainLayout extends AppLayout {
             div.getElement().getStyle().set("align-items", "center");
             div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
             userName.add(div);
-            userName.getSubMenu().addItem("Sign out", e -> {
-                authenticatedUser.logout();
-            });
+            userName.getSubMenu().addItem("Odhlásit se", e -> authenticatedUser.logout());
+            RouterLink link = new RouterLink();
+            link.add(new Span("Moje údaje"));
+            link.setRoute(UserView.class);
+            userName.getSubMenu().addItem(link);
 
             layout.add(userMenu);
             layout.getStyle().set("margin-right", "var(--lumo-space-m)");
