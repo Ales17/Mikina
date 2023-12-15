@@ -1,6 +1,7 @@
 package cz.ales17.mikina.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -126,10 +127,11 @@ public class MainLayout extends AppLayout {
             div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
             userName.add(div);
             userName.getSubMenu().addItem("Odhlásit se", e -> authenticatedUser.logout());
-            RouterLink link = new RouterLink();
+            userName.getSubMenu().addItem("Moje údaje", e -> UI.getCurrent().navigate(UserView.class));
+            /* RouterLink link = new RouterLink();
             link.add(new Span("Moje údaje"));
             link.setRoute(UserView.class);
-            userName.getSubMenu().addItem(link);
+            userName.getSubMenu().addItem(link);*/
 
             layout.add(userMenu);
             layout.getStyle().set("margin-right", "var(--lumo-space-m)");
