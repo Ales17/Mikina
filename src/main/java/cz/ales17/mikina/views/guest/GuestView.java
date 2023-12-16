@@ -5,11 +5,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -51,11 +47,10 @@ public class GuestView extends VerticalLayout {
     private final TextField filterText = new TextField("Vyhledávání");
     private final DatePicker filterArrived = new DatePicker("Den příchodu");
     private final DatePicker filterLeft = new DatePicker("Den odchodu");
-    private final Anchor pdfBtn = new Anchor("#");
-    private final Anchor unlBtn = new Anchor("#");
 
-    Dialog exportDialog = new Dialog();
-    Button openDialogBtn = new Button("Export", e -> exportDialog.open());
+    private ExportDialog dialog = new ExportDialog();
+
+    private Button openDialogBtn = new Button("Export", e -> dialog.open());
     private GuestForm form;
 
     public GuestView(AccommodationService accommodationService, UbyportService ubyportService, PdfService pdfService) {
@@ -67,13 +62,10 @@ public class GuestView extends VerticalLayout {
         // Configuring components
         configureGrid();
         configureForm();
-        configureDialog();
-
         add(getToolbar(), getContent());
         updateList();
         // Editor will be closed at the start
         closeEditor();
-
     }
 
     private void addExportBtns() {
@@ -90,13 +82,13 @@ public class GuestView extends VerticalLayout {
             // Downloading the PDF
             StreamResource resource = new StreamResource("ubytovaci-kniha_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
             //anchor.getElement().setAttribute("download", true);
-            pdfBtn.setTarget("_blank");
-            pdfBtn.setHref(resource);
-            pdfBtn.setEnabled(true);
+            dialog.pdfBtn.setTarget("_blank");
+            dialog.pdfBtn.setHref(resource);
+            dialog.pdfBtn.setEnabled(true);
         } catch (DocumentException e) {
             e.printStackTrace();
-            pdfBtn.setText("Chyba při generování PDF");
-            pdfBtn.setEnabled(false);
+            dialog.pdfBtn.setText("Chyba při generování PDF");
+            dialog.pdfBtn.setEnabled(false);
         }
     }
 
@@ -105,13 +97,13 @@ public class GuestView extends VerticalLayout {
             ByteArrayOutputStream ubyportExport = ubyportService.getUbyportStream(foreignGuestList);
             byte[] unlBytes = ubyportExport.toByteArray();
             StreamResource resource = new StreamResource("ubyport.unl", () -> new ByteArrayInputStream(unlBytes));
-            unlBtn.setHref(resource);
-            unlBtn.getElement().setAttribute("download", true);
-            unlBtn.setEnabled(true);
+            dialog.unlBtn.setHref(resource);
+            dialog.unlBtn.getElement().setAttribute("download", true);
+            dialog.unlBtn.setEnabled(true);
         } catch (IOException e) {
             e.printStackTrace();
-            unlBtn.setText("Chyba při generování UNL");
-            unlBtn.setEnabled(false);
+            dialog.unlBtn.setText("Chyba při generování UNL");
+            dialog.unlBtn.setEnabled(false);
         }
     }
 
@@ -154,17 +146,6 @@ public class GuestView extends VerticalLayout {
         return content;
     }
 
-    private void configureDialog() {
-        Button close = new Button("Storno", e -> exportDialog.close());
-        exportDialog.setHeaderTitle("Exportovat");
-        pdfBtn.add(new Button("PDF", new Icon(VaadinIcon.DOWNLOAD_ALT)));
-        pdfBtn.setEnabled(false);
-        unlBtn.add(new Button("UNL (Ubyport)", new Icon(VaadinIcon.DOWNLOAD_ALT)));
-        unlBtn.setEnabled(false);
-        HorizontalLayout dialogToolbar = new HorizontalLayout();
-        dialogToolbar.add(pdfBtn, unlBtn, close);
-        exportDialog.add(dialogToolbar);
-    }
 
     private void configureGrid() {
         grid.addClassNames("guest-grid");
