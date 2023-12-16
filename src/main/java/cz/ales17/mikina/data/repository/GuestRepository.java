@@ -22,7 +22,7 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
     @Query("SELECT c FROM Guest c " +
             "WHERE (:searchTerm IS NULL OR lower(c.firstName) LIKE lower(:searchTerm) OR lower(c.lastName) LIKE lower(:searchTerm)) " +
             "AND (:arrivedFilter IS NULL OR c.dateArrived >= :arrivedFilter) " +
-            "AND (:leftFilter IS NULL OR c.dateLeft <= :leftFilter) AND :foreignersOnly = FALSE OR c.nationality <> 0")
+            "AND (:leftFilter IS NULL OR c.dateLeft <= :leftFilter) AND (:foreignersOnly = FALSE OR c.nationality <> 0)")
     List<Guest> searchGuests(@Param("searchTerm") String searchTerm, @Param("arrivedFilter") LocalDate arrivedFilter, @Param("leftFilter") LocalDate leftFilter, boolean foreignersOnly);
 
 

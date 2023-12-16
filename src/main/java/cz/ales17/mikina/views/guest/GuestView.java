@@ -38,20 +38,29 @@ import java.util.List;
 @Route(value = "guest", layout = MainLayout.class)
 @PageTitle("Seznam hostů | Ubytovací systém")
 public class GuestView extends VerticalLayout {
+    // Services
     private final UbyportService ubyportService;
     private final PdfService pdfService;
     private final AccommodationService accommodationService;
-    private final LocalDate currentMonthStart = LocalDate.now().withDayOfMonth(1);
-    private final LocalDate currentMonthEnd = YearMonth.now().atEndOfMonth();
-    private final Grid<Guest> grid = new Grid<>(Guest.class);
+    // Dialog
+    private final ExportDialog exportDialog = new ExportDialog();
+    // Filtering for guests and utils
     private final TextField filterText = new TextField("Vyhledávání");
     private final DatePicker filterArrived = new DatePicker("Den příchodu");
     private final DatePicker filterLeft = new DatePicker("Den odchodu");
-
-    private ExportDialog dialog = new ExportDialog();
-
-    private Button openDialogBtn = new Button("Export", e -> dialog.open());
+    private Button addGuestButton = new Button("Přidat hosta");
+    private Button filterReset = new Button("Vymazat filtr");
+    private final Button openDialogBtn = new Button("Export", e -> exportDialog.open());
+    private final LocalDate currentMonthFirstDay = LocalDate.now().withDayOfMonth(1);
+    private final LocalDate currentMonthLastDay = YearMonth.now().atEndOfMonth();
+    // Form for adding guests
     private GuestForm form;
+    // Grid and utils
+    private final Grid<Guest> guestGrid = new Grid<>(Guest.class);
+    private final FormatStyle formatStyle = FormatStyle.MEDIUM;
+    private final DateTimeFormatter gridDateFormatter = DateTimeFormatter.ofLocalizedDate(formatStyle);
+
+    private final DateTimeFormatter fileNameFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
 
     public GuestView(AccommodationService accommodationService, UbyportService ubyportService, PdfService pdfService) {
         this.accommodationService = accommodationService;
@@ -68,27 +77,27 @@ public class GuestView extends VerticalLayout {
         closeEditor();
     }
 
-    private void addExportBtns() {
+    private void addExportButtons() {
         preparePdfExport(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false));
         prepareUbyportExport(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), true));
     }
 
     private void preparePdfExport(List<Guest> guests) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
-        String formatDateTime = LocalDateTime.now().format(formatter);
+        LocalDateTime now = LocalDateTime.now();
+        String formatDateTime = now.format(fileNameFormatter);
         try {
             // Generating PDF using the service
-            byte[] pdfBytes = pdfService.generatePdf("Apartmány u Mikiny", guests);
+            byte[] pdfBytes = pdfService.getPdfBytes("Apartmány u Mikiny", guests);
             // Downloading the PDF
             StreamResource resource = new StreamResource("ubytovaci-kniha_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
             //anchor.getElement().setAttribute("download", true);
-            dialog.pdfBtn.setTarget("_blank");
-            dialog.pdfBtn.setHref(resource);
-            dialog.pdfBtn.setEnabled(true);
+            exportDialog.pdfBtn.setTarget("_blank");
+            exportDialog.pdfBtn.setHref(resource);
+            exportDialog.pdfBtn.setEnabled(true);
         } catch (DocumentException e) {
-            e.printStackTrace();
-            dialog.pdfBtn.setText("Chyba při generování PDF");
-            dialog.pdfBtn.setEnabled(false);
+            e.printStackTrace(System.out);
+            exportDialog.pdfBtn.setText("Chyba při generování PDF");
+            exportDialog.pdfBtn.setEnabled(false);
         }
     }
 
@@ -97,13 +106,13 @@ public class GuestView extends VerticalLayout {
             ByteArrayOutputStream ubyportExport = ubyportService.getUbyportStream(foreignGuestList);
             byte[] unlBytes = ubyportExport.toByteArray();
             StreamResource resource = new StreamResource("ubyport.unl", () -> new ByteArrayInputStream(unlBytes));
-            dialog.unlBtn.setHref(resource);
-            dialog.unlBtn.getElement().setAttribute("download", true);
-            dialog.unlBtn.setEnabled(true);
+            exportDialog.unlBtn.setHref(resource);
+            exportDialog.unlBtn.getElement().setAttribute("download", true);
+            exportDialog.unlBtn.setEnabled(true);
         } catch (IOException e) {
-            e.printStackTrace();
-            dialog.unlBtn.setText("Chyba při generování UNL");
-            dialog.unlBtn.setEnabled(false);
+            e.printStackTrace(System.out);
+            exportDialog.unlBtn.setText("Chyba při generování UNL");
+            exportDialog.unlBtn.setEnabled(false);
         }
     }
 
@@ -112,19 +121,22 @@ public class GuestView extends VerticalLayout {
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
-        filterArrived.setValue(currentMonthStart);
-        filterLeft.setValue(currentMonthEnd);
+
+        filterArrived.setValue(currentMonthFirstDay);
         filterArrived.addValueChangeListener(e -> updateList());
+
+        filterLeft.setValue(currentMonthLastDay);
         filterLeft.addValueChangeListener(e -> updateList());
-        // Date alidation
+
+        // Date validation
         filterArrived.addValueChangeListener(e -> filterLeft.setMin(e.getValue()));
         filterLeft.addValueChangeListener(e -> filterArrived.setMax(e.getValue()));
-        Button addGuestButton = new Button("Přidat hosta");
-        Button filterReset = new Button("Vymazat filtr");
+        // Listeners
         addGuestButton.addClickListener(click -> addGuest());
         filterReset.addClickListener(click -> resetFilters());
         filterReset.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        var toolbar = new HorizontalLayout(filterText, filterArrived, filterLeft, filterReset, addGuestButton,  openDialogBtn);
+
+        var toolbar = new HorizontalLayout(filterText, filterArrived, filterLeft, filterReset, addGuestButton, openDialogBtn);
         toolbar.setAlignItems(Alignment.END);
         toolbar.addClassName("toolbar");
         return toolbar;
@@ -138,8 +150,8 @@ public class GuestView extends VerticalLayout {
     }
 
     private HorizontalLayout getContent() {
-        HorizontalLayout content = new HorizontalLayout(grid, form);
-        content.setFlexGrow(2, grid);
+        HorizontalLayout content = new HorizontalLayout(guestGrid, form);
+        content.setFlexGrow(2, guestGrid);
         content.setFlexGrow(4, form);
         content.addClassNames("content");
         content.setSizeFull();
@@ -148,19 +160,19 @@ public class GuestView extends VerticalLayout {
 
 
     private void configureGrid() {
-        grid.addClassNames("guest-grid");
-        grid.setSizeFull();
+        guestGrid.addClassNames("guest-grid");
+        guestGrid.setSizeFull();
         // When setting columns update this list
-        grid.setColumns("firstName", "lastName");
-        grid.addColumn(new LocalDateRenderer<>(Guest::getBirthDate, () -> DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Datum narození");
-        grid.addColumn(Guest::getIdNumber).setHeader("Číslo dokladu");
-        grid.addColumn(Guest::getNationality).setHeader("Stát");
-        grid.addColumn(new LocalDateRenderer<>(Guest::getDateArrived, () -> DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Datum příchodu");
-        grid.addColumn(new LocalDateRenderer<>(Guest::getDateLeft, () -> DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Datum odchodu");
-        grid.getColumnByKey("firstName").setHeader("Jméno");
-        grid.getColumnByKey("lastName").setHeader("Příjmení");
-        grid.getColumns().forEach(col -> col.setAutoWidth(true));
-        grid.asSingleSelect().addValueChangeListener(event ->
+        guestGrid.setColumns("firstName", "lastName");
+        guestGrid.addColumn(new LocalDateRenderer<>(Guest::getBirthDate, () -> gridDateFormatter)).setHeader("Datum narození");
+        guestGrid.addColumn(Guest::getIdNumber).setHeader("Číslo dokladu");
+        guestGrid.addColumn(Guest::getNationality).setHeader("Stát");
+        guestGrid.addColumn(new LocalDateRenderer<>(Guest::getDateArrived, () -> gridDateFormatter)).setHeader("Datum příchodu");
+        guestGrid.addColumn(new LocalDateRenderer<>(Guest::getDateLeft, () -> gridDateFormatter)).setHeader("Datum odchodu");
+        guestGrid.getColumnByKey("firstName").setHeader("Jméno");
+        guestGrid.getColumnByKey("lastName").setHeader("Příjmení");
+        guestGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+        guestGrid.asSingleSelect().addValueChangeListener(event ->
                 editGuest(event.getValue()));
     }
 
@@ -202,15 +214,13 @@ public class GuestView extends VerticalLayout {
     }
 
     private void addGuest() {
-        grid.asSingleSelect().clear();
+        guestGrid.asSingleSelect().clear();
         editGuest(new Guest());
     }
 
 
     private void updateList() {
-        grid.setItems(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false));
-        addExportBtns();
+        guestGrid.setItems(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false));
+        addExportButtons();
     }
-
-
 }

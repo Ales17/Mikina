@@ -39,7 +39,7 @@ public class PdfService {
         return tCell;
     }
 
-    public byte[] generatePdf(String content, List<Guest> guests) throws DocumentException {
+    public byte[] getPdfBytes(String content, List<Guest> guests) throws DocumentException {
         // Init doc and rotate it (landscape)
         Document document = new Document(PageSize.A4.rotate());
         document.setMargins(10, 10, 10, 10);

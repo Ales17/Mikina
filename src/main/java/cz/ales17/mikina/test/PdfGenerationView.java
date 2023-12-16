@@ -35,7 +35,7 @@ public class PdfGenerationView extends VerticalLayout {
         Button generatePdfButton = new Button("Generovat PDF", event -> {
             String content = "Apartmány u Mikiny, Nové Splavy, Záhlučí 67, 36174.";
             try {
-                byte[] pdfBytes = pdfService.generatePdf(content, accommodationService.findAllGuests());
+                byte[] pdfBytes = pdfService.getPdfBytes(content, accommodationService.findAllGuests());
                 LocalDateTime datetime1 = LocalDateTime.now();
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formatDateTime = datetime1.format(format);

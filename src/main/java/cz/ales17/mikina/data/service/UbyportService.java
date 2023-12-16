@@ -19,7 +19,7 @@ public class UbyportService {
         ubytovatel.setIdub("id1");
         ubytovatel.setZkratka("abbr1");
         ubytovatel.setUbytovatel("Apartmány u Mikiny");
-        ubytovatel.setKontakt("Kontakt");
+        ubytovatel.setKontakt("Jan Sibelius, tel: 261 197 135");
         ubytovatel.setOkres("Praha 22");
         ubytovatel.setObec("Praha");
         ubytovatel.setCastObce("Hostivař");
@@ -29,23 +29,28 @@ public class UbyportService {
         ubytovatel.setPsc("11055");
         Ubyport ubyport = new Ubyport(ubytovatel);
         for (Guest g : guests) {
-            UbyportUbytovany ubytovany = new UbyportUbytovany();
-            ubytovany.setUbytovaniOd(g.getDateArrived());
-            ubytovany.setUbytovaniDo(g.getDateLeft());
-            ubytovany.setPrijmeni(g.getLastName());
-            ubytovany.setJmeno(g.getFirstName());
-            ubytovany.setNarozeni(g.getBirthDate());
-            ubytovany.setStatniPrislusnost(g.getNationality());
-            ubytovany.setBydliste(g.getAddress());
-            ubytovany.setDoklad(g.getIdNumber());
-            ubytovany.setViza("");
-            ubytovany.setUcelPobytu(UcelPobytu.U10);
-            ubytovany.setPoznamka("");
+            UbyportUbytovany ubytovany = getUbyportUbytovany(g);
             ubyport.add(ubytovany);
         }
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         ubyport.export(byteArray);
         return byteArray;
+    }
+
+    private UbyportUbytovany getUbyportUbytovany(Guest g) {
+        UbyportUbytovany ubytovany = new UbyportUbytovany();
+        ubytovany.setUbytovaniOd(g.getDateArrived());
+        ubytovany.setUbytovaniDo(g.getDateLeft());
+        ubytovany.setPrijmeni(g.getLastName());
+        ubytovany.setJmeno(g.getFirstName());
+        ubytovany.setNarozeni(g.getBirthDate());
+        ubytovany.setStatniPrislusnost(g.getNationality());
+        ubytovany.setBydliste(g.getAddress());
+        ubytovany.setDoklad(g.getIdNumber());
+        ubytovany.setViza("");
+        ubytovany.setUcelPobytu(UcelPobytu.U10);
+        ubytovany.setPoznamka("");
+        return ubytovany;
     }
 
     public List<StatniPrislusnost> getCountryList() {
