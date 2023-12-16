@@ -9,6 +9,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.PdfService;
+import cz.ales17.mikina.data.service.PdfService8;
 import cz.ales17.mikina.data.service.UbyportService;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
@@ -26,12 +27,14 @@ public class PdfGenerationView extends VerticalLayout {
     private final UbyportService ubyportService;
     private final AccommodationService accommodationService;
 
+    PdfService8 pdfService8;
 
     @Autowired
-    public PdfGenerationView(PdfService pdfService, AccommodationService accommodationService, UbyportService ubyportService) {
+    public PdfGenerationView(PdfService pdfService, AccommodationService accommodationService, UbyportService ubyportService, PdfService8 pdfService8) {
         this.pdfService = pdfService;
         this.accommodationService = accommodationService;
         this.ubyportService = ubyportService;
+        this.pdfService8 = pdfService8;
         Button generatePdfButton = new Button("Generovat PDF", event -> {
             String content = "Apartmány u Mikiny, Nové Splavy, Záhlučí 67, 36174.";
             try {
@@ -40,7 +43,7 @@ public class PdfGenerationView extends VerticalLayout {
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formatDateTime = datetime1.format(format);
                 // Stažení PDF souboru
-                StreamResource resource = new StreamResource("ubytovaci_kniha" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
+                StreamResource resource = new StreamResource("ubytovaci_kniha_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
                 Anchor anchor = new Anchor(resource, "Stáhnout PDF");
                 //anchor.getElement().setAttribute("download", true);
                 anchor.setTarget("_blank");
@@ -67,6 +70,26 @@ public class PdfGenerationView extends VerticalLayout {
         });
         add(generateUnlButton);
 
+        Button iText8 = new Button("iText8", event -> {
 
+            try {
+                LocalDateTime datetime1 = LocalDateTime.now();
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
+                String formatDateTime = datetime1.format(format);
+
+                byte[] pdf = pdfService8.getPdfBytes("", accommodationService.findAllGuests());
+                StreamResource resource = new StreamResource("itext8_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdf));
+                Anchor anchor = new Anchor(resource, "Stáhnout PDF");
+                //anchor.getElement().setAttribute("download", true);
+                anchor.setTarget("_blank");
+                add(anchor);
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+
+        add(iText8);
     }
 }
