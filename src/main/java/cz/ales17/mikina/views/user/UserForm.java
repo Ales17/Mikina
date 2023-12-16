@@ -66,7 +66,7 @@ public class UserForm extends FormLayout {
     private void changePassword() {
         String pwdInput1 = password.getValue();
         String pwdInput2 = passwordConfirmation.getValue();
-        Notification notification;
+
 
         if (userService.getEncoder().matches(oldPassword.getValue(), user.getHashedPassword())) {
             if (Objects.equals(pwdInput1, pwdInput2)) {

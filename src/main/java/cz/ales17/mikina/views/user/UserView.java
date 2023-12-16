@@ -2,7 +2,6 @@ package cz.ales17.mikina.views.user;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import cz.ales17.mikina.data.entity.User;
 import cz.ales17.mikina.data.service.UserService;
@@ -10,7 +9,6 @@ import cz.ales17.mikina.security.AuthenticatedUser;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
-import java.io.ByteArrayInputStream;
 import java.util.Optional;
 
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
@@ -31,9 +29,10 @@ public class UserView extends VerticalLayout {
         Optional<User> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
-            StreamResource resource = new StreamResource("profile-pic",
-                    () -> new ByteArrayInputStream(user.getProfilePicture()));
+            /*StreamResource resource = new StreamResource("profile-pic",
+                    () -> new ByteArrayInputStream(user.getProfilePicture()));*/
             configureForm(user);
+          /*  configureDialog(user);*/
         }
     }
 
@@ -45,6 +44,8 @@ public class UserView extends VerticalLayout {
         add(form);
         form.addSaveListener(this::saveUser);
     }
+
+
 
     private void saveUser(UserForm.SaveEvent event) {
         userService.update(event.getUser());
