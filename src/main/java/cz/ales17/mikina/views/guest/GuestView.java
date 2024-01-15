@@ -15,7 +15,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import cz.ales17.mikina.data.entity.Guest;
 import cz.ales17.mikina.data.service.AccommodationService;
-import cz.ales17.mikina.data.service.Pdf8ReportService;
+import cz.ales17.mikina.data.service.PdfReportService;
 import cz.ales17.mikina.data.service.UbyportReportService;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
@@ -38,7 +38,7 @@ import java.util.Set;
 public class GuestView extends VerticalLayout {
     // Services
     private final UbyportReportService ubyportReportService;
-    private final Pdf8ReportService pdf8ReportService;
+    private final PdfReportService pdfReportService;
     private final AccommodationService accommodationService;
     // Dialog
     private final ExportDialog exportDialog = new ExportDialog();
@@ -62,10 +62,10 @@ public class GuestView extends VerticalLayout {
     // Form for adding guests
     private GuestForm form;
 
-    public GuestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, Pdf8ReportService pdf8ReportService) {
+    public GuestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService) {
         this.accommodationService = accommodationService;
         this.ubyportReportService = ubyportReportService;
-        this.pdf8ReportService = pdf8ReportService;
+        this.pdfReportService = pdfReportService;
         addClassName("list-view");
         setSizeFull();
         // Configuring components
@@ -88,7 +88,7 @@ public class GuestView extends VerticalLayout {
 
         try {
             // Generating PDF using the service
-            byte[] pdfBytes = pdf8ReportService.getReportBytes("Apartmány u Mikiny", guests);
+            byte[] pdfBytes = pdfReportService.getReportBytes("Apartmány u Mikiny", guests);
             // Downloading the PDF
             StreamResource resource = new StreamResource("ubytovaci-kniha_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
             //anchor.getElement().setAttribute("download", true);

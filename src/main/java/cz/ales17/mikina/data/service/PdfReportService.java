@@ -14,7 +14,6 @@ import cz.ales17.mikina.data.entity.Guest;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import java.util.List;
  * Service using iText 8 to generate PDF
  */
 @Service
-public class Pdf8ReportService implements ReportService {
+public class PdfReportService implements ReportService {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -36,7 +35,31 @@ public class Pdf8ReportService implements ReportService {
             1f,
             1.5f
     };
+    @Override
+    public byte[] getReportBytes(String content, List<Guest> guests) throws Exception {
+        String FONT = "arial.ttf";
+        PdfFont f1 = PdfFontFactory.createFont(FONT, PdfEncodings.CP1250, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
 
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        PdfWriter pdfWriter = new PdfWriter(outputStream);
+
+        PdfDocument pdf = new PdfDocument(pdfWriter);
+        pdf.setDefaultPageSize(PageSize.A4.rotate());
+
+        Document doc = new Document(pdf);
+        doc.setMargins(10,10,10,10);
+        doc.add(new Paragraph(content));
+        doc.setFont(f1);
+        Table table = new Table(columnWidths).useAllAvailableWidth();
+
+        addHeaderCells(table, "Jméno", "Příjmení", "ID", "Narození", "Příchod", "Odchod", "Národnost", "Adresa");
+        addDataCells(table, guests);
+
+        doc.add(table);
+        doc.close();
+        return outputStream.toByteArray();
+    }
     private void addHeaderCells(Table t, String... strings) {
         for (String s : strings) {
             t.addHeaderCell(s).setHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -59,28 +82,5 @@ public class Pdf8ReportService implements ReportService {
         }
     }
 
-    @Override
-    public byte[] getReportBytes(String content, List<Guest> guests) throws Exception {
-        String FONT = "arial.ttf";
-        PdfFont f1 = PdfFontFactory.createFont(FONT, PdfEncodings.CP1250, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        PdfWriter pdfWriter = new PdfWriter(outputStream);
-
-        PdfDocument pdf = new PdfDocument(pdfWriter);
-        pdf.setDefaultPageSize(PageSize.A4.rotate());
-
-        Document doc = new Document(pdf);
-        doc.setMargins(10,10,10,10);
-        doc.add(new Paragraph(content));
-        Table table = new Table(columnWidths).useAllAvailableWidth().setFont(f1);
-
-        addHeaderCells(table, "Jméno", "Příjmení", "ID", "Narození", "Příchod", "Odchod", "Národnost", "Adresa");
-        addDataCells(table, guests);
-
-        doc.add(table);
-        doc.close();
-        return outputStream.toByteArray();
-    }
 }
