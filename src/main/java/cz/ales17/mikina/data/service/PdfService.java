@@ -70,14 +70,17 @@ public class PdfService {
         }
         for (Guest g : guests
         ) {
-            table.addCell(getTableCell(g.getFirstName()));
-            table.addCell(getTableCell(g.getLastName()));
-            table.addCell(getTableCell(g.getIdNumber()));
-            table.addCell(getTableCell(formatter.format(g.getBirthDate())));
-            table.addCell(getTableCell(formatter.format(g.getDateArrived())));
-            table.addCell(getTableCell(formatter.format(g.getDateLeft())));
-            table.addCell(getTableCell(g.getNationality().getKod()));
-            table.addCell(getTableCell(g.getAddress()));
+            if(g.getDateArrived() != null && g.getDateLeft() != null)
+            {
+                table.addCell(getTableCell(g.getFirstName()));
+                table.addCell(getTableCell(g.getLastName()));
+                table.addCell(getTableCell(g.getIdNumber()));
+                table.addCell(getTableCell(formatter.format(g.getBirthDate())));
+                table.addCell(getTableCell(formatter.format(g.getDateArrived())));
+                table.addCell(getTableCell(formatter.format(g.getDateLeft())));
+                table.addCell(getTableCell(g.getNationality().getKod()));
+                table.addCell(getTableCell(g.getAddress()));
+            }
         }
         document.add(table);
         document.close();

@@ -29,8 +29,10 @@ public class UbyportService {
         ubytovatel.setPsc("11055");
         Ubyport ubyport = new Ubyport(ubytovatel);
         for (Guest g : guests) {
-            UbyportUbytovany ubytovany = getUbyportUbytovany(g);
-            ubyport.add(ubytovany);
+            if (g.getDateArrived() != null && g.getDateLeft() != null) {
+                UbyportUbytovany ubytovany = getUbyportUbytovany(g);
+                ubyport.add(ubytovany);
+            }
         }
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         ubyport.export(byteArray);
