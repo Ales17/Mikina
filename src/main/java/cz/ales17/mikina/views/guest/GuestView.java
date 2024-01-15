@@ -16,13 +16,11 @@ import com.vaadin.flow.server.StreamResource;
 import cz.ales17.mikina.data.entity.Guest;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.Pdf8ReportService;
-import cz.ales17.mikina.data.service.UbyportService;
+import cz.ales17.mikina.data.service.UbyportReportService;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -39,7 +37,7 @@ import java.util.Set;
 @PageTitle("Seznam hostů | Ubytovací systém")
 public class GuestView extends VerticalLayout {
     // Services
-    private final UbyportService ubyportService;
+    private final UbyportReportService ubyportReportService;
     private final Pdf8ReportService pdf8ReportService;
     private final AccommodationService accommodationService;
     // Dialog
@@ -56,15 +54,17 @@ public class GuestView extends VerticalLayout {
     private final Grid<Guest> guestGrid = new Grid<>(Guest.class);
     private final FormatStyle formatStyle = FormatStyle.MEDIUM;
     private final DateTimeFormatter gridDateFormatter = DateTimeFormatter.ofLocalizedDate(formatStyle);
-    private final DateTimeFormatter fileNameFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
+    private final DateTimeFormatter pdfDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
+    private final DateTimeFormatter unlDateFormatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
+
     private Button addGuestButton = new Button("Přidat hosta");
     private Button filterReset = new Button("Vymazat filtr");
     // Form for adding guests
     private GuestForm form;
 
-    public GuestView(AccommodationService accommodationService, UbyportService ubyportService, Pdf8ReportService pdf8ReportService) {
+    public GuestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, Pdf8ReportService pdf8ReportService) {
         this.accommodationService = accommodationService;
-        this.ubyportService = ubyportService;
+        this.ubyportReportService = ubyportReportService;
         this.pdf8ReportService = pdf8ReportService;
         addClassName("list-view");
         setSizeFull();
@@ -84,7 +84,7 @@ public class GuestView extends VerticalLayout {
 
     private void preparePdfExport(List<Guest> guests) {
         LocalDateTime now = LocalDateTime.now();
-        String formatDateTime = now.format(fileNameFormatter);
+        String formatDateTime = now.format(pdfDateFormatter);
 
         try {
             // Generating PDF using the service
@@ -103,17 +103,18 @@ public class GuestView extends VerticalLayout {
     }
 
     private void prepareUbyportExport(List<Guest> foreignGuestList) {
+        LocalDateTime now = LocalDateTime.now();
+        String formatDateTime = now.format(unlDateFormatter);
         try {
-            ByteArrayOutputStream ubyportExport = ubyportService.getUbyportStream(foreignGuestList);
-            byte[] unlBytes = ubyportExport.toByteArray();
-            StreamResource resource = new StreamResource("ubyport.unl", () -> new ByteArrayInputStream(unlBytes));
+            byte[] unlReportBytes = ubyportReportService.getReportBytes("Apartmány", foreignGuestList);
+            StreamResource resource = new StreamResource("123456789012_" + formatDateTime + ".unl", () -> new ByteArrayInputStream(unlReportBytes));
             exportDialog.unlBtn.setHref(resource);
             exportDialog.unlBtn.getElement().setAttribute("download", true);
             exportDialog.unlBtn.setEnabled(true);
-        } catch (IOException e) {
-            e.printStackTrace(System.out);
+        } catch (Exception e) {
             exportDialog.unlBtn.setText("Chyba při generování UNL");
             exportDialog.unlBtn.setEnabled(false);
+            throw new RuntimeException(e);
         }
     }
 
@@ -178,7 +179,7 @@ public class GuestView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new GuestForm(ubyportService.getCountryList());
+        form = new GuestForm(ubyportReportService.getCountryList());
         form.setWidth("30em");
         form.addSaveListener(this::saveGuest);
         form.addDeleteListener(this::deleteGuest);

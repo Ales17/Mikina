@@ -10,13 +10,12 @@ import com.vaadin.flow.server.StreamResource;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.PdfService;
 import cz.ales17.mikina.data.service.Pdf8ReportService;
-import cz.ales17.mikina.data.service.UbyportService;
+import cz.ales17.mikina.data.service.UbyportReportService;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -24,16 +23,16 @@ import java.time.format.DateTimeFormatter;
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 public class PdfGenerationView extends VerticalLayout {
     private final PdfService pdfService;
-    private final UbyportService ubyportService;
+    private final UbyportReportService ubyportReportService;
     private final AccommodationService accommodationService;
 
     Pdf8ReportService pdf8ReportService;
 
     @Autowired
-    public PdfGenerationView(PdfService pdfService, AccommodationService accommodationService, UbyportService ubyportService, Pdf8ReportService pdf8ReportService) {
+    public PdfGenerationView(PdfService pdfService, AccommodationService accommodationService, UbyportReportService ubyportReportService, Pdf8ReportService pdf8ReportService) {
         this.pdfService = pdfService;
         this.accommodationService = accommodationService;
-        this.ubyportService = ubyportService;
+        this.ubyportReportService = ubyportReportService;
         this.pdf8ReportService = pdf8ReportService;
         Button generatePdfButton = new Button("Generovat PDF", event -> {
             String content = "Apartmány u Mikiny, Nové Splavy, Záhlučí 67, 36174.";
@@ -58,19 +57,20 @@ public class PdfGenerationView extends VerticalLayout {
 
         Button generateUnlButton = new Button("Generovat UNL", event -> {
             try {
-                byte[] unlBytes = ubyportService.getUbyportStream(accommodationService.findAllForeigners()).toByteArray();
-                StreamResource resource = new StreamResource("ubyport.unl", () -> new ByteArrayInputStream(unlBytes));
+                byte[] unlBytes = ubyportReportService.getReportBytes("Apartmány",
+                        accommodationService.findAllForeigners());
+                StreamResource resource = new StreamResource("123456789012_" + "datetime" + ".unl", () -> new ByteArrayInputStream(unlBytes));
                 Anchor anchor = new Anchor(resource, "Stáhnout UNL");
                 anchor.getElement().setAttribute("download", true);
                 add(anchor);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-
+                throw new RuntimeException(e);
             }
         });
         add(generateUnlButton);
 
-        Button iText8 = new Button("iText8", event -> {
+        Button iText8 = new Button("Generování PDF (iText8)", event -> {
 
             try {
                 LocalDateTime datetime1 = LocalDateTime.now();
