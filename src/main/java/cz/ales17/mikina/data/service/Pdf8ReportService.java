@@ -22,7 +22,7 @@ import java.util.List;
  * Service using iText 8 to generate PDF
  */
 @Service
-public class PdfService8 {
+public class Pdf8ReportService implements ReportService {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -36,30 +36,6 @@ public class PdfService8 {
             1f,
             1.5f
     };
-
-    public byte[] getPdfBytes(String content, List<Guest> guests) throws IOException {
-        String FONT = "arial.ttf";
-        PdfFont f1 = PdfFontFactory.createFont(FONT, PdfEncodings.CP1250, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        PdfWriter pdfWriter = new PdfWriter(outputStream);
-
-        PdfDocument pdf = new PdfDocument(pdfWriter);
-        pdf.setDefaultPageSize(PageSize.A4.rotate());
-
-        Document doc = new Document(pdf);
-        doc.setMargins(10,10,10,10);
-        doc.add(new Paragraph(content));
-        Table table = new Table(columnWidths).useAllAvailableWidth().setFont(f1);
-
-        addHeaderCells(table, "Jméno", "Příjmení", "ID", "Narození", "Příchod", "Odchod", "Národnost", "Adresa");
-        addDataCells(table, guests);
-
-        doc.add(table);
-        doc.close();
-        return outputStream.toByteArray();
-    }
 
     private void addHeaderCells(Table t, String... strings) {
         for (String s : strings) {
@@ -81,5 +57,30 @@ public class PdfService8 {
             table.addCell(g.getNationality().getTitle());
             table.addCell(g.getAddress());
         }
+    }
+
+    @Override
+    public byte[] getReportBytes(String content, List<Guest> guests) throws Exception {
+        String FONT = "arial.ttf";
+        PdfFont f1 = PdfFontFactory.createFont(FONT, PdfEncodings.CP1250, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        PdfWriter pdfWriter = new PdfWriter(outputStream);
+
+        PdfDocument pdf = new PdfDocument(pdfWriter);
+        pdf.setDefaultPageSize(PageSize.A4.rotate());
+
+        Document doc = new Document(pdf);
+        doc.setMargins(10,10,10,10);
+        doc.add(new Paragraph(content));
+        Table table = new Table(columnWidths).useAllAvailableWidth().setFont(f1);
+
+        addHeaderCells(table, "Jméno", "Příjmení", "ID", "Narození", "Příchod", "Odchod", "Národnost", "Adresa");
+        addDataCells(table, guests);
+
+        doc.add(table);
+        doc.close();
+        return outputStream.toByteArray();
     }
 }

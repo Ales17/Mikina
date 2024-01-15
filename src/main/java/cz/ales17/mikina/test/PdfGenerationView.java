@@ -9,7 +9,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.PdfService;
-import cz.ales17.mikina.data.service.PdfService8;
+import cz.ales17.mikina.data.service.Pdf8ReportService;
 import cz.ales17.mikina.data.service.UbyportService;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
@@ -27,14 +27,14 @@ public class PdfGenerationView extends VerticalLayout {
     private final UbyportService ubyportService;
     private final AccommodationService accommodationService;
 
-    PdfService8 pdfService8;
+    Pdf8ReportService pdf8ReportService;
 
     @Autowired
-    public PdfGenerationView(PdfService pdfService, AccommodationService accommodationService, UbyportService ubyportService, PdfService8 pdfService8) {
+    public PdfGenerationView(PdfService pdfService, AccommodationService accommodationService, UbyportService ubyportService, Pdf8ReportService pdf8ReportService) {
         this.pdfService = pdfService;
         this.accommodationService = accommodationService;
         this.ubyportService = ubyportService;
-        this.pdfService8 = pdfService8;
+        this.pdf8ReportService = pdf8ReportService;
         Button generatePdfButton = new Button("Generovat PDF", event -> {
             String content = "Apartmány u Mikiny, Nové Splavy, Záhlučí 67, 36174.";
             try {
@@ -77,14 +77,14 @@ public class PdfGenerationView extends VerticalLayout {
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formatDateTime = datetime1.format(format);
 
-                byte[] pdf = pdfService8.getPdfBytes("", accommodationService.findAllGuests());
+                byte[] pdf = pdf8ReportService.getReportBytes("", accommodationService.findAllGuests());
                 StreamResource resource = new StreamResource("itext8_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdf));
                 Anchor anchor = new Anchor(resource, "Stáhnout PDF");
                 //anchor.getElement().setAttribute("download", true);
                 anchor.setTarget("_blank");
                 add(anchor);
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
 
