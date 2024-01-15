@@ -30,6 +30,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Set;
 
 /**
  * GuestView shows a list of guests.
@@ -51,6 +52,7 @@ public class GuestView extends VerticalLayout {
     private Button addGuestButton = new Button("Přidat hosta");
     private Button filterReset = new Button("Vymazat filtr");
     private final Button openDialogBtn = new Button("Export", e -> exportDialog.open());
+    private final Button duplicateBtn = new Button("Duplikovat");
     private final LocalDate currentMonthFirstDay = LocalDate.now().withDayOfMonth(1);
     private final LocalDate currentMonthLastDay = YearMonth.now().atEndOfMonth();
     // Form for adding guests
@@ -136,7 +138,8 @@ public class GuestView extends VerticalLayout {
         filterReset.addClickListener(click -> resetFilters());
         filterReset.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        var toolbar = new HorizontalLayout(filterText, filterArrived, filterLeft, filterReset, addGuestButton, openDialogBtn);
+        duplicateBtn.addClickListener(click -> duplicateGuest());
+        var toolbar = new HorizontalLayout(duplicateBtn, filterText, filterArrived, filterLeft, filterReset, addGuestButton, openDialogBtn);
         toolbar.setAlignItems(Alignment.END);
         toolbar.addClassName("toolbar");
         return toolbar;
@@ -204,6 +207,25 @@ public class GuestView extends VerticalLayout {
             form.setGuest(guest);
             form.setVisible(true);
             addClassName("editing");
+        }
+    }
+
+    private void duplicateGuest() {
+        Guest selectedGuest = null;
+        Set<Guest> selected = guestGrid.getSelectedItems();
+        int i = 1;
+        for (Guest g : selected) {
+            if (i == 1) selectedGuest = g;
+            i++;
+        }
+        form.setGuest(null);
+        if (selectedGuest != null) {
+            accommodationService.duplicateGuest(selectedGuest);
+            System.out.println("selectedGuest != null -> duplicated");
+            guestGrid.setItems(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false));
+            addExportButtons();
+        } else {
+            System.out.println("selectedGuest == null");
         }
     }
 
