@@ -7,6 +7,7 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import cz.ales17.mikina.data.entity.Guest;
@@ -49,6 +50,7 @@ public class PdfService8 {
 
         Document doc = new Document(pdf);
         doc.setMargins(10,10,10,10);
+        doc.add(new Paragraph(content));
         Table table = new Table(columnWidths).useAllAvailableWidth().setFont(f1);
 
         addHeaderCells(table, "Jméno", "Příjmení", "ID", "Narození", "Příchod", "Odchod", "Národnost", "Adresa");
@@ -67,6 +69,9 @@ public class PdfService8 {
 
     private void addDataCells(Table table, List<Guest> guests) {
         for (Guest g : guests) {
+            if(g.getDateArrived() == null || g.getDateLeft() == null) {
+                return;
+            }
             table.addCell(g.getFirstName());
             table.addCell(g.getLastName());
             table.addCell(g.getIdNumber());
