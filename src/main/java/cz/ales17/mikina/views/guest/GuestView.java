@@ -1,6 +1,5 @@
 package cz.ales17.mikina.views.guest;
 
-import com.itextpdf.text.DocumentException;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -16,7 +15,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import cz.ales17.mikina.data.entity.Guest;
 import cz.ales17.mikina.data.service.AccommodationService;
-import cz.ales17.mikina.data.service.PdfService;
+import cz.ales17.mikina.data.service.Pdf8ReportService;
 import cz.ales17.mikina.data.service.UbyportService;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
@@ -41,7 +40,7 @@ import java.util.Set;
 public class GuestView extends VerticalLayout {
     // Services
     private final UbyportService ubyportService;
-    private final PdfService pdfService;
+    private final Pdf8ReportService pdf8ReportService;
     private final AccommodationService accommodationService;
     // Dialog
     private final ExportDialog exportDialog = new ExportDialog();
@@ -49,25 +48,24 @@ public class GuestView extends VerticalLayout {
     private final TextField filterText = new TextField("Vyhledávání");
     private final DatePicker filterArrived = new DatePicker("Den příchodu");
     private final DatePicker filterLeft = new DatePicker("Den odchodu");
-    private Button addGuestButton = new Button("Přidat hosta");
-    private Button filterReset = new Button("Vymazat filtr");
     private final Button openDialogBtn = new Button("Export", e -> exportDialog.open());
     private final Button duplicateBtn = new Button("Duplikovat");
     private final LocalDate currentMonthFirstDay = LocalDate.now().withDayOfMonth(1);
     private final LocalDate currentMonthLastDay = YearMonth.now().atEndOfMonth();
-    // Form for adding guests
-    private GuestForm form;
     // Grid and utils
     private final Grid<Guest> guestGrid = new Grid<>(Guest.class);
     private final FormatStyle formatStyle = FormatStyle.MEDIUM;
     private final DateTimeFormatter gridDateFormatter = DateTimeFormatter.ofLocalizedDate(formatStyle);
-
     private final DateTimeFormatter fileNameFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
+    private Button addGuestButton = new Button("Přidat hosta");
+    private Button filterReset = new Button("Vymazat filtr");
+    // Form for adding guests
+    private GuestForm form;
 
-    public GuestView(AccommodationService accommodationService, UbyportService ubyportService, PdfService pdfService) {
+    public GuestView(AccommodationService accommodationService, UbyportService ubyportService, Pdf8ReportService pdf8ReportService) {
         this.accommodationService = accommodationService;
         this.ubyportService = ubyportService;
-        this.pdfService = pdfService;
+        this.pdf8ReportService = pdf8ReportService;
         addClassName("list-view");
         setSizeFull();
         // Configuring components
@@ -87,19 +85,20 @@ public class GuestView extends VerticalLayout {
     private void preparePdfExport(List<Guest> guests) {
         LocalDateTime now = LocalDateTime.now();
         String formatDateTime = now.format(fileNameFormatter);
+
         try {
             // Generating PDF using the service
-            byte[] pdfBytes = pdfService.getPdfBytes("Apartmány u Mikiny", guests);
+            byte[] pdfBytes = pdf8ReportService.getReportBytes("Apartmány u Mikiny", guests);
             // Downloading the PDF
             StreamResource resource = new StreamResource("ubytovaci-kniha_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
             //anchor.getElement().setAttribute("download", true);
             exportDialog.pdfBtn.setTarget("_blank");
             exportDialog.pdfBtn.setHref(resource);
             exportDialog.pdfBtn.setEnabled(true);
-        } catch (DocumentException e) {
-            e.printStackTrace(System.out);
+        } catch (Exception e) {
             exportDialog.pdfBtn.setText("Chyba při generování PDF");
             exportDialog.pdfBtn.setEnabled(false);
+            throw new RuntimeException();
         }
     }
 
@@ -175,8 +174,7 @@ public class GuestView extends VerticalLayout {
         guestGrid.getColumnByKey("firstName").setHeader("Jméno");
         guestGrid.getColumnByKey("lastName").setHeader("Příjmení");
         guestGrid.getColumns().forEach(col -> col.setAutoWidth(true));
-        guestGrid.asSingleSelect().addValueChangeListener(event ->
-                editGuest(event.getValue()));
+        guestGrid.asSingleSelect().addValueChangeListener(event -> editGuest(event.getValue()));
     }
 
     private void configureForm() {
