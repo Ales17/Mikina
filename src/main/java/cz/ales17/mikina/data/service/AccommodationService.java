@@ -5,11 +5,12 @@ import cz.ales17.mikina.data.entity.Guest;
 import cz.ales17.mikina.data.repository.CountryRepository;
 import cz.ales17.mikina.data.repository.GuestRepository;
 import cz.ales17.mikina.data.repository.StatusRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@org.springframework.stereotype.Service
+@Service
 /**
  * Service class for Accommodation entities.
  */
@@ -47,7 +48,17 @@ public class AccommodationService {
     public void deleteGuest(Guest guest) {
         guestRepository.delete(guest);
     }
-
+    public void duplicateGuest(Guest guest) {
+        Guest g = new Guest();
+        g.setId(null);
+        g.setFirstName(guest.getFirstName());
+        g.setLastName(guest.getLastName());
+        g.setAddress(guest.getAddress());
+        g.setBirthDate(guest.getBirthDate());
+        g.setIdNumber(guest.getIdNumber());
+        g.setNationality(guest.getNationality());
+        guestRepository.save(g);
+    }
     public void saveGuest(Guest guest) {
         if (guest == null) {
             System.err.println("Host je null. Jsi si jistý, že jsi připojil formulář k aplikaci?");

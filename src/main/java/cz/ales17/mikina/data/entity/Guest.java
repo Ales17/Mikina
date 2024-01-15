@@ -1,6 +1,7 @@
 package cz.ales17.mikina.data.entity;
 
 import cz.geek.ubyport.StatniPrislusnost;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,9 +21,9 @@ public class Guest extends AbstractEntity {
     private String lastName = "";
 
     private LocalDate birthDate;
-
+    @Nullable
     private LocalDate dateArrived;
-
+    @Nullable
     private LocalDate dateLeft;
 
     private String address;
