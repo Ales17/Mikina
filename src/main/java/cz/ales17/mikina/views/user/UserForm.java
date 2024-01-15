@@ -70,9 +70,9 @@ public class UserForm extends FormLayout {
 
         if (userService.getEncoder().matches(oldPassword.getValue(), user.getHashedPassword())) {
             if (Objects.equals(pwdInput1, pwdInput2)) {
-                user.setHashedPassword(userService.getEncoder().encode(pwdInput1));
-                Notification
-                        .show("Heslo změněno");
+                //user.setHashedPassword(userService.getEncoder().encode(pwdInput1));
+                userService.updatePassword(user, pwdInput2);
+                Notification.show("Heslo změněno");
             } else {
                 Notification.show("Hesla se neshodují");
             }
