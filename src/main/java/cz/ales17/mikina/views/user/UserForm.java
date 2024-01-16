@@ -22,17 +22,17 @@ import java.util.Objects;
 
 public class UserForm extends FormLayout {
 
+    private final UserService userService;
+    private final User user;
+    private final Binder<User> binder = new BeanValidationBinder<>(User.class);
     private TextField username = new TextField("Uživatelské jméno");
     private TextField name = new TextField("Jméno a příjmení");
     private PasswordField oldPassword = new PasswordField("Staré heslo");
     private PasswordField password = new PasswordField("Nové heslo");
     private PasswordField passwordConfirmation = new PasswordField("Nové heslo znovu");
 
-    private Binder<User> binder = new BeanValidationBinder<>(User.class);
-    private Button save = new Button("Uložit");
+    private final Button save = new Button("Uložit");
 
-    private UserService userService;
-    private User user;
 
     public UserForm(UserService userService, User user) {
         this.userService = userService;
@@ -46,9 +46,9 @@ public class UserForm extends FormLayout {
         add(
                 username,
                 name,
-                oldPassword,
-                password,
-                passwordConfirmation,
+//                oldPassword,
+//                password,
+//                passwordConfirmation,
                 createButtonsLayout()
         );
 
@@ -63,7 +63,7 @@ public class UserForm extends FormLayout {
         return new HorizontalLayout(save);
     }
 
-    private void changePassword() {
+ /*   private void changePassword() {
         String pwdInput1 = password.getValue();
         String pwdInput2 = passwordConfirmation.getValue();
 
@@ -79,10 +79,10 @@ public class UserForm extends FormLayout {
         } else {
             Notification.show("Původní heslo není správné");
         }
-    }
+    }*/
 
     private void validateAndSave() {
-        changePassword();
+        //changePassword();
         if (binder.isValid()) {
             fireEvent(new SaveEvent(this, binder.getBean()));
         }
