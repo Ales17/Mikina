@@ -38,13 +38,15 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
         setForgotPasswordButtonVisible(false);
         setOpened(true);
-        setI18n(i18n);
 
         LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
         i18nErrorMessage.setTitle("Chyba");
         i18nErrorMessage.setMessage(
                 "Zkontrolujte, zda jste zadali správné uživatelské jméno a heslo.");
         i18n.setErrorMessage(i18nErrorMessage);
+        // Must set i18n after all translations, otherwise they will not be used
+        setI18n(i18n);
+
     }
 
    /* @Override
