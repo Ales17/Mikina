@@ -1,5 +1,9 @@
 package cz.ales17.mikina.views.user;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
@@ -14,10 +18,10 @@ import java.util.Optional;
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "user", layout = MainLayout.class)
 public class UserView extends VerticalLayout {
+    private final UserService userService;
+    PasswordDialog dialog;
     private AuthenticatedUser authenticatedUser;
     private AccessAnnotationChecker accessChecker;
-
-    private UserService userService;
     private UserForm form;
 
     public UserView(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker, UserService userService) {
@@ -31,9 +35,23 @@ public class UserView extends VerticalLayout {
             User user = maybeUser.get();
             /*StreamResource resource = new StreamResource("profile-pic",
                     () -> new ByteArrayInputStream(user.getProfilePicture()));*/
+            H3 userButtons = new H3("Nastavení uživatele");
+            add(userButtons, getUserButtons());
+            configureDialog(user);
+            H3 userInfo = new H3("Informace o uživateli");
+            add(userInfo);
             configureForm(user);
-          /*  configureDialog(user);*/
         }
+    }
+
+    private void configureDialog(User user) {
+        dialog = new PasswordDialog(userService, user);
+        add(dialog);
+    }
+
+    private HorizontalLayout getUserButtons() {
+        Button changePasswdBtn = new Button("Změnit heslo", e -> dialog.open());
+        return new HorizontalLayout(changePasswdBtn);
     }
 
     private void configureForm(User user) {
@@ -41,11 +59,9 @@ public class UserView extends VerticalLayout {
         form.setVisible(true);
         form.setWidth("30em");
         form.setUser(user);
-        add(form);
         form.addSaveListener(this::saveUser);
+        add(form);
     }
-
-
 
     private void saveUser(UserForm.SaveEvent event) {
         userService.update(event.getUser());
