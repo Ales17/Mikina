@@ -32,10 +32,11 @@ public class UserService {
     public void updatePassword(User user, String password) {
         String hashedPassword = encoder.encode(password);
         user.setHashedPassword(hashedPassword);
+        update(user);
     }
 
-    public User update(User entity) {
-        return repository.save(entity);
+    public void update(User entity) {
+        repository.save(entity);
     }
 
     public void delete(Long id) {

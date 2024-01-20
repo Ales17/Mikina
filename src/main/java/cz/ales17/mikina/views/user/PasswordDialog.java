@@ -1,6 +1,7 @@
 package cz.ales17.mikina.views.user;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -14,9 +15,9 @@ import java.util.Objects;
 public class PasswordDialog extends Dialog {
     private final UserService userService;
     private final User user;
-    private PasswordField passwd, passwdConfirmation, oldPassword;
     private final Button close = new Button("Storno", e -> close());
-    private final Button save = new Button("Uložit", e -> changePassword());
+    private PasswordField passwd, passwdConfirmation, oldPassword;
+    private final Button save = new Button("Uložit", e -> handlePasswordChange());
 
     public PasswordDialog(UserService userService, User user) {
         this.user = user;
@@ -27,27 +28,38 @@ public class PasswordDialog extends Dialog {
     }
 
     private VerticalLayout getLayout() {
-        oldPassword = new PasswordField("Staré heslo");
+        oldPassword = new PasswordField("Původní heslo");
+        oldPassword.setRequired(true);
         passwd = new PasswordField("Nové heslo");
-        passwdConfirmation = new PasswordField("Nové heslo znovu");
+        passwd.setRequired(true);
+        passwdConfirmation = new PasswordField("Nové heslo (pro kontrolu)");
+        passwdConfirmation.setRequired(true);
 
         return new VerticalLayout(oldPassword, passwd, passwdConfirmation);
     }
 
     private HorizontalLayout getButtons() {
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        close.addThemeVariants(ButtonVariant.LUMO_ERROR);
         return new HorizontalLayout(save, close);
     }
 
-    private void changePassword() {
-        String pwdInput1 = passwd.getValue();
-        String pwdInput2 = passwdConfirmation.getValue();
+    private void handlePasswordChange() {
         if (userService.getEncoder().matches(oldPassword.getValue(), user.getHashedPassword())) {
-            if (Objects.equals(pwdInput1, pwdInput2)) {
-                userService.updatePassword(user, pwdInput2);
-                // Must call update, otherwise it will not be persisted to the DB
-                userService.update(user);
-                Notification.show("Heslo změněno");
-                close();
+            String newPwdInput1 = passwd.getValue();
+            String newPwdInput2 = passwdConfirmation.getValue();
+            if (Objects.equals(newPwdInput1, newPwdInput2)) {
+                int length = 3;
+                if (newPwdInput1.length() < length) {
+                    Notification.show("Délka hesla musí být delší než " + length);
+
+                } else {
+                    userService.updatePassword(user, newPwdInput2);
+                    // Must call update, otherwise it will not be persisted to the DB
+                    //userService.update(user);
+                    Notification.show("Heslo změněno");
+                    close();
+                }
             } else {
                 Notification.show("Hesla se neshodují");
             }
@@ -55,8 +67,6 @@ public class PasswordDialog extends Dialog {
             Notification.show("Původní heslo není správné");
         }
     }
-
-
 
 
 }
