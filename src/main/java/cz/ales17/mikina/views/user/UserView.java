@@ -19,9 +19,9 @@ import java.util.Optional;
 @Route(value = "user", layout = MainLayout.class)
 public class UserView extends VerticalLayout {
     private final UserService userService;
-    PasswordDialog dialog;
-    private AuthenticatedUser authenticatedUser;
-    private AccessAnnotationChecker accessChecker;
+    private PasswordDialog dialog;
+    private final AuthenticatedUser authenticatedUser;
+    private final AccessAnnotationChecker accessChecker;
     private UserForm form;
 
     public UserView(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker, UserService userService) {
@@ -35,12 +35,14 @@ public class UserView extends VerticalLayout {
             User user = maybeUser.get();
             /*StreamResource resource = new StreamResource("profile-pic",
                     () -> new ByteArrayInputStream(user.getProfilePicture()));*/
-            H3 userButtons = new H3("Nastavení uživatele");
-            add(userButtons, getUserButtons());
-            configureDialog(user);
+
             H3 userInfo = new H3("Informace o uživateli");
             add(userInfo);
             configureForm(user);
+
+            H3 userButtons = new H3("Nastavení uživatele");
+            add(userButtons, getUserButtons());
+            configureDialog(user);
         }
     }
 
