@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Set;
+import java.util.StringJoiner;
 
 @Getter
 @Setter
@@ -32,4 +33,15 @@ public class User extends AbstractEntity {
     @Lob
     @Column(length = 1000000)
     private byte[] profilePicture;
+
+    public String getRolesAsString() {
+        StringJoiner displayRoles = new StringJoiner(", ");
+
+        for (Role r : roles) {
+            displayRoles.add(r.toString());
+        }
+
+        return displayRoles.toString();
+
+    }
 }
