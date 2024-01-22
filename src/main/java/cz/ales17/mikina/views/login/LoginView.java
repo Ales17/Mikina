@@ -20,6 +20,7 @@ import cz.ales17.mikina.security.AuthenticatedUser;
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
     private final AuthenticatedUser authenticatedUser;
     //private final LoginForm login = new LoginForm();
+    private final PasswordResetDialog passwordResetDialog = new PasswordResetDialog();
 
     public LoginView(AuthenticatedUser authenticatedUser) {
         this.authenticatedUser = authenticatedUser;
@@ -34,9 +35,10 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         i18nForm.setUsername("Uživatelské jméno");
         i18nForm.setPassword("Heslo");
         i18nForm.setSubmit("Přihlásit se");
+        i18nForm.setForgotPassword("Zapomenuté heslo?");
         i18n.setForm(i18nForm);
 
-        setForgotPasswordButtonVisible(false);
+        setForgotPasswordButtonVisible(true);
         setOpened(true);
 
         LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
@@ -47,20 +49,12 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         // Must set i18n after all translations, otherwise they will not be used
         setI18n(i18n);
 
+
+        addForgotPasswordListener(e -> {
+            //Notification.show("Pro obnovu hesla kontaktujte, prosím, administrátora.",10000, Notification.Position.MIDDLE);
+            passwordResetDialog.open();
+        });
     }
-
-   /* @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        // inform the user about an authentication error
-        if (beforeEnterEvent.getLocation()
-                .getQueryParameters()
-                .getParameters()
-                .containsKey("error")) {
-            //login.setError(true);
-            setError(true);
-        }
-    }*/
-
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
