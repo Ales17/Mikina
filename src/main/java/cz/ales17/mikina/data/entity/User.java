@@ -3,6 +3,7 @@ package cz.ales17.mikina.data.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.ales17.mikina.data.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,9 @@ public class User extends AbstractEntity {
     private String username;
 
     private String name;
+
+    @Email
+    private String emailAddress;
 
     @JsonIgnore
     private String hashedPassword;
