@@ -9,7 +9,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -17,19 +17,16 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.entity.User;
 import cz.ales17.mikina.data.service.UserService;
-
-import java.util.Objects;
+import lombok.Getter;
 
 public class UserForm extends FormLayout {
 
     private final UserService userService;
     private final User user;
     private final Binder<User> binder = new BeanValidationBinder<>(User.class);
-    private TextField username = new TextField("Uživatelské jméno");
-    private TextField name = new TextField("Jméno a příjmení");
-    private PasswordField oldPassword = new PasswordField("Staré heslo");
-    private PasswordField password = new PasswordField("Nové heslo");
-    private PasswordField passwordConfirmation = new PasswordField("Nové heslo znovu");
+    private final TextField username = new TextField("Uživatelské jméno");
+    private final TextField name = new TextField("Jméno a příjmení");
+    private final EmailField emailAddress = new EmailField("E-mailová adresa");
 
     private final Button save = new Button("Uložit");
 
@@ -46,9 +43,7 @@ public class UserForm extends FormLayout {
         add(
                 username,
                 name,
-//                oldPassword,
-//                password,
-//                passwordConfirmation,
+                emailAddress,
                 createButtonsLayout()
         );
 
@@ -63,26 +58,7 @@ public class UserForm extends FormLayout {
         return new HorizontalLayout(save);
     }
 
- /*   private void changePassword() {
-        String pwdInput1 = password.getValue();
-        String pwdInput2 = passwordConfirmation.getValue();
-
-
-        if (userService.getEncoder().matches(oldPassword.getValue(), user.getHashedPassword())) {
-            if (Objects.equals(pwdInput1, pwdInput2)) {
-                //user.setHashedPassword(userService.getEncoder().encode(pwdInput1));
-                userService.updatePassword(user, pwdInput2);
-                Notification.show("Heslo změněno");
-            } else {
-                Notification.show("Hesla se neshodují");
-            }
-        } else {
-            Notification.show("Původní heslo není správné");
-        }
-    }*/
-
     private void validateAndSave() {
-        //changePassword();
         if (binder.isValid()) {
             fireEvent(new SaveEvent(this, binder.getBean()));
         }
@@ -93,6 +69,7 @@ public class UserForm extends FormLayout {
     }
 
 
+    @Getter
     public static abstract class UserFormEvent
             extends ComponentEvent<UserForm> {
         private final User user;
@@ -102,9 +79,6 @@ public class UserForm extends FormLayout {
             this.user = user;
         }
 
-        public User getUser() {
-            return user;
-        }
     }
     // Events
 
