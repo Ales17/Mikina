@@ -8,23 +8,23 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.internal.RouteUtil;
 import com.vaadin.flow.server.VaadinService;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import cz.ales17.mikina.security.AuthenticatedUser;
+import jakarta.annotation.security.PermitAll;
 
 /**
  * LoginView shows the login form and fires the login event.
  */
 @Route("login")
 @PageTitle("Login | Ubytovací systém")
-@AnonymousAllowed
+@PermitAll
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
     private final AuthenticatedUser authenticatedUser;
-    //private final LoginForm login = new LoginForm();
     private final PasswordResetDialog passwordResetDialog = new PasswordResetDialog();
 
     public LoginView(AuthenticatedUser authenticatedUser) {
         this.authenticatedUser = authenticatedUser;
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
+
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("Vítejte");
@@ -51,7 +51,6 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
 
         addForgotPasswordListener(e -> {
-            //Notification.show("Pro obnovu hesla kontaktujte, prosím, administrátora.",10000, Notification.Position.MIDDLE);
             passwordResetDialog.open();
         });
     }
@@ -63,7 +62,6 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
             setOpened(false);
             event.forwardTo("");
         }
-
         setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
     }
 }
