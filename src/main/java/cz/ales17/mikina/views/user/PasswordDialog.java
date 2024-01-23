@@ -1,5 +1,6 @@
 package cz.ales17.mikina.views.user;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -58,7 +59,10 @@ public class PasswordDialog extends Dialog {
                     // Must call update, otherwise it will not be persisted to the DB
                     //userService.update(user);
                     Notification.show("Heslo změněno");
+                    passwd.setValue("");
+                    passwdConfirmation.setValue("");
                     close();
+                    UI.getCurrent().getPage().reload();
                 }
             } else {
                 Notification.show("Hesla se neshodují");
