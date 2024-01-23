@@ -1,9 +1,11 @@
 package cz.ales17.mikina.views.user;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import cz.ales17.mikina.data.entity.User;
@@ -66,6 +68,14 @@ public class UserView extends VerticalLayout {
 
     private void saveUser(UserForm.SaveEvent event) {
         userService.saveUser(event.getUser());
+        /* After user changes info, page will be reloaded.
+        * This prevents error when user tries to do another change without reload.
+        * User display name in MainLayout is also updated thanks to refresh. . */
+        Optional<UI> maybeUi = getUI();
+        if(maybeUi.isPresent()) {
+            Page p = maybeUi.get().getPage();
+            p.reload();
+        }
     }
 
 }
