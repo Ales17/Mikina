@@ -27,6 +27,7 @@ import cz.ales17.mikina.views.guest.GuestView;
 import cz.ales17.mikina.views.user.UserView;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -106,11 +107,16 @@ public class MainLayout extends AppLayout {
         Optional<User> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
-
             Avatar avatar = new Avatar(user.getName());
-            StreamResource resource = new StreamResource("profile-pic",
-                    () -> new ByteArrayInputStream(user.getProfilePicture()));
-            avatar.setImageResource(resource);
+            // If user's picture is set in database
+            if(user.getProfilePicture() != null) {
+                System.out.println(Arrays.toString(user.getProfilePicture()));
+                StreamResource resource = new StreamResource("profile-pic",
+                        () -> new ByteArrayInputStream(user.getProfilePicture()));
+                avatar.setImageResource(resource);
+            }
+
+
             avatar.setThemeName("xsmall");
             avatar.getElement().setAttribute("tabindex", "-1");
 
@@ -136,7 +142,7 @@ public class MainLayout extends AppLayout {
             layout.add(userMenu);
             layout.getStyle().set("margin-right", "var(--lumo-space-m)");
         } else {
-            Anchor loginLink = new Anchor("login", "Sign in");
+            Anchor loginLink = new Anchor("login", "Přihlášení");
             layout.add(loginLink);
         }
 
