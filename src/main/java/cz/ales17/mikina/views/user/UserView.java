@@ -1,7 +1,6 @@
 package cz.ales17.mikina.views.user;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -66,7 +65,7 @@ public class UserView extends VerticalLayout {
     }
 
     private void saveUser(UserForm.SaveEvent event) {
-        userService.update(event.getUser());
+        userService.saveUser(event.getUser());
     }
 
 }
