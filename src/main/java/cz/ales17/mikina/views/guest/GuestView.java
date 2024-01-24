@@ -13,10 +13,14 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import cz.ales17.mikina.data.Role;
+import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
+import cz.ales17.mikina.data.entity.User;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.PdfReportService;
 import cz.ales17.mikina.data.service.UbyportReportService;
+import cz.ales17.mikina.security.AuthenticatedUser;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -27,6 +31,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -40,6 +45,7 @@ public class GuestView extends VerticalLayout {
     private final UbyportReportService ubyportReportService;
     private final PdfReportService pdfReportService;
     private final AccommodationService accommodationService;
+    private final AuthenticatedUser authenticatedUser;
     // Export dialog
     private final ExportDialog exportDialog = new ExportDialog();
     // Filtering for guests and utils
@@ -55,18 +61,19 @@ public class GuestView extends VerticalLayout {
     // Data rid
     private final Grid<Guest> guestGrid = new Grid<>(Guest.class);
     // Date formatting (for display and reports)
-    private final FormatStyle formatStyle = FormatStyle.MEDIUM;
-    private final DateTimeFormatter gridDateFormatter = DateTimeFormatter.ofLocalizedDate(formatStyle);
+    private final DateTimeFormatter gridDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final DateTimeFormatter pdfDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
     private final DateTimeFormatter unlDateFormatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
 
     // Form for adding guests
     private GuestForm form;
-
-    public GuestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService) {
+    // Company of current user's business
+    private List<Guest> currentGuestList, currentForeignGuestList;
+    public GuestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService, AuthenticatedUser authenticatedUser) {
         this.accommodationService = accommodationService;
         this.ubyportReportService = ubyportReportService;
         this.pdfReportService = pdfReportService;
+        this.authenticatedUser = authenticatedUser;
         addClassName("list-view");
         setSizeFull();
         // Configuring components
@@ -78,9 +85,9 @@ public class GuestView extends VerticalLayout {
         closeEditor();
     }
 
-    private void addExportButtons() {
-        preparePdfExport(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false));
-        prepareUbyportExport(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), true));
+    private void prepareExportButtons() {
+        preparePdfExport(currentGuestList);
+        prepareUbyportExport(currentForeignGuestList);
     }
 
     private void preparePdfExport(List<Guest> guests) {
@@ -141,7 +148,7 @@ public class GuestView extends VerticalLayout {
 
         duplicateGuestBtn.addClickListener(click -> duplicateGuest());
         duplicateGuestBtn.setEnabled(false);
-        openDialogBtn.getElement().setProperty("label", "XXX");
+
         var toolbar = new HorizontalLayout(openDialogBtn, filterText, filterArrived, filterLeft, filterReset, addGuestButton, duplicateGuestBtn);
         toolbar.setAlignItems(Alignment.END);
         toolbar.addClassName("toolbar");
@@ -214,6 +221,9 @@ public class GuestView extends VerticalLayout {
         }
     }
 
+    /**
+     * Makes a new copy of existing guest
+     */
     private void duplicateGuest() {
         Guest selectedGuest = null;
         Set<Guest> selected = guestGrid.getSelectedItems();
@@ -226,8 +236,7 @@ public class GuestView extends VerticalLayout {
         if (selectedGuest != null) {
             accommodationService.duplicateGuest(selectedGuest);
             System.out.println("selectedGuest != null -> duplicated");
-            guestGrid.setItems(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false));
-            addExportButtons();
+            updateList();
         } else {
             System.out.println("selectedGuest == null");
         }
@@ -246,7 +255,20 @@ public class GuestView extends VerticalLayout {
 
 
     private void updateList() {
-        guestGrid.setItems(accommodationService.searchForGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false));
-        addExportButtons();
+        Optional<User> maybeUser = authenticatedUser.get();
+        if (maybeUser.isPresent()) {
+            User currentUser = maybeUser.get();
+            Company currentUserCompany = currentUser.getCompany();
+            // User is admin, get all guests
+            if (currentUser.getRoles().contains(Role.ADMIN)) {
+                currentGuestList = accommodationService.searchForAllGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue());
+                currentForeignGuestList = accommodationService.searchForForeignGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue());
+            } else { // Get only the guests that belong to user's company
+                currentGuestList = accommodationService.searchGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false, currentUserCompany);
+                currentForeignGuestList = accommodationService.searchGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), true, currentUserCompany);
+            }
+            guestGrid.setItems(currentGuestList);
+            prepareExportButtons();
+        }
     }
 }

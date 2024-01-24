@@ -30,13 +30,16 @@ public class AccommodationService {
         this.companyRepo = companyRepo;
     }
 
-    public List<Guest> searchForGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter, boolean foreignersOnly) {
-        String searchTerm = (stringFilter != null && !stringFilter.isEmpty()) ? "%" + stringFilter.toLowerCase() + "%" : null;
-        return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter, foreignersOnly);
+    public List<Guest> searchForAllGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter) {
+        return searchGuests(stringFilter, arrivedFilter, leftFilter, false, null);
+    }
+    public List<Guest> searchForForeignGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter) {
+        return searchGuests(stringFilter, arrivedFilter, leftFilter, true, null);
     }
 
-    public List<Guest> findAllForeigners() {
-        return guestRepository.findAllForeigners();
+    public List<Guest> searchGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter, boolean foreignersOnly, Company company) {
+        String searchTerm = (stringFilter != null && !stringFilter.isEmpty()) ? "%" + stringFilter.toLowerCase() + "%" : null;
+        return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter, foreignersOnly, company);
     }
 
     public List<Country> findCountriesByName(String filter) {
@@ -55,6 +58,7 @@ public class AccommodationService {
         g.setBirthDate(guest.getBirthDate());
         g.setIdNumber(guest.getIdNumber());
         g.setNationality(guest.getNationality());
+        g.setCompany(guest.getCompany());
         guestRepository.save(g);
     }
     public void saveGuest(Guest guest) {
@@ -81,6 +85,9 @@ public class AccommodationService {
 
     public List<Guest> findAllGuests() {
         return guestRepository.findAll();
+    }
+    public List<Guest> findAllForeigners() {
+        return guestRepository.findAllForeigners();
     }
     public List<Company> findAllCompanies() {return companyRepo.findAll();}
 }

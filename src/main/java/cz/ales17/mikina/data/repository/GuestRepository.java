@@ -1,5 +1,6 @@
 package cz.ales17.mikina.data.repository;
 
+import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,14 +20,20 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
      * @return List of guests
      */
 
-    @Query("SELECT c FROM Guest c " +
-            "WHERE (:searchTerm IS NULL OR lower(c.firstName) LIKE lower(:searchTerm) OR lower(c.lastName) LIKE lower(:searchTerm)) " +
-            "AND (:arrivedFilter IS NULL OR c.dateArrived >= :arrivedFilter) " +
-            "AND (:leftFilter IS NULL OR c.dateLeft <= :leftFilter) AND (:foreignersOnly = FALSE OR c.nationality <> 0)")
-    List<Guest> searchGuests(@Param("searchTerm") String searchTerm, @Param("arrivedFilter") LocalDate arrivedFilter, @Param("leftFilter") LocalDate leftFilter, boolean foreignersOnly);
+    @Query("SELECT g FROM Guest g " +
+            "WHERE (:searchTerm IS NULL OR lower(g.firstName) LIKE lower(:searchTerm) OR lower(g.lastName) LIKE lower(:searchTerm)) " +
+            "AND (:arrivedFilter IS NULL OR g.dateArrived >= :arrivedFilter) " +
+            "AND (:leftFilter IS NULL OR g.dateLeft <= :leftFilter) " +
+            "AND (:foreignersOnly = FALSE OR g.nationality <> 0) " +
+            "AND (:company IS NULL OR g.company = :company)")
+    List<Guest> searchGuests(@Param("searchTerm") String searchTerm,
+                             @Param("arrivedFilter") LocalDate arrivedFilter,
+                             @Param("leftFilter") LocalDate leftFilter,
+                             @Param("foreignersOnly") boolean foreignersOnly,
+                             @Param("company") Company company);
 
 
-    @Query("SELECT c from Guest c where c.nationality <> 0")
+    @Query("SELECT g from Guest g where g.nationality <> 0")
     List<Guest> findAllForeigners();
 
 
