@@ -6,6 +6,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
@@ -18,7 +19,9 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.Role;
+import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.UserService;
 import lombok.Getter;
 
@@ -29,21 +32,27 @@ public class AdminUserForm extends FormLayout {
     private final UserService userService;
     private User user;
     private final Binder<User> binder = new BeanValidationBinder<>(User.class);
+    @Getter
     private final TextField username = new TextField("Uživatelské jméno");
     private final TextField name = new TextField("Jméno a příjmení");
     private final EmailField emailAddress = new EmailField("E-mailová adresa");
+    private final ComboBox<Company> company = new ComboBox<>("Ubytovací zařízení");
     private final Button save = new Button("Uložit");
     public final Button delete = new Button("Smazat");
     public final Button close = new Button("Storno");
     private final PasswordField passwd, passwdConfirmation;
+    AccommodationService accommodationService;
 
-
-    public AdminUserForm(UserService userService) {
+    public AdminUserForm(UserService userService, AccommodationService accommodationService) {
         this.userService = userService;
-
+        this.accommodationService=accommodationService;
         MultiSelectComboBox<Role> roles = new MultiSelectComboBox<>("Uživatelské role");
         roles.setItems(Role.USER,Role.ADMIN);
         binder.forField(roles).bind(User::getRoles, User::setRoles);
+
+
+        company.setItemLabelGenerator(Company::getName);
+        company.setItems(accommodationService.findAllCompanies());
 
         binder.forField(name)
                 .withValidator(new StringLengthValidator(
@@ -59,14 +68,15 @@ public class AdminUserForm extends FormLayout {
                 username,
                 name,
                 emailAddress,
+                company,
                 passwd,
                 passwdConfirmation,
                 roles,
                 createButtonsLayout()
         );
 
-
-        username.setEnabled(false);
+        //TODO disable username field (changing username) but allow when  creating new acc
+        //username.setEnabled(false);
     }
 
 

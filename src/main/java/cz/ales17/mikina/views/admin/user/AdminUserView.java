@@ -1,11 +1,14 @@
 package cz.ales17.mikina.views.admin.user;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.UserService;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
@@ -15,16 +18,19 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Správa uživatelů | Ubytovací systém")
 public class AdminUserView extends VerticalLayout {
     private final UserService userService;
+    private final AccommodationService accommodationService;
     private final Grid<User> userGrid = new Grid<>(User.class);
     private AdminUserForm form;
 
-    public AdminUserView(UserService userService) {
+    private final Button addUserBtn = new Button("Přidat uživatele");
+    public AdminUserView(UserService userService, AccommodationService accommodationService) {
         this.userService = userService;
+        this.accommodationService = accommodationService;
         setSizeFull();
         configureUserGrid();
         configureUserForm();
 
-        add(getContent());
+        add(getToolbar(), getContent());
         updateUserGrid();
         closeEditor();
     }
@@ -45,14 +51,22 @@ public class AdminUserView extends VerticalLayout {
 
     }
 
+    private Component getToolbar() {
+        addUserBtn.addClickListener(click -> addUser());
+        return new HorizontalLayout(addUserBtn);
+    }
+
     private void configureUserForm() {
-        form = new AdminUserForm(userService);
+        form = new AdminUserForm(userService, accommodationService);
         form.setWidth("30em");
         form.addDeleteListener(this::deleteUser);
         form.addSaveListener(this::saveUser);
         form.addCloseListener(e -> closeEditor());
     }
-
+    private void addUser() {
+        userGrid.asSingleSelect().clear();
+        editUser(new User());
+    }
     private void saveUser(AdminUserForm.SaveEvent event) {
         userService.saveUser(event.getUser());
         updateUserGrid();

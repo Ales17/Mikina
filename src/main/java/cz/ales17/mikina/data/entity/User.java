@@ -34,6 +34,9 @@ public class User extends AbstractEntity {
     @Column(length = 1000000)
     private byte[] profilePicture;
 
+    @ManyToOne
+    private Company company;
+
     public String getRolesAsString() {
         StringJoiner displayRoles = new StringJoiner(", ");
 
