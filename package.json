@@ -2,6 +2,7 @@
   "name": "no-name",
   "license": "UNLICENSED",
   "dependencies": {
+    "@babel/traverse": "^7.23.7",
     "@polymer/polymer": "3.5.1",
     "@vaadin/accordion": "24.0.3",
     "@vaadin/app-layout": "24.0.3",
@@ -74,6 +75,7 @@
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
     "lit": "2.6.1",
+    "postcss": "^8.4.33",
     "proj4": "2.8.1"
   },
   "devDependencies": {
@@ -86,7 +88,7 @@
     "strip-css-comments": "5.0.0",
     "transform-ast": "2.4.4",
     "typescript": "4.9.5",
-    "vite": "4.1.3",
+    "vite": "^5.0.12",
     "vite-plugin-checker": "0.5.5",
     "workbox-build": "6.5.4",
     "workbox-core": "6.5.4",
@@ -184,7 +186,7 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "6008a3f331b8a6caad2b47f860892e7e250fca21de3c08496b25a86e21eb1842"
+    "hash": "c732b490a6336ca0652f2384a7fc5b4ce8b869e55fcad614539032afa90a2828"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
