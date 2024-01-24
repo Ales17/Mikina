@@ -23,8 +23,10 @@ public class AdminCompanyView extends VerticalLayout {
         setSizeFull();
         configureCompanyGrid();
         configureCompanyForm();
+
         add(getContent());
         updateCompanyGrid();
+        closeEditor();
     }
 
     private void configureCompanyGrid() {
