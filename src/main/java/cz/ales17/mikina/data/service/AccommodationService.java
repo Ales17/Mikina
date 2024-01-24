@@ -6,16 +6,16 @@ import cz.ales17.mikina.data.entity.Guest;
 import cz.ales17.mikina.data.repository.CompanyRepository;
 import cz.ales17.mikina.data.repository.CountryRepository;
 import cz.ales17.mikina.data.repository.GuestRepository;
-import cz.ales17.mikina.data.repository.StatusRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Service
+
 /**
  * Service class for Accommodation entities.
  */
+@Service
 public class AccommodationService {
 
     private final GuestRepository guestRepository;
