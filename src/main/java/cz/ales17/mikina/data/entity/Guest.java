@@ -2,10 +2,7 @@ package cz.ales17.mikina.data.entity;
 
 import cz.geek.ubyport.StatniPrislusnost;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +34,8 @@ public class Guest extends AbstractEntity {
 
     private String idNumber;
 
+    @ManyToOne
+    private Company company;
 
     @Override
     public String toString() {

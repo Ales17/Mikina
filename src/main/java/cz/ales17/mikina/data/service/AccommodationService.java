@@ -1,7 +1,9 @@
 package cz.ales17.mikina.data.service;
 
+import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Country;
 import cz.ales17.mikina.data.entity.Guest;
+import cz.ales17.mikina.data.repository.CompanyRepository;
 import cz.ales17.mikina.data.repository.CountryRepository;
 import cz.ales17.mikina.data.repository.GuestRepository;
 import cz.ales17.mikina.data.repository.StatusRepository;
@@ -18,14 +20,14 @@ public class AccommodationService {
 
     private final GuestRepository guestRepository;
     private final CountryRepository countryRepository;
-    private final StatusRepository statusRepository;
+    private final CompanyRepository companyRepo;
 
     public AccommodationService(GuestRepository guestRepository,
                                 CountryRepository countryRepository,
-                                StatusRepository statusRepository) {
+                                CompanyRepository companyRepo) {
         this.guestRepository = guestRepository;
         this.countryRepository = countryRepository;
-        this.statusRepository = statusRepository;
+        this.companyRepo = companyRepo;
     }
 
     public List<Guest> searchForGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter, boolean foreignersOnly) {
@@ -35,10 +37,6 @@ public class AccommodationService {
 
     public List<Guest> findAllForeigners() {
         return guestRepository.findAllForeigners();
-    }
-
-    public List<Country> findAllCountries() {
-        return countryRepository.findAll();
     }
 
     public List<Country> findCountriesByName(String filter) {
@@ -66,7 +64,9 @@ public class AccommodationService {
         }
         guestRepository.save(guest);
     }
-
+    public void saveCompany(Company c) {
+        companyRepo.save(c);
+    }
     public void saveCountry(Country country) {
         if (country == null) {
             System.err.println("Země je null. Jsi si jistý, že jsi připojil formulář k aplikaci?");
@@ -82,4 +82,5 @@ public class AccommodationService {
     public List<Guest> findAllGuests() {
         return guestRepository.findAll();
     }
+    public List<Company> findAllCompanies() {return companyRepo.findAll();}
 }
