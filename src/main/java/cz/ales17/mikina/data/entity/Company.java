@@ -16,6 +16,8 @@ public class Company extends AbstractEntity {
     private String registrationNumber;
     private String zipCode;
     private String district;
+    // Ubytovaci poplatek - stay fee per day (except the first one)
+    private double stayFee;
     private String municipality;
     private String municipalityQuarter;
     private String ubyportId;
