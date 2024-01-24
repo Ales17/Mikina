@@ -1,5 +1,7 @@
 package cz.ales17.mikina.views.admin.company;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -17,18 +19,22 @@ public class AdminCompanyView extends VerticalLayout {
     private final AccommodationService service;
     private final Grid<Company> companyGrid = new Grid<>(Company.class);
     private AdminCompanyForm form;
-
+    private final Button addCompanyBtn = new Button("Přidat společnost");
     public AdminCompanyView(AccommodationService service) {
         this.service = service;
         setSizeFull();
         configureCompanyGrid();
         configureCompanyForm();
 
-        add(getContent());
+        add(getToolbar(), getContent());
         updateCompanyGrid();
         closeEditor();
     }
-
+    private Component getToolbar() {
+        addCompanyBtn.addClickListener(click -> addCompany());
+        var toolbar = new HorizontalLayout(addCompanyBtn);
+        return toolbar;
+    }
     private void configureCompanyGrid() {
         companyGrid.setSizeFull();
         companyGrid.setColumns("id", "name", "municipality");
@@ -42,7 +48,10 @@ public class AdminCompanyView extends VerticalLayout {
         form.addSaveListener(this::saveCompany);
         form.addCloseListener(e->closeEditor());
     }
-
+    private void addCompany() {
+        companyGrid.asSingleSelect().clear();
+        editCompany(new Company());
+    }
     private void saveCompany(AdminCompanyForm.SaveEvent e) {
         service.saveCompany(e.getCompany());
         updateCompanyGrid();
