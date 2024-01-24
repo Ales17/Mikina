@@ -20,14 +20,11 @@ import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import cz.ales17.mikina.data.entity.User;
 import cz.ales17.mikina.security.AuthenticatedUser;
-import cz.ales17.mikina.test.PdfGenerationView;
-import cz.ales17.mikina.views.country.CountryView;
 import cz.ales17.mikina.views.dashboard.DashboardView;
 import cz.ales17.mikina.views.guest.GuestView;
 import cz.ales17.mikina.views.user.UserView;
 
 import java.io.ByteArrayInputStream;
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -41,11 +38,9 @@ import java.util.Optional;
 public class MainLayout extends AppLayout {
     private AuthenticatedUser authenticatedUser;
     private AccessAnnotationChecker accessChecker;
-
     public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
         this.authenticatedUser = authenticatedUser;
         this.accessChecker = accessChecker;
-
 
         createHeader();
         createDrawer();
@@ -55,9 +50,7 @@ public class MainLayout extends AppLayout {
         Tabs tabs = new Tabs();
         tabs.add(
                 createTab(VaadinIcon.DASHBOARD, "Hlavní panel", DashboardView.class),
-                createTab(VaadinIcon.BOOK, "Evidenční kniha", GuestView.class),
-                createTab(VaadinIcon.GLOBE_WIRE, "Země", CountryView.class),
-                createTab(VaadinIcon.ANCHOR, "Testovací", PdfGenerationView.class)
+                createTab(VaadinIcon.BOOK, "Kniha hostů", GuestView.class)
         );
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
@@ -107,18 +100,17 @@ public class MainLayout extends AppLayout {
         Optional<User> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
+
             Avatar avatar = new Avatar(user.getName());
+            avatar.setThemeName("xsmall");
+            avatar.getElement().setAttribute("tabindex", "-1");
+
             // If user's picture is set in database
             if(user.getProfilePicture() != null) {
-                System.out.println(Arrays.toString(user.getProfilePicture()));
                 StreamResource resource = new StreamResource("profile-pic",
                         () -> new ByteArrayInputStream(user.getProfilePicture()));
                 avatar.setImageResource(resource);
             }
-
-
-            avatar.setThemeName("xsmall");
-            avatar.getElement().setAttribute("tabindex", "-1");
 
             MenuBar userMenu = new MenuBar();
             userMenu.setThemeName("tertiary-inline contrast");
@@ -134,10 +126,6 @@ public class MainLayout extends AppLayout {
             userName.add(div);
             userName.getSubMenu().addItem("Odhlásit se", e -> authenticatedUser.logout());
             userName.getSubMenu().addItem("Moje údaje", e -> UI.getCurrent().navigate(UserView.class));
-            /* RouterLink link = new RouterLink();
-            link.add(new Span("Moje údaje"));
-            link.setRoute(UserView.class);
-            userName.getSubMenu().addItem(link);*/
 
             layout.add(userMenu);
             layout.getStyle().set("margin-right", "var(--lumo-space-m)");
