@@ -182,7 +182,7 @@ public class GuestView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new GuestForm(ubyportReportService.getCountryList());
+        form = new GuestForm(accommodationService, ubyportReportService.getCountryList());
         form.setWidth("30em");
         form.addSaveListener(this::saveGuest);
         form.addDeleteListener(this::deleteGuest);

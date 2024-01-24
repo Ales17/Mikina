@@ -14,7 +14,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
+import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
+import cz.ales17.mikina.data.service.AccommodationService;
 import cz.geek.ubyport.StatniPrislusnost;
 
 import java.time.LocalDate;
@@ -35,15 +37,23 @@ public class GuestForm extends FormLayout {
     Button save = new Button("Uložit");
     Button delete = new Button("Smazat");
     Button close = new Button("Storno");
+
+    ComboBox<Company> company = new ComboBox<>("Ubytovací zařízení");
     Binder<Guest> binder = new BeanValidationBinder<>(Guest.class);
-
-    public GuestForm(List<StatniPrislusnost> ubyportNationality) {
-
-
+    AccommodationService service;
+    public GuestForm(AccommodationService service, List<StatniPrislusnost> ubyportNationality) {
+        this.service = service;
         addClassName("guest-form");
+
         binder.bindInstanceFields(this);
+
+        company.setItems(service.findAllCompanies());
+        company.setItemLabelGenerator(Company::getName);
+
+
         nationality.setItems(ubyportNationality);
         nationality.setItemLabelGenerator(StatniPrislusnost::getTitle);
+
         add(firstName,
                 lastName,
                 address,
@@ -52,6 +62,7 @@ public class GuestForm extends FormLayout {
                 dateArrived,
                 dateLeft,
                 idNumber,
+                company,
                 createButtonsLayout());
         // Validation
         // Range between dateArrived and dateLeft
