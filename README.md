@@ -1,3 +1,9 @@
 # Mikina App
 
-This project is my playground for learning Vaadin.
+Accommodation system for small businesses written in Java.
+
+## Stack
+- Spring Boot
+- Vaadin
+- MySQL
+- Docker
