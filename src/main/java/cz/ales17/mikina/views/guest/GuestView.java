@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -64,6 +65,7 @@ public class GuestView extends VerticalLayout {
     private final DateTimeFormatter gridDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final DateTimeFormatter pdfDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
     private final DateTimeFormatter unlDateFormatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
+    private final DateTimeFormatter printDateFormatter = DateTimeFormatter.ofPattern("dd. MM. yyyy HH.mm");
 
     // Form for adding guests
     private GuestForm form;
@@ -96,6 +98,7 @@ public class GuestView extends VerticalLayout {
         String formatDateTime = now.format(pdfDateFormatter);
 
         try {
+            pdfReportService.setTime(now);
             // Generating PDF using the service
             byte[] pdfBytes = pdfReportService.getReportBytes(currentUserCompany, guests);
             // Downloading the PDF
@@ -105,7 +108,7 @@ public class GuestView extends VerticalLayout {
             exportDialog.pdfBtn.setHref(resource);
             exportDialog.pdfBtn.setEnabled(true);
         } catch (Exception e) {
-            exportDialog.pdfBtn.setText("Chyba při generování PDF");
+            Notification.show("Chyba při generování PDF",5000, Notification.Position.MIDDLE);
             exportDialog.pdfBtn.setEnabled(false);
             throw new RuntimeException();
         }
@@ -121,7 +124,7 @@ public class GuestView extends VerticalLayout {
             exportDialog.unlBtn.getElement().setAttribute("download", true);
             exportDialog.unlBtn.setEnabled(true);
         } catch (Exception e) {
-            exportDialog.unlBtn.setText("Chyba při generování UNL");
+            Notification.show("Chyba při generování UNL",5000, Notification.Position.MIDDLE);
             exportDialog.unlBtn.setEnabled(false);
             throw new RuntimeException(e);
         }
@@ -153,8 +156,9 @@ public class GuestView extends VerticalLayout {
         var toolbar = new HorizontalLayout(openDialogBtn, filterText, filterArrived, filterLeft, filterReset, addGuestButton, duplicateGuestBtn);
         toolbar.setAlignItems(Alignment.END);
         toolbar.addClassName("toolbar");
-        toolbar.setPadding(true);
-        toolbar.getStyle().set("display","inline-flex");
+        toolbar.setPadding(false);
+        //toolbar.getStyle().set("display","inline-flex");
+        toolbar.getStyle().set("padding-bottom", "12px");
         // Scroller to prevent overflow, on small viewport height will buttons be scrollable
         Scroller scroller = new Scroller();
         scroller.setScrollDirection(Scroller.ScrollDirection.HORIZONTAL);
@@ -186,13 +190,13 @@ public class GuestView extends VerticalLayout {
         guestGrid.setSizeFull();
         // When setting columns update this list
         guestGrid.setColumns("firstName", "lastName");
+        guestGrid.getColumnByKey("firstName").setHeader("Jméno");
+        guestGrid.getColumnByKey("lastName").setHeader("Příjmení");
         guestGrid.addColumn(new LocalDateRenderer<>(Guest::getBirthDate, () -> gridDateFormatter)).setHeader("Datum narození");
         guestGrid.addColumn(Guest::getIdNumber).setHeader("Číslo dokladu");
         guestGrid.addColumn(Guest::getNationality).setHeader("Stát");
         guestGrid.addColumn(new LocalDateRenderer<>(Guest::getDateArrived, () -> gridDateFormatter)).setHeader("Datum příchodu");
         guestGrid.addColumn(new LocalDateRenderer<>(Guest::getDateLeft, () -> gridDateFormatter)).setHeader("Datum odchodu");
-        guestGrid.getColumnByKey("firstName").setHeader("Jméno");
-        guestGrid.getColumnByKey("lastName").setHeader("Příjmení");
         guestGrid.getColumns().forEach(col -> col.setAutoWidth(true));
         guestGrid.asSingleSelect().addValueChangeListener(event -> editGuest(event.getValue()));
     }

@@ -12,9 +12,11 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -25,6 +27,9 @@ import java.util.List;
 public class PdfReportService implements ReportService {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private final DateTimeFormatter printFormatter = DateTimeFormatter.ofPattern("dd. MM. yyyy HH.mm");
+    @Setter
+    private LocalDateTime time;
 
     private final float[] columnWidths = {
             1f,
@@ -47,11 +52,14 @@ public class PdfReportService implements ReportService {
 
         PdfDocument pdf = new PdfDocument(pdfWriter);
         pdf.setDefaultPageSize(PageSize.A4.rotate());
+        String buildingNumber = c.getHouseNumber();
+        if(c.getRegistrationNumber() != null) {buildingNumber = String.format("%s/%s", c.getHouseNumber(), c.getRegistrationNumber());}
+        String reportHeading = String.format("Evidenční kniha - %s, %s %s, %s (čas generování %s)", c.getName(), c.getStreet(), buildingNumber, c.getMunicipality(), printFormatter.format(time));
 
         Document doc = new Document(pdf);
         doc.setMargins(10,10,10,10);
-        doc.add(new Paragraph("Ubytovací kniha, " + c.getName()));
         doc.setFont(f1);
+        doc.add(new Paragraph(reportHeading));
         Table table = new Table(columnWidths).useAllAvailableWidth();
 
         addHeaderCells(table, "Jméno", "Příjmení", "ID", "Narození", "Příchod", "Odchod", "Národnost", "Adresa");
