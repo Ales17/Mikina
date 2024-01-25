@@ -18,8 +18,9 @@ import jakarta.annotation.security.RolesAllowed;
 public class AdminCompanyView extends VerticalLayout {
     private final AccommodationService service;
     private final Grid<Company> companyGrid = new Grid<>(Company.class);
-    private AdminCompanyForm form;
     private final Button addCompanyBtn = new Button("Přidat společnost");
+    private AdminCompanyForm form;
+
     public AdminCompanyView(AccommodationService service) {
         this.service = service;
         setSizeFull();
@@ -30,42 +31,45 @@ public class AdminCompanyView extends VerticalLayout {
         updateCompanyGrid();
         closeEditor();
     }
+
     private Component getToolbar() {
         addCompanyBtn.addClickListener(click -> addCompany());
         return new HorizontalLayout(addCompanyBtn);
     }
+
     private void configureCompanyGrid() {
         companyGrid.setSizeFull();
         companyGrid.setColumns("id", "name", "municipality");
-        companyGrid.asSingleSelect().addValueChangeListener(e-> editCompany(e.getValue()));
+        companyGrid.asSingleSelect().addValueChangeListener(e -> editCompany(e.getValue()));
     }
 
     private void configureCompanyForm() {
-        form = new AdminCompanyForm(service);
+        form = new AdminCompanyForm();
         form.setWidth("30em");
         form.addDeleteListener(this::deleteCompany);
         form.addSaveListener(this::saveCompany);
-        form.addCloseListener(e->closeEditor());
+        form.addCloseListener(e -> closeEditor());
     }
+
     private void addCompany() {
         companyGrid.asSingleSelect().clear();
         editCompany(new Company());
     }
+
     private void saveCompany(AdminCompanyForm.SaveEvent e) {
         service.saveCompany(e.getCompany());
         updateCompanyGrid();
         closeEditor();
     }
 
-    private void deleteCompany(AdminCompanyForm.DeleteEvent e)
-    {
+    private void deleteCompany(AdminCompanyForm.DeleteEvent e) {
         service.saveCompany(e.getCompany());
         updateCompanyGrid();
         closeEditor();
     }
 
     private void editCompany(Company c) {
-        if(c == null) {
+        if (c == null) {
             closeEditor();
         } else {
             form.setCompany(c);
@@ -87,8 +91,7 @@ public class AdminCompanyView extends VerticalLayout {
         return content;
     }
 
-    private void updateCompanyGrid(){
+    private void updateCompanyGrid() {
         companyGrid.setItems(service.findAllCompanies());
-        System.out.println(service.findAllCompanies());
     }
 }

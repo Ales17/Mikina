@@ -12,33 +12,27 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import cz.ales17.mikina.data.entity.Company;
-import cz.ales17.mikina.data.service.AccommodationService;
-import cz.ales17.mikina.views.admin.user.AdminUserForm;
 import lombok.Getter;
 
 public class AdminCompanyForm extends FormLayout {
     public final Button delete = new Button("Smazat");
     public final Button close = new Button("Storno");
-    private final AccommodationService service;
     private final Binder<Company> binder = new BeanValidationBinder<>(Company.class);
     private final Button save = new Button("Uložit");
-    private Company company;
-    private TextField name = new TextField("Název zařízení");
-    private TextField district = new TextField("Okres");
-    private TextField houseNumber = new TextField("Číslo domovní");
-    private TextField registrationNumber = new TextField("Číslo orientační");
-    private TextField municipality = new TextField("Obec");
-    private TextField municipalityQuarter = new TextField("Část obce");
-    private TextField street = new TextField("Ulice");
-    private TextField ubyportAbbr = new TextField("Ubyport zkratka");
-    private TextField ubyportContact = new TextField("Ubyport kontakt");
-    private TextField ubyportId = new TextField("Ubyport ID");
-    private TextField zipCode = new TextField("PSČ");
+    private final TextField name = new TextField("Název zařízení");
+    private final TextField district = new TextField("Okres");
+    private final TextField houseNumber = new TextField("Číslo domovní");
+    private final TextField registrationNumber = new TextField("Číslo orientační");
+    private final TextField municipality = new TextField("Obec");
+    private final TextField municipalityQuarter = new TextField("Část obce");
+    private final TextField street = new TextField("Ulice");
+    private final TextField ubyportAbbr = new TextField("Ubyport zkratka");
+    private final TextField ubyportContact = new TextField("Ubyport kontakt");
+    private final TextField ubyportId = new TextField("Ubyport ID");
+    private final TextField zipCode = new TextField("PSČ");
 
-    public AdminCompanyForm(AccommodationService service) {
-        this.service = service;
+    public AdminCompanyForm() {
         binder.bindInstanceFields(this);
-
         add(name,
                 street,
                 houseNumber,
@@ -46,6 +40,7 @@ public class AdminCompanyForm extends FormLayout {
                 municipalityQuarter,
                 municipality,
                 zipCode,
+                district,
                 ubyportAbbr,
                 ubyportContact,
                 ubyportId,
@@ -55,10 +50,11 @@ public class AdminCompanyForm extends FormLayout {
     }
 
     private void validateAndSave() {
-        if(binder.isValid()) {
+        if (binder.isValid()) {
             fireEvent(new SaveEvent(this, binder.getBean()));
         }
     }
+
     private Component createButtonsLayout() {
 
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -77,6 +73,7 @@ public class AdminCompanyForm extends FormLayout {
 
 
     }
+
     public void addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         addListener(DeleteEvent.class, listener);
     }
@@ -88,7 +85,6 @@ public class AdminCompanyForm extends FormLayout {
     public void addCloseListener(ComponentEventListener<CloseEvent> listener) {
         addListener(CloseEvent.class, listener);
     }
-
 
 
     public void setCompany(Company c) {
