@@ -5,6 +5,7 @@ import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.PdfReportService;
 import cz.ales17.mikina.data.service.UbyportReportService;
@@ -25,10 +26,11 @@ public class PdfGenerationView extends VerticalLayout {
     @Autowired
     public PdfGenerationView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService) {
         this.pdfReportService = pdfReportService;
+        Company sampleCompany = new Company();
 
         Button generateUnlButton = new Button("Generovat UNL", event -> {
             try {
-                byte[] unlBytes = ubyportReportService.getReportBytes("Apartmány",
+                byte[] unlBytes = ubyportReportService.getReportBytes(sampleCompany,
                         accommodationService.findAllForeigners());
                 StreamResource resource = new StreamResource("123456789012_" + "datetime" + ".unl", () -> new ByteArrayInputStream(unlBytes));
                 Anchor anchor = new Anchor(resource, "Stáhnout UNL");
@@ -47,7 +49,7 @@ public class PdfGenerationView extends VerticalLayout {
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formatDateTime = datetime1.format(format);
 
-                byte[] pdf = pdfReportService.getReportBytes("", accommodationService.findAllGuests());
+                byte[] pdf = pdfReportService.getReportBytes(sampleCompany, accommodationService.findAllGuests());
                 StreamResource resource = new StreamResource("itext8_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdf));
                 Anchor anchor = new Anchor(resource, "Stáhnout PDF");
                 //anchor.getElement().setAttribute("download", true);

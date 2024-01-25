@@ -97,7 +97,7 @@ public class GuestView extends VerticalLayout {
 
         try {
             // Generating PDF using the service
-            byte[] pdfBytes = pdfReportService.getReportBytes("Apartmány u Mikiny", guests);
+            byte[] pdfBytes = pdfReportService.getReportBytes(currentUserCompany, guests);
             // Downloading the PDF
             StreamResource resource = new StreamResource("ubytovaci-kniha_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
             //anchor.getElement().setAttribute("download", true);
@@ -115,7 +115,7 @@ public class GuestView extends VerticalLayout {
         LocalDateTime now = LocalDateTime.now();
         String formatDateTime = now.format(unlDateFormatter);
         try {
-            byte[] unlReportBytes = ubyportReportService.getReportBytes("Apartmány", foreignGuestList);
+            byte[] unlReportBytes = ubyportReportService.getReportBytes(currentUserCompany, foreignGuestList);
             StreamResource resource = new StreamResource("123456789012_" + formatDateTime + ".unl", () -> new ByteArrayInputStream(unlReportBytes));
             exportDialog.unlBtn.setHref(resource);
             exportDialog.unlBtn.getElement().setAttribute("download", true);

@@ -1,12 +1,15 @@
 package cz.ales17.mikina.data.service;
 
+import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
 import cz.geek.ubyport.*;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
 @Service
 public class UbyportReportService implements ReportService {
 
@@ -28,24 +31,20 @@ public class UbyportReportService implements ReportService {
         return ubytovany;
     }
 
-    public List<StatniPrislusnost> getCountryList() {
-        return countryList;
-    }
-
     @Override
-    public byte[] getReportBytes(String content, List<Guest> guests) throws Exception {
+    public byte[] getReportBytes(Company c, List<Guest> guests) throws Exception {
         UbyportUbytovatel ubytovatel = new UbyportUbytovatel();
-        ubytovatel.setIdub("id1");
-        ubytovatel.setZkratka("abbr1");
-        ubytovatel.setUbytovatel("Apartmány u Mikiny");
-        ubytovatel.setKontakt("Jan Sibelius, tel: 261 197 135");
-        ubytovatel.setOkres("Praha 22");
-        ubytovatel.setObec("Praha");
-        ubytovatel.setCastObce("Hostivař");
-        ubytovatel.setUlice("U Továren");
-        ubytovatel.setCisloDomovni("538");
-        ubytovatel.setCisloOrientacni("23a");
-        ubytovatel.setPsc("11055");
+        ubytovatel.setIdub(c.getUbyportId());
+        ubytovatel.setZkratka(c.getUbyportAbbr());
+        ubytovatel.setUbytovatel(c.getName());
+        ubytovatel.setKontakt(c.getUbyportContact());
+        ubytovatel.setOkres(c.getDistrict());
+        ubytovatel.setObec(c.getMunicipality());
+        ubytovatel.setCastObce(c.getMunicipalityQuarter());
+        ubytovatel.setUlice(c.getStreet());
+        ubytovatel.setCisloDomovni(c.getHouseNumber());
+        ubytovatel.setCisloOrientacni(c.getRegistrationNumber());
+        ubytovatel.setPsc(c.getZipCode());
         Ubyport ubyport = new Ubyport(ubytovatel);
         for (Guest g : guests) {
             if (g.getDateArrived() != null && g.getDateLeft() != null) {

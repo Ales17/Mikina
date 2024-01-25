@@ -10,6 +10,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
+import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class PdfReportService implements ReportService {
             1.5f
     };
     @Override
-    public byte[] getReportBytes(String content, List<Guest> guests) throws Exception {
+    public byte[] getReportBytes(Company c, List<Guest> guests) throws Exception {
         String FONT = "arial.ttf";
         PdfFont f1 = PdfFontFactory.createFont(FONT, PdfEncodings.CP1250, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
 
@@ -49,7 +50,7 @@ public class PdfReportService implements ReportService {
 
         Document doc = new Document(pdf);
         doc.setMargins(10,10,10,10);
-        doc.add(new Paragraph(content));
+        doc.add(new Paragraph("Ubytovací kniha, " + c.getName()));
         doc.setFont(f1);
         Table table = new Table(columnWidths).useAllAvailableWidth();
 
