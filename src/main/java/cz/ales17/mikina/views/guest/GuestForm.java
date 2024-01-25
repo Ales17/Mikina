@@ -20,12 +20,14 @@ import cz.ales17.mikina.data.service.AccommodationService;
 import cz.geek.ubyport.StatniPrislusnost;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
  * GuestForm is a form for editing Guest entities.
  */
 public class GuestForm extends FormLayout {
+    ComboBox<Company> company = new ComboBox<>("Ubytovatel");
     TextField firstName = new TextField("Jméno");
     TextField lastName = new TextField("Příjmení");
     TextField address = new TextField("Adresa");
@@ -37,24 +39,23 @@ public class GuestForm extends FormLayout {
     Button save = new Button("Uložit");
     Button delete = new Button("Smazat");
     Button close = new Button("Storno");
-
-    ComboBox<Company> company = new ComboBox<>("Ubytovací zařízení");
     Binder<Guest> binder = new BeanValidationBinder<>(Guest.class);
     AccommodationService service;
+
     public GuestForm(AccommodationService service, List<StatniPrislusnost> ubyportNationality) {
         this.service = service;
+
         addClassName("guest-form");
 
         binder.bindInstanceFields(this);
-
-        company.setItems(service.findAllCompanies());
+        company.setItems(service.findAllCompanies())    ;
         company.setItemLabelGenerator(Company::getName);
-
 
         nationality.setItems(ubyportNationality);
         nationality.setItemLabelGenerator(StatniPrislusnost::getTitle);
-
-        add(firstName,
+        add(
+                company,
+                firstName,
                 lastName,
                 address,
                 nationality,
@@ -62,12 +63,11 @@ public class GuestForm extends FormLayout {
                 dateArrived,
                 dateLeft,
                 idNumber,
-                company,
                 createButtonsLayout());
         // Validation
         // Range between dateArrived and dateLeft
-        dateArrived.addValueChangeListener(e -> dateLeft.setMin(e.getValue()));
-        dateLeft.addValueChangeListener(e -> dateArrived.setMax(e.getValue()));
+        dateArrived.addValueChangeListener(e -> handleDateArrived(e.getValue()));
+        dateLeft.addValueChangeListener(e -> handleDateLeft(e.getValue()));
         // Birthdate can not be later than today
         birthDate.setMax(LocalDate.now());
         setResponsiveSteps(
@@ -80,7 +80,28 @@ public class GuestForm extends FormLayout {
     public void setGuest(Guest guest) {
         binder.setBean(guest);
     }
+    // ToDo calculate stay fee
+    private void handleDateArrived(LocalDate d) {
+        dateLeft.setMin(d);
+        //handleFeeCalculation();
+    }
 
+    private void handleDateLeft(LocalDate d) {
+        dateArrived.setMax(d);
+        //handleFeeCalculation();
+    }
+
+    private long getStayDayCount() {
+        return ChronoUnit.DAYS.between(dateArrived.getValue(), dateLeft.getValue());
+    }
+
+    private void handleFeeCalculation() {
+        if (dateLeft.getValue() != null && dateArrived.getValue() != null) {
+            double stayFeeInputValue = binder.getBean().getCompany().getStayFee();
+            double d = (double) getStayDayCount() * stayFeeInputValue;
+            //totalStayFee.setValue(d);
+        }
+    }
 
     private Component createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

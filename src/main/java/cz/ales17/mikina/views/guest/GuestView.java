@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
@@ -29,7 +30,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -68,6 +68,7 @@ public class GuestView extends VerticalLayout {
     // Form for adding guests
     private GuestForm form;
     // Company of current user's business
+    private Company currentUserCompany;
     private List<Guest> currentGuestList, currentForeignGuestList;
     public GuestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService, AuthenticatedUser authenticatedUser) {
         this.accommodationService = accommodationService;
@@ -152,7 +153,15 @@ public class GuestView extends VerticalLayout {
         var toolbar = new HorizontalLayout(openDialogBtn, filterText, filterArrived, filterLeft, filterReset, addGuestButton, duplicateGuestBtn);
         toolbar.setAlignItems(Alignment.END);
         toolbar.addClassName("toolbar");
-        return toolbar;
+        toolbar.setPadding(true);
+        toolbar.getStyle().set("display","inline-flex");
+        // Scroller to prevent overflow, on small viewport height will buttons be scrollable
+        Scroller scroller = new Scroller();
+        scroller.setScrollDirection(Scroller.ScrollDirection.HORIZONTAL);
+        scroller.setContent(toolbar);
+        scroller.setMaxWidth("100%");
+        //return toolbar;
+        return scroller;
     }
 
 
@@ -251,6 +260,8 @@ public class GuestView extends VerticalLayout {
     private void addGuest() {
         guestGrid.asSingleSelect().clear();
         editGuest(new Guest());
+        // Adding new guest, set the company to the user's company
+        form.company.setValue(currentUserCompany);
     }
 
 
@@ -258,7 +269,8 @@ public class GuestView extends VerticalLayout {
         Optional<User> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
             User currentUser = maybeUser.get();
-            Company currentUserCompany = currentUser.getCompany();
+            currentUserCompany = currentUser.getCompany();
+
             // User is admin, get all guests
             if (currentUser.getRoles().contains(Role.ADMIN)) {
                 currentGuestList = accommodationService.searchForAllGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue());
@@ -266,6 +278,7 @@ public class GuestView extends VerticalLayout {
             } else { // Get only the guests that belong to user's company
                 currentGuestList = accommodationService.searchGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), false, currentUserCompany);
                 currentForeignGuestList = accommodationService.searchGuests(filterText.getValue(), filterArrived.getValue(), filterLeft.getValue(), true, currentUserCompany);
+                form.company.setReadOnly(true); // No admin, do not allow changing company
             }
             guestGrid.setItems(currentGuestList);
             prepareExportButtons();
