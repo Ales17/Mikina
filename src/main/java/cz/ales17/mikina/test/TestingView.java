@@ -16,15 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
+/**
+ * View for testing purposes
+ */
 @Route(value = "pdf", layout = MainLayout.class)
-@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
-public class PdfGenerationView extends VerticalLayout {
+@RolesAllowed({"ROLE_ADMIN"})
+public class TestingView extends VerticalLayout {
 
     PdfReportService pdfReportService;
+    LocalDateTime now;
 
     @Autowired
-    public PdfGenerationView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService) {
+    public TestingView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService) {
         this.pdfReportService = pdfReportService;
         Company sampleCompany = new Company();
 
@@ -45,9 +48,8 @@ public class PdfGenerationView extends VerticalLayout {
         Button iText8 = new Button("Generování PDF (iText8)", event -> {
 
             try {
-                LocalDateTime datetime1 = LocalDateTime.now();
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
-                String formatDateTime = datetime1.format(format);
+                String formatDateTime = now.format(format);
 
                 byte[] pdf = pdfReportService.getReportBytes(sampleCompany, accommodationService.findAllGuests());
                 StreamResource resource = new StreamResource("itext8_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdf));
@@ -64,4 +66,5 @@ public class PdfGenerationView extends VerticalLayout {
 
         add(iText8);
     }
+
 }
