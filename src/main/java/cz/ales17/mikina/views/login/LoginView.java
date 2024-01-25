@@ -14,9 +14,9 @@ import jakarta.annotation.security.PermitAll;
 /**
  * LoginView shows the login form and fires the login event.
  */
-@Route("login")
-@PageTitle("Login | Ubytovací systém")
 @PermitAll
+@Route("login")
+@PageTitle("Přihlášení")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
     private final AuthenticatedUser authenticatedUser;
     private final PasswordResetDialog passwordResetDialog = new PasswordResetDialog();

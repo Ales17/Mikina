@@ -15,7 +15,7 @@ import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed({"ROLE_ADMIN"})
 @Route(value = "admin/users", layout = MainLayout.class)
-@PageTitle("Správa uživatelů | Ubytovací systém")
+@PageTitle("Správa uživatelů")
 public class AdminUserView extends VerticalLayout {
     private final UserService userService;
     private final AccommodationService accommodationService;

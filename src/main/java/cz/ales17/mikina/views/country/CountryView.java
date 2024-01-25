@@ -6,6 +6,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import cz.ales17.mikina.data.entity.Country;
 import cz.ales17.mikina.data.service.AccommodationService;
@@ -15,8 +16,9 @@ import jakarta.annotation.security.RolesAllowed;
 /**
  * A view for managing countries.
  */
-@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+@RolesAllowed({"ROLE_ADMIN"})
 @Route(value = "country", layout = MainLayout.class)
+@PageTitle("Země")
 public class CountryView extends VerticalLayout {
     Grid<Country> grid = new Grid<>(Country.class);
     TextField filterText = new TextField();

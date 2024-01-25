@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import cz.ales17.mikina.views.MainLayout;
 import cz.ales17.mikina.views.admin.company.AdminCompanyView;
@@ -12,6 +13,7 @@ import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed({"ROLE_ADMIN"})
 @Route(value = "admin", layout = MainLayout.class)
+@PageTitle("Administrace systému")
 public class AdminView extends VerticalLayout {
     public AdminView() {
         add(getBtns());

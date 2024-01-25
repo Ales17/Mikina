@@ -40,7 +40,7 @@ import java.util.Set;
  */
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "guest", layout = MainLayout.class)
-@PageTitle("Seznam hostů | Ubytovací systém")
+@PageTitle("Evidenční kniha")
 public class GuestView extends VerticalLayout {
     // Services
     private final UbyportReportService ubyportReportService;

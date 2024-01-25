@@ -13,7 +13,7 @@ import jakarta.annotation.security.RolesAllowed;
  */
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "", layout = MainLayout.class)
-@PageTitle("Hlavní panel | Ubytovací systém")
+@PageTitle("Hlavní panel")
 public class DashboardView extends VerticalLayout {
     private final AccommodationService accommodationService;
 

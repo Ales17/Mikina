@@ -6,6 +6,7 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Page;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import cz.ales17.mikina.data.entity.User;
@@ -17,17 +18,13 @@ import jakarta.annotation.security.RolesAllowed;
 import java.util.Optional;
 
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+@PageTitle("Můj účet")
 @Route(value = "user", layout = MainLayout.class)
 public class UserView extends VerticalLayout {
     private final UserService userService;
     private PasswordDialog dialog;
-    private final AuthenticatedUser authenticatedUser;
-    private final AccessAnnotationChecker accessChecker;
-    private UserForm form;
 
     public UserView(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker, UserService userService) {
-        this.authenticatedUser = authenticatedUser;
-        this.accessChecker = accessChecker;
         this.userService = userService;
 
 
@@ -58,7 +55,7 @@ public class UserView extends VerticalLayout {
     }
 
     private void configureForm(User user) {
-        form = new UserForm(userService, user);
+        UserForm form = new UserForm(userService, user);
         form.setVisible(true);
         form.setWidth("30em");
         form.setUser(user);

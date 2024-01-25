@@ -14,7 +14,7 @@ import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed({"ROLE_ADMIN"})
 @Route(value = "admin/companies", layout = MainLayout.class)
-@PageTitle("Správa firem | Ubytovací systém")
+@PageTitle("Správa firem")
 public class AdminCompanyView extends VerticalLayout {
     private final AccommodationService service;
     private final Grid<Company> companyGrid = new Grid<>(Company.class);
@@ -32,8 +32,7 @@ public class AdminCompanyView extends VerticalLayout {
     }
     private Component getToolbar() {
         addCompanyBtn.addClickListener(click -> addCompany());
-        var toolbar = new HorizontalLayout(addCompanyBtn);
-        return toolbar;
+        return new HorizontalLayout(addCompanyBtn);
     }
     private void configureCompanyGrid() {
         companyGrid.setSizeFull();
