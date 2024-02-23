@@ -187,7 +187,7 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "c732b490a6336ca0652f2384a7fc5b4ce8b869e55fcad614539032afa90a2828"
+    "hash": "c6e06630fcd6ae410842db666542afc91b349d0f29f0101a33869ee3c6d7aa19"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -262,6 +262,9 @@
     "@vaadin/grid-pro": "$@vaadin/grid-pro",
     "@vaadin/map": "$@vaadin/map",
     "@vaadin/rich-text-editor": "$@vaadin/rich-text-editor",
-    "proj4": "$proj4"
+    "proj4": "$proj4",
+    "@babel/traverse": "$@babel/traverse",
+    "postcss": "$postcss",
+    "semver": "$semver"
   }
 }

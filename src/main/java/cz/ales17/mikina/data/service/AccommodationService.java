@@ -1,10 +1,8 @@
 package cz.ales17.mikina.data.service;
 
 import cz.ales17.mikina.data.entity.Company;
-import cz.ales17.mikina.data.entity.Country;
 import cz.ales17.mikina.data.entity.Guest;
 import cz.ales17.mikina.data.repository.CompanyRepository;
-import cz.ales17.mikina.data.repository.CountryRepository;
 import cz.ales17.mikina.data.repository.GuestRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +17,18 @@ import java.util.List;
 public class AccommodationService {
 
     private final GuestRepository guestRepository;
-    private final CountryRepository countryRepository;
-    private final CompanyRepository companyRepo;
+    private final CompanyRepository companyRepository;
 
     public AccommodationService(GuestRepository guestRepository,
-                                CountryRepository countryRepository,
-                                CompanyRepository companyRepo) {
+                                CompanyRepository companyRepository) {
         this.guestRepository = guestRepository;
-        this.countryRepository = countryRepository;
-        this.companyRepo = companyRepo;
+        this.companyRepository = companyRepository;
     }
 
     public List<Guest> searchForAllGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter) {
         return searchGuests(stringFilter, arrivedFilter, leftFilter, false, null);
     }
+
     public List<Guest> searchForForeignGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter) {
         return searchGuests(stringFilter, arrivedFilter, leftFilter, true, null);
     }
@@ -42,52 +38,45 @@ public class AccommodationService {
         return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter, foreignersOnly, company);
     }
 
-    public List<Country> findCountriesByName(String filter) {
-        return countryRepository.search(filter);
-    }
 
     public void deleteGuest(Guest guest) {
         guestRepository.delete(guest);
     }
-    public void duplicateGuest(Guest guest) {
-        Guest g = new Guest();
-        g.setId(null);
-        g.setFirstName(guest.getFirstName());
-        g.setLastName(guest.getLastName());
-        g.setAddress(guest.getAddress());
-        g.setBirthDate(guest.getBirthDate());
-        g.setIdNumber(guest.getIdNumber());
-        g.setNationality(guest.getNationality());
-        g.setCompany(guest.getCompany());
-        guestRepository.save(g);
-    }
-    public void saveGuest(Guest guest) {
-        if (guest == null) {
-            System.err.println("Host je null. Jsi si jistý, že jsi připojil formulář k aplikaci?");
-            return;
-        }
-        guestRepository.save(guest);
-    }
-    public void saveCompany(Company c) {
-        companyRepo.save(c);
-    }
-    public void saveCountry(Country country) {
-        if (country == null) {
-            System.err.println("Země je null. Jsi si jistý, že jsi připojil formulář k aplikaci?");
-            return;
-        }
-        countryRepository.save(country);
+
+    public void duplicateGuest(Guest originalGuest) {
+        Guest duplicatedGuest = new Guest();
+        duplicatedGuest.setId(null);
+        duplicatedGuest.setFirstName(originalGuest.getFirstName());
+        duplicatedGuest.setLastName(originalGuest.getLastName());
+        duplicatedGuest.setAddress(originalGuest.getAddress());
+        duplicatedGuest.setBirthDate(originalGuest.getBirthDate());
+        duplicatedGuest.setIdNumber(originalGuest.getIdNumber());
+        duplicatedGuest.setNationality(originalGuest.getNationality());
+        duplicatedGuest.setCompany(originalGuest.getCompany());
+        guestRepository.save(duplicatedGuest);
     }
 
-    public void deleteCountry(Country country) {
-        countryRepository.delete(country);
+    public void saveGuest(Guest toBeSaved) {
+        if (toBeSaved == null) {
+            System.err.println("Guest is null.");
+            return;
+        }
+        guestRepository.save(toBeSaved);
+    }
+
+    public void saveCompany(Company toBeSaved) {
+        companyRepository.save(toBeSaved);
     }
 
     public List<Guest> findAllGuests() {
         return guestRepository.findAll();
     }
+
     public List<Guest> findAllForeigners() {
         return guestRepository.findAllForeigners();
     }
-    public List<Company> findAllCompanies() {return companyRepo.findAll();}
+
+    public List<Company> findAllCompanies() {
+        return companyRepository.findAll();
+    }
 }
