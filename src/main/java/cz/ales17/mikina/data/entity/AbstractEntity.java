@@ -1,13 +1,17 @@
 package cz.ales17.mikina.data.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Base class for entities.
  */
+@Getter
 @MappedSuperclass
 public abstract class AbstractEntity {
 
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idgenerator")
     @SequenceGenerator(name = "idgenerator", initialValue = 1000)
@@ -15,18 +19,6 @@ public abstract class AbstractEntity {
 
     @Version
     private int version;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getVersion() {
-        return version;
-    }
 
     @Override
     public int hashCode() {
