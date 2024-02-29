@@ -7,7 +7,6 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
@@ -33,7 +32,6 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * GuestView shows a list of guests.
@@ -42,12 +40,11 @@ import java.util.Set;
 @Route(value = "guest", layout = MainLayout.class)
 @PageTitle("Evidenční kniha")
 public class GuestView extends VerticalLayout {
-    // Services
+    private Guest selectedGuestInGrid;
     private final UbyportReportService ubyportReportService;
     private final PdfReportService pdfReportService;
     private final AccommodationService accommodationService;
     private final AuthenticatedUser authenticatedUser;
-    // Export dialog
     private final ExportDialog exportDialog = new ExportDialog();
     // Filtering for guests and utils
     private final TextField filterText = new TextField("Vyhledávání");
@@ -59,19 +56,16 @@ public class GuestView extends VerticalLayout {
     private final LocalDate currentMonthLastDay = YearMonth.now().atEndOfMonth();
     private final Button addGuestButton = new Button("Přidat hosta");
     private final Button filterReset = new Button("Vymazat filtr");
-    // Data rid
     private final Grid<Guest> guestGrid = new Grid<>(Guest.class);
-    // Date formatting (for display and reports)
     private final DateTimeFormatter gridDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final DateTimeFormatter pdfDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
     private final DateTimeFormatter unlDateFormatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
     private final DateTimeFormatter printDateFormatter = DateTimeFormatter.ofPattern("dd. MM. yyyy HH.mm");
 
-    // Form for adding guests
     private GuestForm form;
-    // Company of current user's business
     private Company currentUserCompany;
     private List<Guest> currentGuestList, currentForeignGuestList;
+
     public GuestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService, AuthenticatedUser authenticatedUser) {
         this.accommodationService = accommodationService;
         this.ubyportReportService = ubyportReportService;
@@ -88,34 +82,34 @@ public class GuestView extends VerticalLayout {
         closeEditor();
     }
 
-    private void prepareExportButtons() {
-        preparePdfExport(currentGuestList);
-        prepareUbyportExport(currentForeignGuestList);
+    private void prepareReports() {
+        LocalDateTime now = LocalDateTime.now();
+
+        preparePdfExport(currentGuestList, now);
+        prepareUbyportExport(currentForeignGuestList, now);
     }
 
-    private void preparePdfExport(List<Guest> guests) {
-        LocalDateTime now = LocalDateTime.now();
+    private void preparePdfExport(List<Guest> guests, LocalDateTime now) {
         String formatDateTime = now.format(pdfDateFormatter);
 
         try {
             pdfReportService.setTime(now);
-            // Generating PDF using the service
+
             byte[] pdfBytes = pdfReportService.getReportBytes(currentUserCompany, guests);
-            // Downloading the PDF
+
             StreamResource resource = new StreamResource("ubytovaci-kniha_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
-            //anchor.getElement().setAttribute("download", true);
+
             exportDialog.pdfBtn.setTarget("_blank");
             exportDialog.pdfBtn.setHref(resource);
             exportDialog.pdfBtn.setEnabled(true);
         } catch (Exception e) {
-            Notification.show("Chyba při generování PDF",5000, Notification.Position.MIDDLE);
+            Notification.show("Chyba při generování PDF", 5000, Notification.Position.MIDDLE);
             exportDialog.pdfBtn.setEnabled(false);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
-    private void prepareUbyportExport(List<Guest> foreignGuestList) {
-        LocalDateTime now = LocalDateTime.now();
+    private void prepareUbyportExport(List<Guest> foreignGuestList, LocalDateTime now) {
         String formatDateTime = now.format(unlDateFormatter);
         try {
             byte[] unlReportBytes = ubyportReportService.getReportBytes(currentUserCompany, foreignGuestList);
@@ -124,14 +118,14 @@ public class GuestView extends VerticalLayout {
             exportDialog.unlBtn.getElement().setAttribute("download", true);
             exportDialog.unlBtn.setEnabled(true);
         } catch (Exception e) {
-            Notification.show("Chyba při generování UNL",5000, Notification.Position.MIDDLE);
+            Notification.show("Chyba při generování UNL", 5000, Notification.Position.MIDDLE);
             exportDialog.unlBtn.setEnabled(false);
             throw new RuntimeException(e);
         }
     }
 
     private Component getToolbar() {
-        filterText.setPlaceholder("Jméno, příjmení...");
+        filterText.setPlaceholder("Jméno / příjmení");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
@@ -150,22 +144,16 @@ public class GuestView extends VerticalLayout {
         filterReset.addClickListener(click -> resetFilters());
         filterReset.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        duplicateGuestBtn.addClickListener(click -> duplicateGuest());
+        duplicateGuestBtn.addClickListener(click -> handleGuestDuplication());
         duplicateGuestBtn.setEnabled(false);
 
         var toolbar = new HorizontalLayout(openDialogBtn, filterText, filterArrived, filterLeft, filterReset, addGuestButton, duplicateGuestBtn);
         toolbar.setAlignItems(Alignment.END);
         toolbar.addClassName("toolbar");
         toolbar.setPadding(false);
-        //toolbar.getStyle().set("display","inline-flex");
-        toolbar.getStyle().set("padding-bottom", "12px");
-        // Scroller to prevent overflow, on small viewport height will buttons be scrollable
-        Scroller scroller = new Scroller();
-        scroller.setScrollDirection(Scroller.ScrollDirection.HORIZONTAL);
-        scroller.setContent(toolbar);
-        scroller.setMaxWidth("100%");
-        //return toolbar;
-        return scroller;
+        toolbar.getStyle().set("display", "inline-flex");
+
+        return toolbar;
     }
 
 
@@ -198,7 +186,12 @@ public class GuestView extends VerticalLayout {
         guestGrid.addColumn(new LocalDateRenderer<>(Guest::getDateArrived, () -> gridDateFormatter)).setHeader("Datum příchodu");
         guestGrid.addColumn(new LocalDateRenderer<>(Guest::getDateLeft, () -> gridDateFormatter)).setHeader("Datum odchodu");
         guestGrid.getColumns().forEach(col -> col.setAutoWidth(true));
-        guestGrid.asSingleSelect().addValueChangeListener(event -> editGuest(event.getValue()));
+        guestGrid.asSingleSelect().addValueChangeListener(event -> handleGuestSelection(event.getValue()));
+    }
+
+    private void handleGuestSelection(Guest g) {
+        selectedGuestInGrid = g;
+        editGuest(g);
     }
 
     private void configureForm() {
@@ -234,24 +227,13 @@ public class GuestView extends VerticalLayout {
         }
     }
 
-    /**
-     * Makes a new copy of existing guest
-     */
-    private void duplicateGuest() {
-        Guest selectedGuest = null;
-        Set<Guest> selected = guestGrid.getSelectedItems();
-        int i = 1;
-        for (Guest g : selected) {
-            if (i == 1) selectedGuest = g;
-            i++;
-        }
-        form.setGuest(null);
-        if (selectedGuest != null) {
-            accommodationService.duplicateGuest(selectedGuest);
-            System.out.println("selectedGuest != null -> duplicated");
-            updateList();
+    private void handleGuestDuplication() {
+        if (selectedGuestInGrid == null) {
+            return;
         } else {
-            System.out.println("selectedGuest == null");
+            form.setGuest(null);
+            accommodationService.duplicateGuest(selectedGuestInGrid);
+            updateList();
         }
     }
 
@@ -285,7 +267,7 @@ public class GuestView extends VerticalLayout {
                 form.company.setReadOnly(true); // No admin, do not allow changing company
             }
             guestGrid.setItems(currentGuestList);
-            prepareExportButtons();
+            prepareReports();
         }
     }
 }
