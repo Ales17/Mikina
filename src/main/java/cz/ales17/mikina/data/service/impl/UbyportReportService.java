@@ -1,7 +1,8 @@
-package cz.ales17.mikina.data.service;
+package cz.ales17.mikina.data.service.impl;
 
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
+import cz.ales17.mikina.data.service.ReportService;
 import cz.geek.ubyport.*;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
