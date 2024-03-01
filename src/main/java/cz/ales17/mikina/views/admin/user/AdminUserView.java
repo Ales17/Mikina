@@ -7,7 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.data.entity.UserEntity;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.UserService;
 import cz.ales17.mikina.views.MainLayout;
@@ -19,7 +19,7 @@ import jakarta.annotation.security.RolesAllowed;
 public class AdminUserView extends VerticalLayout {
     private final UserService userService;
     private final AccommodationService accommodationService;
-    private final Grid<User> userGrid = new Grid<>(User.class);
+    private final Grid<UserEntity> userGrid = new Grid<>(UserEntity.class);
     private AdminUserForm form;
 
     private final Button addUserBtn = new Button("Přidat uživatele");
@@ -46,7 +46,7 @@ public class AdminUserView extends VerticalLayout {
     private void configureUserGrid() {
         userGrid.setSizeFull();
         userGrid.setColumns("id", "username", "name", "emailAddress");
-        userGrid.addColumn(User::getRolesAsString).setHeader("Role");
+        userGrid.addColumn(UserEntity::getRolesAsString).setHeader("Role");
         userGrid.asSingleSelect().addValueChangeListener(e -> editUser(e.getValue()));
 
     }
@@ -65,7 +65,7 @@ public class AdminUserView extends VerticalLayout {
     }
     private void addUser() {
         userGrid.asSingleSelect().clear();
-        editUser(new User());
+        editUser(new UserEntity());
     }
     private void saveUser(AdminUserForm.SaveEvent event) {
         userService.saveUser(event.getUser());
@@ -79,7 +79,7 @@ public class AdminUserView extends VerticalLayout {
         closeEditor();
     }
 
-    private void editUser(User user) {
+    private void editUser(UserEntity user) {
         if (user == null) {
             closeEditor();
         } else {

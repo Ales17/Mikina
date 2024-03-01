@@ -9,7 +9,7 @@ import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
-import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.data.entity.UserEntity;
 import cz.ales17.mikina.data.service.UserService;
 import cz.ales17.mikina.security.AuthenticatedUser;
 import cz.ales17.mikina.views.MainLayout;
@@ -28,9 +28,9 @@ public class UserView extends VerticalLayout {
         this.userService = userService;
 
 
-        Optional<User> maybeUser = authenticatedUser.get();
+        Optional<UserEntity> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
-            User user = maybeUser.get();
+            UserEntity user = maybeUser.get();
             /*StreamResource resource = new StreamResource("profile-pic",
                     () -> new ByteArrayInputStream(user.getProfilePicture()));*/
 
@@ -44,7 +44,7 @@ public class UserView extends VerticalLayout {
         }
     }
 
-    private void configureDialog(User user) {
+    private void configureDialog(UserEntity user) {
         dialog = new PasswordDialog(userService, user);
         add(dialog);
     }
@@ -54,7 +54,7 @@ public class UserView extends VerticalLayout {
         return new HorizontalLayout(changePasswdBtn);
     }
 
-    private void configureForm(User user) {
+    private void configureForm(UserEntity user) {
         UserForm form = new UserForm(userService, user);
         form.setVisible(true);
         form.setWidth("30em");

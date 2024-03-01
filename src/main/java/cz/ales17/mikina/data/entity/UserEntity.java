@@ -13,7 +13,8 @@ import java.util.StringJoiner;
 @Getter
 @Setter
 @Entity
-public class User extends AbstractEntity {
+@Table(name = "user")
+public class UserEntity extends AbstractEntity {
 
     private String username;
 
@@ -28,6 +29,8 @@ public class User extends AbstractEntity {
     @Enumerated(EnumType.STRING)
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    // set name to user_roles, default will be user_entity_roles
     private Set<Role> roles;
 
     @Lob

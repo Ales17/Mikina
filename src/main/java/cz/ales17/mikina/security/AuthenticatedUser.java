@@ -1,7 +1,7 @@
 package cz.ales17.mikina.security;
 
 import com.vaadin.flow.spring.security.AuthenticationContext;
-import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.data.entity.UserEntity;
 import cz.ales17.mikina.data.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class AuthenticatedUser {
     }
 
     @Transactional
-    public Optional<User> get() {
+    public Optional<UserEntity> get() {
         return authenticationContext.getAuthenticatedUser(UserDetails.class)
                 .map(userDetails -> userRepository.findByUsername(userDetails.getUsername()));
     }

@@ -18,7 +18,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.data.entity.UserEntity;
 import cz.ales17.mikina.security.AuthenticatedUser;
 import cz.ales17.mikina.views.dashboard.DashboardView;
 import cz.ales17.mikina.views.guest.GuestView;
@@ -97,9 +97,9 @@ public class MainLayout extends AppLayout {
     private Footer createUserInfo() {
         Footer layout = new Footer();
 
-        Optional<User> maybeUser = authenticatedUser.get();
+        Optional<UserEntity> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
-            User user = maybeUser.get();
+            UserEntity user = maybeUser.get();
 
             Avatar avatar = new Avatar(user.getName());
             avatar.setThemeName("xsmall");

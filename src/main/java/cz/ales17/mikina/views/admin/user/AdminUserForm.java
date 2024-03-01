@@ -20,7 +20,7 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.Role;
 import cz.ales17.mikina.data.entity.Company;
-import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.data.entity.UserEntity;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.UserService;
 import lombok.Getter;
@@ -30,8 +30,8 @@ import java.util.Objects;
 public class AdminUserForm extends FormLayout {
 
     private final UserService userService;
-    private User user;
-    private final Binder<User> binder = new BeanValidationBinder<>(User.class);
+    private UserEntity user;
+    private final Binder<UserEntity> binder = new BeanValidationBinder<>(UserEntity.class);
     @Getter
     private final TextField username = new TextField("Uživatelské jméno");
     private final TextField name = new TextField("Jméno a příjmení");
@@ -48,7 +48,7 @@ public class AdminUserForm extends FormLayout {
         this.accommodationService=accommodationService;
         MultiSelectComboBox<Role> roles = new MultiSelectComboBox<>("Uživatelské role");
         roles.setItems(Role.USER,Role.ADMIN);
-        binder.forField(roles).bind(User::getRoles, User::setRoles);
+        binder.forField(roles).bind(UserEntity::getRoles, UserEntity::setRoles);
 
 
         company.setItemLabelGenerator(Company::getName);
@@ -57,7 +57,7 @@ public class AdminUserForm extends FormLayout {
         binder.forField(name)
                 .withValidator(new StringLengthValidator(
                         "Jméno musí mít délku mezi 3 a 50 znaky",
-                        3, 50)).bind(User::getName, User::setName);
+                        3, 50)).bind(UserEntity::getName, UserEntity::setName);
 
         binder.bindInstanceFields(this);
 
@@ -133,7 +133,7 @@ public class AdminUserForm extends FormLayout {
         addListener(CloseEvent.class, listener);
     }
 
-    public void setUser(User user) {
+    public void setUser(UserEntity user) {
         binder.setBean(user);
         this.user = user;
     }
@@ -142,9 +142,9 @@ public class AdminUserForm extends FormLayout {
     @Getter
     public static abstract class AdminUserFormEvent
             extends ComponentEvent<AdminUserForm> {
-        private final User user;
+        private final UserEntity user;
 
-        protected AdminUserFormEvent(AdminUserForm source, User user) {
+        protected AdminUserFormEvent(AdminUserForm source, UserEntity user) {
             super(source, false);
             this.user = user;
         }
@@ -152,13 +152,13 @@ public class AdminUserForm extends FormLayout {
     }
 
     public static class SaveEvent extends AdminUserFormEvent {
-        public SaveEvent(AdminUserForm source, User user) {
+        public SaveEvent(AdminUserForm source, UserEntity user) {
             super(source, user);
         }
     }
 
     public static class DeleteEvent extends AdminUserFormEvent {
-        public DeleteEvent(AdminUserForm source, User user) {
+        public DeleteEvent(AdminUserForm source, UserEntity user) {
             super(source, user);
         }
     }

@@ -1,6 +1,6 @@
 package cz.ales17.mikina.data.service;
 
-import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.data.entity.UserEntity;
 import cz.ales17.mikina.data.repository.UserRepository;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
@@ -23,36 +23,35 @@ public class UserService {
     public UserService(UserRepository repository) {
         this.repository = repository;
     }
-    public void saveUser(User user) {
+
+    public void saveUser(UserEntity user) {
         repository.save(user);
     }
-    public List<User> findAllUsers() {
+
+    public List<UserEntity> findAllUsers() {
         return repository.findAll();
     }
-    public Optional<User> get(Long id) {
+
+    public Optional<UserEntity> get(Long id) {
         return repository.findById(id);
     }
 
-    public void updatePassword(User user, String password) {
+    public void updatePassword(UserEntity user, String password) {
         String hashedPassword = encoder.encode(password);
         user.setHashedPassword(hashedPassword);
         saveUser(user);
     }
 
-    public void delete(User user) {
+    public void delete(UserEntity user) {
         repository.delete(user);
     }
 
-    public Page<User> list(Pageable pageable) {
+    public Page<UserEntity> list(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
-    public Page<User> list(Pageable pageable, Specification<User> filter) {
+    public Page<UserEntity> list(Pageable pageable, Specification<UserEntity> filter) {
         return repository.findAll(filter, pageable);
-    }
-
-    public int count() {
-        return (int) repository.count();
     }
 
 }

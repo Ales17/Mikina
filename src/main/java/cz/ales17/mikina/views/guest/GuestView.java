@@ -17,7 +17,7 @@ import com.vaadin.flow.server.StreamResource;
 import cz.ales17.mikina.data.Role;
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
-import cz.ales17.mikina.data.entity.User;
+import cz.ales17.mikina.data.entity.UserEntity;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.data.service.PdfReportService;
 import cz.ales17.mikina.data.service.UbyportReportService;
@@ -252,9 +252,9 @@ public class GuestView extends VerticalLayout {
 
 
     private void updateList() {
-        Optional<User> maybeUser = authenticatedUser.get();
+        Optional<UserEntity> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
-            User currentUser = maybeUser.get();
+            UserEntity currentUser = maybeUser.get();
             currentUserCompany = currentUser.getCompany();
 
             // User is admin, get all guests
