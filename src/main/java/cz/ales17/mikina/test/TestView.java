@@ -5,7 +5,7 @@ import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
-import cz.ales17.mikina.data.entity.Company;
+import cz.ales17.mikina.data.model.Company;
 import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.ales17.mikina.data.service.impl.PdfReportService;
 import cz.ales17.mikina.data.service.impl.UbyportReportService;

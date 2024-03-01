@@ -11,7 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import cz.ales17.mikina.data.entity.Company;
+import cz.ales17.mikina.data.model.Company;
 import lombok.Getter;
 
 public class AdminCompanyForm extends FormLayout {

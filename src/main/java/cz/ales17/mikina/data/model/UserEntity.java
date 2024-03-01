@@ -1,7 +1,6 @@
-package cz.ales17.mikina.data.entity;
+package cz.ales17.mikina.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.ales17.mikina.data.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;

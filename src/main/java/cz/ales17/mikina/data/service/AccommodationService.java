@@ -1,7 +1,7 @@
 package cz.ales17.mikina.data.service;
 
-import cz.ales17.mikina.data.entity.Company;
-import cz.ales17.mikina.data.entity.Guest;
+import cz.ales17.mikina.data.model.Company;
+import cz.ales17.mikina.data.model.Guest;
 
 import java.util.List;
 

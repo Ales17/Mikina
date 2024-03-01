@@ -1,6 +1,6 @@
 package cz.ales17.mikina.security;
 
-import cz.ales17.mikina.data.entity.UserEntity;
+import cz.ales17.mikina.data.model.UserEntity;
 import cz.ales17.mikina.data.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

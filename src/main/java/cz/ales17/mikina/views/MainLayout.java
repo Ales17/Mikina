@@ -18,7 +18,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import cz.ales17.mikina.data.entity.UserEntity;
+import cz.ales17.mikina.data.model.UserEntity;
 import cz.ales17.mikina.security.AuthenticatedUser;
 import cz.ales17.mikina.views.dashboard.DashboardView;
 import cz.ales17.mikina.views.guest.GuestView;

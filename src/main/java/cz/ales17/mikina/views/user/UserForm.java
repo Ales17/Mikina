@@ -14,7 +14,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.shared.Registration;
-import cz.ales17.mikina.data.entity.UserEntity;
+import cz.ales17.mikina.data.model.UserEntity;
 import cz.ales17.mikina.data.service.impl.UserServiceImpl;
 import lombok.Getter;
 

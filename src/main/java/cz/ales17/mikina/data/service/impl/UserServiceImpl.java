@@ -1,6 +1,6 @@
 package cz.ales17.mikina.data.service.impl;
 
-import cz.ales17.mikina.data.entity.UserEntity;
+import cz.ales17.mikina.data.model.UserEntity;
 import cz.ales17.mikina.data.repository.UserRepository;
 import cz.ales17.mikina.data.service.UserService;
 import lombok.Getter;

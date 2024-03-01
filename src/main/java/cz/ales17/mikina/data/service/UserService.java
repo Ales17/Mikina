@@ -1,6 +1,6 @@
 package cz.ales17.mikina.data.service;
 
-import cz.ales17.mikina.data.entity.UserEntity;
+import cz.ales17.mikina.data.model.UserEntity;
 
 import java.util.List;
 

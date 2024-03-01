@@ -7,7 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import cz.ales17.mikina.data.entity.UserEntity;
+import cz.ales17.mikina.data.model.UserEntity;
 import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.ales17.mikina.data.service.impl.UserServiceImpl;
 import cz.ales17.mikina.views.MainLayout;

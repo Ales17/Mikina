@@ -14,8 +14,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
-import cz.ales17.mikina.data.entity.Company;
-import cz.ales17.mikina.data.entity.Guest;
+import cz.ales17.mikina.data.model.Company;
+import cz.ales17.mikina.data.model.Guest;
 import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.geek.ubyport.StatniPrislusnost;
 

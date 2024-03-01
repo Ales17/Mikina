@@ -1,4 +1,4 @@
-package cz.ales17.mikina.data.entity;
+package cz.ales17.mikina.data.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
