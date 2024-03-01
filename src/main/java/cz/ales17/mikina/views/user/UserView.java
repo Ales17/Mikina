@@ -10,7 +10,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import cz.ales17.mikina.data.entity.UserEntity;
-import cz.ales17.mikina.data.service.UserService;
+import cz.ales17.mikina.data.service.impl.UserServiceImpl;
 import cz.ales17.mikina.security.AuthenticatedUser;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
@@ -21,10 +21,10 @@ import java.util.Optional;
 @PageTitle("Můj účet")
 @Route(value = "user", layout = MainLayout.class)
 public class UserView extends VerticalLayout {
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private PasswordDialog dialog;
 
-    public UserView(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker, UserService userService) {
+    public UserView(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker, UserServiceImpl userService) {
         this.userService = userService;
 
 

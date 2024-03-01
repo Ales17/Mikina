@@ -9,18 +9,18 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import cz.ales17.mikina.data.entity.UserEntity;
-import cz.ales17.mikina.data.service.UserService;
+import cz.ales17.mikina.data.service.impl.UserServiceImpl;
 
 import java.util.Objects;
 
 public class PasswordDialog extends Dialog {
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final UserEntity user;
     private final Button close = new Button("Storno", e -> close());
     private PasswordField passwd, passwdConfirmation, oldPassword;
     private final Button save = new Button("Uložit", e -> handlePasswordChange());
 
-    public PasswordDialog(UserService userService, UserEntity user) {
+    public PasswordDialog(UserServiceImpl userService, UserEntity user) {
         this.user = user;
         this.userService = userService;
         setHeaderTitle("Změnit heslo");

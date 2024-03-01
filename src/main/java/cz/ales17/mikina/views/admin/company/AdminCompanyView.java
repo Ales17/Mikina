@@ -8,7 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import cz.ales17.mikina.data.entity.Company;
-import cz.ales17.mikina.data.service.AccommodationService;
+import cz.ales17.mikina.data.service.impl.AccommodationService;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 

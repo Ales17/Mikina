@@ -1,4 +1,4 @@
-package cz.ales17.mikina.data.service;
+package cz.ales17.mikina.data.service.impl;
 
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.font.PdfFont;
@@ -12,6 +12,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
+import cz.ales17.mikina.data.service.ReportService;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 

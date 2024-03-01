@@ -1,4 +1,4 @@
-package cz.ales17.mikina.data.service;
+package cz.ales17.mikina.data.service.impl;
 
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;

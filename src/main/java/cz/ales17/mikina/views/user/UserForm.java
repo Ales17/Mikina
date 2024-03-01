@@ -15,12 +15,12 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.entity.UserEntity;
-import cz.ales17.mikina.data.service.UserService;
+import cz.ales17.mikina.data.service.impl.UserServiceImpl;
 import lombok.Getter;
 
 public class UserForm extends FormLayout {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final UserEntity user;
     private final Binder<UserEntity> binder = new BeanValidationBinder<>(UserEntity.class);
     private final TextField username = new TextField("Uživatelské jméno");
@@ -30,7 +30,7 @@ public class UserForm extends FormLayout {
     private final Button save = new Button("Uložit");
 
 
-    public UserForm(UserService userService, UserEntity user) {
+    public UserForm(UserServiceImpl userService, UserEntity user) {
         this.userService = userService;
         this.user = user;
         binder.bindInstanceFields(this);

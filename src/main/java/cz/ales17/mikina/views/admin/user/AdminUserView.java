@@ -8,8 +8,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import cz.ales17.mikina.data.entity.UserEntity;
-import cz.ales17.mikina.data.service.AccommodationService;
-import cz.ales17.mikina.data.service.UserService;
+import cz.ales17.mikina.data.service.impl.AccommodationService;
+import cz.ales17.mikina.data.service.impl.UserServiceImpl;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -17,13 +17,14 @@ import jakarta.annotation.security.RolesAllowed;
 @Route(value = "admin/users", layout = MainLayout.class)
 @PageTitle("Správa uživatelů")
 public class AdminUserView extends VerticalLayout {
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final AccommodationService accommodationService;
     private final Grid<UserEntity> userGrid = new Grid<>(UserEntity.class);
     private AdminUserForm form;
 
     private final Button addUserBtn = new Button("Přidat uživatele");
-    public AdminUserView(UserService userService, AccommodationService accommodationService) {
+
+    public AdminUserView(UserServiceImpl userService, AccommodationService accommodationService) {
         this.userService = userService;
         this.accommodationService = accommodationService;
         setSizeFull();

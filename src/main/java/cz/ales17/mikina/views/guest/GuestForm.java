@@ -16,7 +16,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
-import cz.ales17.mikina.data.service.AccommodationService;
+import cz.ales17.mikina.data.service.impl.AccommodationService;
 import cz.geek.ubyport.StatniPrislusnost;
 
 import java.time.LocalDate;

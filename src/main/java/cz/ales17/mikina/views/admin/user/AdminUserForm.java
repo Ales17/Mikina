@@ -21,15 +21,15 @@ import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.Role;
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.UserEntity;
-import cz.ales17.mikina.data.service.AccommodationService;
-import cz.ales17.mikina.data.service.UserService;
+import cz.ales17.mikina.data.service.impl.AccommodationService;
+import cz.ales17.mikina.data.service.impl.UserServiceImpl;
 import lombok.Getter;
 
 import java.util.Objects;
 
 public class AdminUserForm extends FormLayout {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private UserEntity user;
     private final Binder<UserEntity> binder = new BeanValidationBinder<>(UserEntity.class);
     @Getter
@@ -43,7 +43,7 @@ public class AdminUserForm extends FormLayout {
     private final PasswordField passwd, passwdConfirmation;
     AccommodationService accommodationService;
 
-    public AdminUserForm(UserService userService, AccommodationService accommodationService) {
+    public AdminUserForm(UserServiceImpl userService, AccommodationService accommodationService) {
         this.userService = userService;
         this.accommodationService=accommodationService;
         MultiSelectComboBox<Role> roles = new MultiSelectComboBox<>("Uživatelské role");
