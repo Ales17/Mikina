@@ -4,7 +4,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import cz.ales17.mikina.data.service.impl.AccommodationService;
+import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -15,9 +15,9 @@ import jakarta.annotation.security.RolesAllowed;
 @Route(value = "", layout = MainLayout.class)
 @PageTitle("Hlavní panel")
 public class DashboardView extends VerticalLayout {
-    private final AccommodationService accommodationService;
+    private final AccommodationServiceImpl accommodationService;
 
-    public DashboardView(AccommodationService accommodationService) {
+    public DashboardView(AccommodationServiceImpl accommodationService) {
 
         this.accommodationService = accommodationService;
         addClassName("dashboard-view");

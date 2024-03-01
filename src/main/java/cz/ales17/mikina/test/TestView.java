@@ -7,7 +7,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.service.UbyportReportService;
-import cz.ales17.mikina.data.service.impl.AccommodationService;
+import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.ales17.mikina.data.service.impl.PdfReportService;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 public class TestView extends VerticalLayout {
 
     @Autowired
-    public TestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService) {
+    public TestView(AccommodationServiceImpl accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService) {
         Company sampleCompany = new Company();
 
         Button generateUnlButton = new Button("Generovat UNL", event -> {

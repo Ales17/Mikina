@@ -8,7 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import cz.ales17.mikina.data.entity.Company;
-import cz.ales17.mikina.data.service.impl.AccommodationService;
+import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -16,12 +16,12 @@ import jakarta.annotation.security.RolesAllowed;
 @Route(value = "admin/companies", layout = MainLayout.class)
 @PageTitle("Správa firem")
 public class AdminCompanyView extends VerticalLayout {
-    private final AccommodationService service;
+    private final AccommodationServiceImpl service;
     private final Grid<Company> companyGrid = new Grid<>(Company.class);
     private final Button addCompanyBtn = new Button("Přidat společnost");
     private AdminCompanyForm form;
 
-    public AdminCompanyView(AccommodationService service) {
+    public AdminCompanyView(AccommodationServiceImpl service) {
         this.service = service;
         setSizeFull();
         configureCompanyGrid();

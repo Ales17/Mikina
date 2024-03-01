@@ -21,7 +21,7 @@ import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.Role;
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.UserEntity;
-import cz.ales17.mikina.data.service.impl.AccommodationService;
+import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.ales17.mikina.data.service.impl.UserServiceImpl;
 import lombok.Getter;
 
@@ -41,9 +41,9 @@ public class AdminUserForm extends FormLayout {
     public final Button delete = new Button("Smazat");
     public final Button close = new Button("Storno");
     private final PasswordField passwd, passwdConfirmation;
-    AccommodationService accommodationService;
+    AccommodationServiceImpl accommodationService;
 
-    public AdminUserForm(UserServiceImpl userService, AccommodationService accommodationService) {
+    public AdminUserForm(UserServiceImpl userService, AccommodationServiceImpl accommodationService) {
         this.userService = userService;
         this.accommodationService=accommodationService;
         MultiSelectComboBox<Role> roles = new MultiSelectComboBox<>("Uživatelské role");

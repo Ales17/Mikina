@@ -19,7 +19,7 @@ import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
 import cz.ales17.mikina.data.entity.UserEntity;
 import cz.ales17.mikina.data.service.UbyportReportService;
-import cz.ales17.mikina.data.service.impl.AccommodationService;
+import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.ales17.mikina.data.service.impl.PdfReportService;
 import cz.ales17.mikina.security.AuthenticatedUser;
 import cz.ales17.mikina.views.MainLayout;
@@ -43,7 +43,7 @@ public class GuestView extends VerticalLayout {
     private Guest selectedGuestInGrid;
     private final UbyportReportService ubyportReportService;
     private final PdfReportService pdfReportService;
-    private final AccommodationService accommodationService;
+    private final AccommodationServiceImpl accommodationService;
     private final AuthenticatedUser authenticatedUser;
     private final ExportDialog exportDialog = new ExportDialog();
     // Filtering for guests and utils
@@ -66,7 +66,7 @@ public class GuestView extends VerticalLayout {
     private Company currentUserCompany;
     private List<Guest> currentGuestList, currentForeignGuestList;
 
-    public GuestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService, AuthenticatedUser authenticatedUser) {
+    public GuestView(AccommodationServiceImpl accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService, AuthenticatedUser authenticatedUser) {
         this.accommodationService = accommodationService;
         this.ubyportReportService = ubyportReportService;
         this.pdfReportService = pdfReportService;

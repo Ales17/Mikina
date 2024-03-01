@@ -16,7 +16,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
-import cz.ales17.mikina.data.service.impl.AccommodationService;
+import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.geek.ubyport.StatniPrislusnost;
 
 import java.time.LocalDate;
@@ -40,9 +40,9 @@ public class GuestForm extends FormLayout {
     Button delete = new Button("Smazat");
     Button close = new Button("Storno");
     Binder<Guest> binder = new BeanValidationBinder<>(Guest.class);
-    AccommodationService service;
+    AccommodationServiceImpl service;
 
-    public GuestForm(AccommodationService service, List<StatniPrislusnost> ubyportNationality) {
+    public GuestForm(AccommodationServiceImpl service, List<StatniPrislusnost> ubyportNationality) {
         this.service = service;
 
         addClassName("guest-form");

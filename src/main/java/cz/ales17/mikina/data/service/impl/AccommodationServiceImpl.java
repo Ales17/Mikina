@@ -4,6 +4,7 @@ import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
 import cz.ales17.mikina.data.repository.CompanyRepository;
 import cz.ales17.mikina.data.repository.GuestRepository;
+import cz.ales17.mikina.data.service.AccommodationService;
 import cz.geek.ubyport.StatniPrislusnost;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +16,13 @@ import java.util.List;
  * Service class for Accommodation entities.
  */
 @Service
-public class AccommodationService {
+public class AccommodationServiceImpl implements AccommodationService {
 
     private final GuestRepository guestRepository;
     private final CompanyRepository companyRepository;
 
-    public AccommodationService(GuestRepository guestRepository,
-                                CompanyRepository companyRepository) {
+    public AccommodationServiceImpl(GuestRepository guestRepository,
+                                    CompanyRepository companyRepository) {
         this.guestRepository = guestRepository;
         this.companyRepository = companyRepository;
     }
@@ -39,11 +40,41 @@ public class AccommodationService {
         return guestRepository.searchGuests(searchTerm, arrivedFilter, leftFilter, foreignersOnly, company);
     }
 
-
+    @Override
     public void deleteGuest(Guest guest) {
         guestRepository.delete(guest);
     }
 
+    @Override
+    public void saveGuest(Guest toBeSaved) {
+        if (toBeSaved == null) {
+            System.err.println("Guest is null.");
+            return;
+        }
+        guestRepository.save(toBeSaved);
+    }
+
+    @Override
+    public void saveCompany(Company toBeSaved) {
+        companyRepository.save(toBeSaved);
+    }
+
+    @Override
+    public List<Guest> findAllGuests() {
+        return guestRepository.findAll();
+    }
+
+    @Override
+    public List<Guest> findAllForeigners() {
+        return guestRepository.findGuestsByNationalityIsNot(StatniPrislusnost.CZE);
+    }
+
+    @Override
+    public List<Company> findAllCompanies() {
+        return companyRepository.findAll();
+    }
+
+    @Override
     public void duplicateGuest(Guest originalGuest) {
         Guest duplicatedGuest = new Guest();
         duplicatedGuest.setId(null);
@@ -55,29 +86,5 @@ public class AccommodationService {
         duplicatedGuest.setNationality(originalGuest.getNationality());
         duplicatedGuest.setCompany(originalGuest.getCompany());
         guestRepository.save(duplicatedGuest);
-    }
-
-    public void saveGuest(Guest toBeSaved) {
-        if (toBeSaved == null) {
-            System.err.println("Guest is null.");
-            return;
-        }
-        guestRepository.save(toBeSaved);
-    }
-
-    public void saveCompany(Company toBeSaved) {
-        companyRepository.save(toBeSaved);
-    }
-
-    public List<Guest> findAllGuests() {
-        return guestRepository.findAll();
-    }
-
-    public List<Guest> findAllForeigners() {
-        return guestRepository.findGuestsByNationalityIsNot(StatniPrislusnost.CZE);
-    }
-
-    public List<Company> findAllCompanies() {
-        return companyRepository.findAll();
     }
 }
