@@ -4,6 +4,7 @@ import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
 import cz.ales17.mikina.data.repository.CompanyRepository;
 import cz.ales17.mikina.data.repository.GuestRepository;
+import cz.geek.ubyport.StatniPrislusnost;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -73,7 +74,7 @@ public class AccommodationService {
     }
 
     public List<Guest> findAllForeigners() {
-        return guestRepository.findAllForeigners();
+        return guestRepository.findGuestsByNationalityIsNot(StatniPrislusnost.CZE);
     }
 
     public List<Company> findAllCompanies() {

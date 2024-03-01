@@ -2,6 +2,7 @@ package cz.ales17.mikina.data.repository;
 
 import cz.ales17.mikina.data.entity.Company;
 import cz.ales17.mikina.data.entity.Guest;
+import cz.geek.ubyport.StatniPrislusnost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,7 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
     /**
      * Search for guests by name containing search term
      *
-     * @param searchTerm
+     * @param searchTerm guest's given or family name (part of)
      * @return List of guests
      */
 
@@ -33,8 +34,6 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
                              @Param("company") Company company);
 
 
-    @Query("SELECT g from Guest g where g.nationality <> 0")
-    List<Guest> findAllForeigners();
-
+    List<Guest> findGuestsByNationalityIsNot(StatniPrislusnost nationality);
 
 }
