@@ -19,16 +19,12 @@ import java.time.format.DateTimeFormatter;
 /**
  * View for testing purposes
  */
-@Route(value = "pdf", layout = MainLayout.class)
+@Route(value = "test", layout = MainLayout.class)
 @RolesAllowed({"ROLE_ADMIN"})
-public class TestingView extends VerticalLayout {
-
-    PdfReportService pdfReportService;
-    LocalDateTime now;
+public class TestView extends VerticalLayout {
 
     @Autowired
-    public TestingView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService) {
-        this.pdfReportService = pdfReportService;
+    public TestView(AccommodationService accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService) {
         Company sampleCompany = new Company();
 
         Button generateUnlButton = new Button("Generovat UNL", event -> {
@@ -49,8 +45,9 @@ public class TestingView extends VerticalLayout {
 
             try {
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
+                LocalDateTime now = LocalDateTime.now();
                 String formatDateTime = now.format(format);
-
+                pdfReportService.setTime(now);
                 byte[] pdf = pdfReportService.getReportBytes(sampleCompany, accommodationService.findAllGuests());
                 StreamResource resource = new StreamResource("itext8_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdf));
                 Anchor anchor = new Anchor(resource, "Stáhnout PDF");
