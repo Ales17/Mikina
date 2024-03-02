@@ -1,62 +1,59 @@
 package cz.ales17.mikina.views.dashboard;
 
-import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
+import cz.ales17.mikina.data.model.Company;
+import cz.ales17.mikina.data.model.UserEntity;
+import cz.ales17.mikina.security.AuthenticatedUser;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
-/**
- * DashboardView shows statistics about the guests.
- */
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Optional;
+
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 @Route(value = "", layout = MainLayout.class)
 @PageTitle("Hlavní panel")
 public class DashboardView extends VerticalLayout {
-    private final AccommodationServiceImpl accommodationService;
+    private final AuthenticatedUser authenticatedUser;
+    private String companyInformation = "";
 
-    public DashboardView(AccommodationServiceImpl accommodationService) {
-
-        this.accommodationService = accommodationService;
+    public DashboardView(AuthenticatedUser authenticatedUser) {
+        this.authenticatedUser = authenticatedUser;
         addClassName("dashboard-view");
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
-        Image image = new Image("images/empty-plant.png", "img");
-        add(image);
-        //      add(getStats(), getCountriesChart());
+        prepareUserCompanyInformation();
+        add(getContent());
     }
 
+    private String getFormattedCompanyInfo(Company c) {
+        return String.format(
+                "%s, %s",
+                c.getName(),
+                c.getMunicipality());
+    }
 
- /*   private Component getStats() {
-        String guestWord;
-        switch (accommodationService.countGuests()) {
-            case 1:
-                guestWord = "host";
-                break;
-            case 2, 3, 4:
-                guestWord = "hosté";
-                break;
-            default:
-                guestWord = "hostů";
+    private void prepareUserCompanyInformation() {
+        Optional<UserEntity> maybeUser = authenticatedUser.get();
+        if (maybeUser.isPresent()) {
+            UserEntity user = maybeUser.get();
+            Company currentCompany = user.getCompany();
+            companyInformation = getFormattedCompanyInfo(currentCompany);
         }
-        Span stats = new Span(accommodationService.countGuests() + " " + guestWord);
-        stats.addClassNames(
-                LumoUtility.FontSize.XLARGE,
-                LumoUtility.Margin.Top.MEDIUM);
-        return stats;
     }
 
-    private Chart getCountriesChart() {
-        Chart chart = new Chart(ChartType.PIE);
-        DataSeries dataSeries = new DataSeries();
-        accommodationService.findGuestsCountries().forEach(country ->
-                dataSeries.add(new DataSeriesItem(country.getCountryName(), country.getGuestCount()))
-        );
-        chart.getConfiguration().setSeries(dataSeries);
-        return chart;
-    }
-*/
+    private Component getContent() {
+        H2 welcomeText = new H2("Vítejte v ubytovacím systému");
+        LocalDate currentDate = LocalDate.now();
+        String formattedCurrentDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(currentDate);
+        Paragraph dateParagraph = new Paragraph(String.format("Dnes je %s. Spravujete ubytovací zařízení %s.", formattedCurrentDate, companyInformation));
 
+        return new VerticalLayout(welcomeText, dateParagraph);
+    }
 }
