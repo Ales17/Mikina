@@ -18,8 +18,11 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import cz.ales17.mikina.data.model.Role;
 import cz.ales17.mikina.data.model.UserEntity;
 import cz.ales17.mikina.security.AuthenticatedUser;
+import cz.ales17.mikina.views.admin.company.AdminCompanyView;
+import cz.ales17.mikina.views.admin.user.AdminUserView;
 import cz.ales17.mikina.views.dashboard.DashboardView;
 import cz.ales17.mikina.views.guest.GuestView;
 import cz.ales17.mikina.views.user.UserView;
@@ -38,6 +41,7 @@ import java.util.Optional;
 public class MainLayout extends AppLayout {
     private AuthenticatedUser authenticatedUser;
     private AccessAnnotationChecker accessChecker;
+
     public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
         this.authenticatedUser = authenticatedUser;
         this.accessChecker = accessChecker;
@@ -52,6 +56,15 @@ public class MainLayout extends AppLayout {
                 createTab(VaadinIcon.DASHBOARD, "Hlavní panel", DashboardView.class),
                 createTab(VaadinIcon.BOOK, "Kniha hostů", GuestView.class)
         );
+        Optional<UserEntity> maybeUser = authenticatedUser.get();
+        if (maybeUser.isPresent()) {
+            if (maybeUser.get().getRoles().contains(Role.ADMIN)) {
+                tabs.add(
+                        createTab(VaadinIcon.USER, "Uživatelé", AdminUserView.class),
+                        createTab(VaadinIcon.HOME, "Ubytovatelé", AdminCompanyView.class)
+                );
+            }
+        }
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         return tabs;
     }
@@ -106,7 +119,7 @@ public class MainLayout extends AppLayout {
             avatar.getElement().setAttribute("tabindex", "-1");
 
             // If user's picture is set in database
-            if(user.getProfilePicture() != null) {
+            if (user.getProfilePicture() != null) {
                 StreamResource resource = new StreamResource("profile-pic",
                         () -> new ByteArrayInputStream(user.getProfilePicture()));
                 avatar.setImageResource(resource);
