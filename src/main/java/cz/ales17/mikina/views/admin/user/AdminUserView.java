@@ -14,7 +14,7 @@ import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed({"ROLE_ADMIN"})
-@Route(value = "admin/users", layout = MainLayout.class)
+@Route(value = "users", layout = MainLayout.class)
 @PageTitle("Správa uživatelů")
 public class AdminUserView extends VerticalLayout {
     private final UserServiceImpl userService;

@@ -13,7 +13,7 @@ import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
 @RolesAllowed({"ROLE_ADMIN"})
-@Route(value = "admin/companies", layout = MainLayout.class)
+@Route(value = "companies", layout = MainLayout.class)
 @PageTitle("Správa firem")
 public class AdminCompanyView extends VerticalLayout {
     private final AccommodationServiceImpl service;
