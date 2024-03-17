@@ -46,7 +46,36 @@ public class AdminCompanyForm extends FormLayout {
                 ubyportId,
                 createButtonsLayout()
         );
+        configureFormFields();
 
+    }
+
+    private void configureFormFields() {
+        ubyportId.setMinLength(12);
+        ubyportId.setMaxLength(14);
+
+        ubyportAbbr.setMinLength(5);
+        ubyportAbbr.setMaxLength(5);
+
+        name.setMinLength(1);
+        name.setMaxLength(35);
+
+        ubyportContact.setMaxLength(50);
+
+        district.setMaxLength(32);
+
+        municipality.setMaxLength(48);
+
+        municipalityQuarter.setMaxLength(48);
+
+        street.setMaxLength(48);
+
+        houseNumber.setMaxLength(5);
+
+        registrationNumber.setMaxLength(4);
+
+        zipCode.setMaxLength(5);
+        zipCode.setHelperText("Zadejte bez mezer");
     }
 
     private void validateAndSave() {
@@ -60,6 +89,7 @@ public class AdminCompanyForm extends FormLayout {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickShortcut(Key.ENTER);
         save.addClickListener(event -> validateAndSave());
+
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
 
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
