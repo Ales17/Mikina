@@ -16,11 +16,13 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.model.Company;
 import cz.ales17.mikina.data.model.Guest;
+import cz.ales17.mikina.data.model.StayFee;
 import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.geek.ubyport.StatniPrislusnost;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -75,6 +77,12 @@ public class GuestForm extends FormLayout {
                 new ResponsiveStep("500px", 2)
         );
         setColspan(address, 2);
+
+        // Validation
+        firstName.setMaxLength(50);
+        lastName.setMaxLength(50);
+        idNumber.setMaxLength(50);
+        address.setMaxLength(150);
     }
 
     public void setGuest(Guest guest) {
@@ -95,12 +103,12 @@ public class GuestForm extends FormLayout {
         return ChronoUnit.DAYS.between(dateArrived.getValue(), dateLeft.getValue());
     }
 
-    private void handleFeeCalculation() {
-        if (dateLeft.getValue() != null && dateArrived.getValue() != null) {
-            double stayFeeInputValue = binder.getBean().getCompany().getStayFee();
-            double d = (double) getStayDayCount() * stayFeeInputValue;
-            //totalStayFee.setValue(d);
-        }
+    private List<StayFee> fetchCompanyFees(Company c) {
+        List<StayFee> fees = new ArrayList<>();
+        fees.add(new StayFee("Osvobozený", 0.0));
+        fees.add(new StayFee("Základní sazba", c.getStayFee()));
+
+        return fees;
     }
 
     private Component createButtonsLayout() {
