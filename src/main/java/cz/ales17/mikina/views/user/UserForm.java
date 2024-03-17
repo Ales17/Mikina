@@ -45,8 +45,10 @@ public class UserForm extends FormLayout {
                 emailAddress,
                 createButtonsLayout()
         );
-
+        // Validation
+        name.setMaxLength(50);
         username.setEnabled(false);
+        emailAddress.setMaxLength(255);
     }
 
     private Component createButtonsLayout() {

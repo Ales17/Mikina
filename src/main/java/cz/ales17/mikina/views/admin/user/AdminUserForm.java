@@ -45,9 +45,9 @@ public class AdminUserForm extends FormLayout {
 
     public AdminUserForm(UserServiceImpl userService, AccommodationServiceImpl accommodationService) {
         this.userService = userService;
-        this.accommodationService=accommodationService;
+        this.accommodationService = accommodationService;
         MultiSelectComboBox<Role> roles = new MultiSelectComboBox<>("Uživatelské role");
-        roles.setItems(Role.USER,Role.ADMIN);
+        roles.setItems(Role.USER, Role.ADMIN);
         binder.forField(roles).bind(UserEntity::getRoles, UserEntity::setRoles);
 
 
@@ -74,9 +74,10 @@ public class AdminUserForm extends FormLayout {
                 roles,
                 createButtonsLayout()
         );
-
-        //TODO disable username field (changing username) but allow when  creating new acc
-        //username.setEnabled(false);
+        // Validation
+        username.setMaxLength(50);
+        name.setMaxLength(50);
+        emailAddress.setMaxLength(255);
     }
 
 
@@ -121,10 +122,11 @@ public class AdminUserForm extends FormLayout {
         }
 
     }
-    public void addDeleteListener(ComponentEventListener<DeleteEvent> listener)
-    {
+
+    public void addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         addListener(DeleteEvent.class, listener);
     }
+
     public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
         return addListener(SaveEvent.class, listener);
     }

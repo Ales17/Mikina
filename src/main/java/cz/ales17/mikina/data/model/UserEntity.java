@@ -14,9 +14,9 @@ import java.util.StringJoiner;
 @Entity
 @Table(name = "user")
 public class UserEntity extends AbstractEntity {
-
+    @Column(length = 50)
     private String username;
-
+    @Column(length = 50)
     private String name;
 
     @Email
