@@ -16,13 +16,10 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 import cz.ales17.mikina.data.model.Company;
 import cz.ales17.mikina.data.model.Guest;
-import cz.ales17.mikina.data.model.StayFee;
 import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.geek.ubyport.StatniPrislusnost;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -97,18 +94,6 @@ public class GuestForm extends FormLayout {
     private void handleDateLeft(LocalDate d) {
         dateArrived.setMax(d);
         //handleFeeCalculation();
-    }
-
-    private long getStayDayCount() {
-        return ChronoUnit.DAYS.between(dateArrived.getValue(), dateLeft.getValue());
-    }
-
-    private List<StayFee> fetchCompanyFees(Company c) {
-        List<StayFee> fees = new ArrayList<>();
-        fees.add(new StayFee("Osvobozený", 0.0));
-        fees.add(new StayFee("Základní sazba", c.getStayFee()));
-
-        return fees;
     }
 
     private Component createButtonsLayout() {
