@@ -58,7 +58,6 @@ public class GuestView extends VerticalLayout {
     private final DatePicker filterArrived = new DatePicker("Den příchodu");
     private final DatePicker filterLeft = new DatePicker("Den odchodu");
     private final Button openDialogBtn = new Button("Export dat", e -> handleDialogOpening());
-    private final Button duplicateGuestBtn = new Button("Duplikovat hosta");
     private final LocalDate currentMonthFirstDay = LocalDate.now().withDayOfMonth(1);
     private final LocalDate currentMonthLastDay = YearMonth.now().atEndOfMonth();
     private final Button addGuestButton = new Button("Přidat hosta");
@@ -169,10 +168,8 @@ public class GuestView extends VerticalLayout {
         filterReset.addClickListener(click -> resetFilters());
         filterReset.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        duplicateGuestBtn.addClickListener(click -> handleGuestDuplication());
-        duplicateGuestBtn.setEnabled(false);
 
-        var toolbar = new HorizontalLayout(openDialogBtn, filterText, filterArrived, filterLeft, filterReset, addGuestButton, duplicateGuestBtn);
+        var toolbar = new HorizontalLayout(openDialogBtn, filterText, filterArrived, filterLeft, filterReset, addGuestButton);
         toolbar.setAlignItems(Alignment.END);
         toolbar.addClassName("toolbar");
         toolbar.setPadding(false);
@@ -255,10 +252,8 @@ public class GuestView extends VerticalLayout {
 
     private void editGuest(Guest guest) {
         if (guest == null) {
-            duplicateGuestBtn.setEnabled(false);
             closeEditor();
         } else {
-            duplicateGuestBtn.setEnabled(true);
             form.setGuest(guest);
             form.setVisible(true);
             addClassName("editing");
