@@ -1,4 +1,4 @@
-package cz.ales17.mikina.data.service.impl;
+package cz.ales17.mikina.util;
 
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.font.PdfFont;
@@ -12,7 +12,6 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import cz.ales17.mikina.data.model.Company;
 import cz.ales17.mikina.data.model.Guest;
-import cz.ales17.mikina.data.service.ReportService;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ import java.util.List;
  * Service using iText 8 to generate PDF
  */
 @Service
-public class PdfReportService implements ReportService {
+public class PdfReportGenerator implements ReportGenerator {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final DateTimeFormatter printFormatter = DateTimeFormatter.ofPattern("dd. MM. yyyy HH.mm");

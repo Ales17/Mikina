@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -14,14 +15,13 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
-import cz.ales17.mikina.data.model.Company;
-import cz.ales17.mikina.data.model.Guest;
-import cz.ales17.mikina.data.model.Role;
-import cz.ales17.mikina.data.model.UserEntity;
+import cz.ales17.mikina.data.model.*;
+import cz.ales17.mikina.data.repository.ReportRepository;
+import cz.ales17.mikina.data.service.ReportService;
 import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
-import cz.ales17.mikina.data.service.impl.PdfReportService;
-import cz.ales17.mikina.data.service.impl.UbyportReportService;
 import cz.ales17.mikina.security.AuthenticatedUser;
+import cz.ales17.mikina.util.PdfReportGenerator;
+import cz.ales17.mikina.util.UbyportReportGenerator;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -29,9 +29,10 @@ import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+
+import static cz.ales17.mikina.util.DateTimeUtil.*;
 
 /**
  * GuestView shows a list of guests.
@@ -40,37 +41,46 @@ import java.util.Optional;
 @Route(value = "guest", layout = MainLayout.class)
 @PageTitle("Evidenční kniha")
 public class GuestView extends VerticalLayout {
-    private Guest selectedGuestInGrid;
-    private final UbyportReportService ubyportReportService;
-    private final PdfReportService pdfReportService;
+    private final ReportRepository reportRepository;
+    private final UbyportReportGenerator ubyportReportGenerator;
+    private final PdfReportGenerator pdfReportGenerator;
     private final AccommodationServiceImpl accommodationService;
+    private final ReportService recordService;
+
     private final AuthenticatedUser authenticatedUser;
     private final ExportDialog exportDialog = new ExportDialog();
     // Filtering for guests and utils
+    private final Grid<Guest> guestGrid = new Grid<>(Guest.class);
     private final TextField filterText = new TextField("Vyhledávání");
     private final DatePicker filterArrived = new DatePicker("Den příchodu");
     private final DatePicker filterLeft = new DatePicker("Den odchodu");
-    private final Button openDialogBtn = new Button("Export dat", e -> exportDialog.open());
+    private final Button openDialogBtn = new Button("Export dat", e -> handleDialogOpening());
     private final Button duplicateGuestBtn = new Button("Duplikovat hosta");
     private final LocalDate currentMonthFirstDay = LocalDate.now().withDayOfMonth(1);
     private final LocalDate currentMonthLastDay = YearMonth.now().atEndOfMonth();
     private final Button addGuestButton = new Button("Přidat hosta");
     private final Button filterReset = new Button("Vymazat filtr");
-    private final Grid<Guest> guestGrid = new Grid<>(Guest.class);
-    private final DateTimeFormatter gridDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private final DateTimeFormatter pdfDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
-    private final DateTimeFormatter unlDateFormatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
-    private final DateTimeFormatter printDateFormatter = DateTimeFormatter.ofPattern("dd. MM. yyyy HH.mm");
 
+    private Guest selectedGuestInGrid;
     private GuestForm form;
     private Company currentUserCompany;
+
     private List<Guest> currentGuestList, currentForeignGuestList;
 
-    public GuestView(AccommodationServiceImpl accommodationService, UbyportReportService ubyportReportService, PdfReportService pdfReportService, AuthenticatedUser authenticatedUser) {
+    public GuestView(
+            AccommodationServiceImpl accommodationService,
+            UbyportReportGenerator ubyportReportGenerator,
+            PdfReportGenerator pdfReportGenerator,
+            AuthenticatedUser authenticatedUser,
+            ReportRepository reportRepository,
+            ReportService recordService
+    ) {
         this.accommodationService = accommodationService;
-        this.ubyportReportService = ubyportReportService;
-        this.pdfReportService = pdfReportService;
+        this.ubyportReportGenerator = ubyportReportGenerator;
+        this.pdfReportGenerator = pdfReportGenerator;
         this.authenticatedUser = authenticatedUser;
+        this.reportRepository = reportRepository;
+        this.recordService = recordService;
         addClassName("list-view");
         setSizeFull();
         // Configuring components
@@ -82,47 +92,59 @@ public class GuestView extends VerticalLayout {
         closeEditor();
     }
 
+    private void handleDialogOpening() {
+        if (!currentGuestList.isEmpty()) {
+            prepareReports();
+        }
+        exportDialog.open();
+    }
+
     private void prepareReports() {
         LocalDateTime now = LocalDateTime.now();
-
         preparePdfExport(currentGuestList, now);
         prepareUbyportExport(currentForeignGuestList, now);
     }
 
     private void preparePdfExport(List<Guest> guests, LocalDateTime now) {
         String formatDateTime = now.format(pdfDateFormatter);
-
         try {
-            pdfReportService.setTime(now);
+            pdfReportGenerator.setTime(now);
+            byte[] pdfBytes = pdfReportGenerator.getReportBytes(currentUserCompany, guests);
 
-            byte[] pdfBytes = pdfReportService.getReportBytes(currentUserCompany, guests);
+            String filename = String.format("ubytovaci-kniha_%s.%s", formatDateTime, "pdf");
+            recordService.saveReport(pdfBytes, ReportType.PDF, filename, currentUserCompany);
 
-            StreamResource resource = new StreamResource("ubytovaci-kniha_" + formatDateTime + ".pdf", () -> new ByteArrayInputStream(pdfBytes));
-
-            exportDialog.pdfBtn.setTarget("_blank");
-            exportDialog.pdfBtn.setHref(resource);
-            exportDialog.pdfBtn.setEnabled(true);
+            StreamResource resource = new StreamResource(filename, () -> new ByteArrayInputStream(pdfBytes));
+            Anchor anchor = exportDialog.pdfAnchor;
+            anchor.setTarget("_blank");
+            anchor.setHref(resource);
+            anchor.setEnabled(true);
         } catch (Exception e) {
-            Notification.show("Chyba při generování PDF", 5000, Notification.Position.MIDDLE);
-            exportDialog.pdfBtn.setEnabled(false);
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
+            Notification.show("Chyba při generování reportu", 5000, Notification.Position.MIDDLE);
+            exportDialog.pdfAnchor.setEnabled(false);
         }
     }
 
     private void prepareUbyportExport(List<Guest> foreignGuestList, LocalDateTime now) {
         String formatDateTime = now.format(unlDateFormatter);
         try {
-            byte[] unlReportBytes = ubyportReportService.getReportBytes(currentUserCompany, foreignGuestList);
-            StreamResource resource = new StreamResource("123456789012_" + formatDateTime + ".unl", () -> new ByteArrayInputStream(unlReportBytes));
-            exportDialog.unlBtn.setHref(resource);
-            exportDialog.unlBtn.getElement().setAttribute("download", true);
-            exportDialog.unlBtn.setEnabled(true);
+            byte[] reportBytes = ubyportReportGenerator.getReportBytes(currentUserCompany, foreignGuestList);
+
+            String fileName = String.format("%s_%s.%s", currentUserCompany.getUbyportId(), formatDateTime, "unl");
+            recordService.saveReport(reportBytes, ReportType.UNL, fileName, currentUserCompany);
+            StreamResource resource = new StreamResource(fileName, () -> new ByteArrayInputStream(reportBytes));
+            Anchor anchor = exportDialog.unlAnchor;
+            anchor.setHref(resource);
+            anchor.getElement().setAttribute("download", true);
+            anchor.setEnabled(true);
         } catch (Exception e) {
-            Notification.show("Chyba při generování UNL", 5000, Notification.Position.MIDDLE);
-            exportDialog.unlBtn.setEnabled(false);
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
+            Notification.show("Chyba při generování reportu", 5000, Notification.Position.MIDDLE);
+            exportDialog.unlAnchor.setEnabled(false);
         }
     }
+
 
     private Component getToolbar() {
         filterText.setPlaceholder("Jméno / příjmení");
@@ -195,7 +217,7 @@ public class GuestView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new GuestForm(accommodationService, ubyportReportService.getCountryList());
+        form = new GuestForm(accommodationService, ubyportReportGenerator.getCountryList());
         form.setWidth("30em");
         form.addSaveListener(this::saveGuest);
         form.addDeleteListener(this::deleteGuest);
@@ -267,7 +289,6 @@ public class GuestView extends VerticalLayout {
                 form.company.setReadOnly(true); // No admin, do not allow changing company
             }
             guestGrid.setItems(currentGuestList);
-            prepareReports();
         }
     }
 }

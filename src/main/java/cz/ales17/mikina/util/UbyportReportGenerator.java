@@ -1,8 +1,7 @@
-package cz.ales17.mikina.data.service.impl;
+package cz.ales17.mikina.util;
 
 import cz.ales17.mikina.data.model.Company;
 import cz.ales17.mikina.data.model.Guest;
-import cz.ales17.mikina.data.service.ReportService;
 import cz.geek.ubyport.*;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,7 @@ import java.util.List;
 
 @Getter
 @Service
-public class UbyportReportService implements ReportService {
+public class UbyportReportGenerator implements ReportGenerator {
 
     private final List<StatniPrislusnost> countryList = Arrays.asList(StatniPrislusnost.values());
 
