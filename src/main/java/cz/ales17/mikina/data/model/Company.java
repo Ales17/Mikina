@@ -2,8 +2,11 @@ package cz.ales17.mikina.data.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 // Column lengths are set to be compatible with UNL (Ubyport)
 @Getter
@@ -48,5 +51,6 @@ public class Company extends AbstractEntity {
     // Ubytovaci poplatek - stay fee per day (except the first one)
     private double stayFee;
 
-
+    @OneToMany
+    private List<Report> reports;
 }
