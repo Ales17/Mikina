@@ -6,10 +6,13 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -207,7 +210,20 @@ public class GuestView extends VerticalLayout {
         guestGrid.addColumn(Guest::getNationality).setHeader("Stát");
         guestGrid.addColumn(new LocalDateRenderer<>(Guest::getDateArrived, () -> gridDateFormatter)).setHeader("Datum příchodu");
         guestGrid.addColumn(new LocalDateRenderer<>(Guest::getDateLeft, () -> gridDateFormatter)).setHeader("Datum odchodu");
+
+        guestGrid.addColumn(
+                new ComponentRenderer<>(Button::new, (button, person) -> {
+                    button.addThemeVariants(ButtonVariant.LUMO_ICON,
+                            ButtonVariant.LUMO_PRIMARY,
+                            ButtonVariant.LUMO_TERTIARY);
+                    button.addClickListener(e -> this.duplicateGuest(person));
+                    button.setIcon(new Icon(VaadinIcon.COPY));
+                })).setHeader("Akce");
+
+
+
         guestGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+
         guestGrid.asSingleSelect().addValueChangeListener(event -> handleGuestSelection(event.getValue()));
     }
 
@@ -247,6 +263,13 @@ public class GuestView extends VerticalLayout {
             form.setVisible(true);
             addClassName("editing");
         }
+    }
+
+
+    private void duplicateGuest(Guest toDuplicate) {
+        form.setGuest(null);
+        accommodationService.duplicateGuest(toDuplicate);
+        updateList();
     }
 
     private void handleGuestDuplication() {
