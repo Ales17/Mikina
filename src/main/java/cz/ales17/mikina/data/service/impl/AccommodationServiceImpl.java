@@ -87,4 +87,10 @@ public class AccommodationServiceImpl implements AccommodationService {
         duplicatedGuest.setCompany(originalGuest.getCompany());
         guestRepository.save(duplicatedGuest);
     }
+
+    @Override
+    public int averageDaysOfStay(Company c) {
+        return guestRepository.averageDaysStay(c.getId());
+    }
+
 }

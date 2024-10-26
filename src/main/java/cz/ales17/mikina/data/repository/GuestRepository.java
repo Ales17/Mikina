@@ -36,4 +36,8 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
 
     List<Guest> findGuestsByNationalityIsNot(StatniPrislusnost nationality);
 
+    @Query(value = "SELECT AVG(DATEDIFF(date_left, date_arrived)) FROM guest WHERE company_id = :cId", nativeQuery = true)
+    int averageDaysStay(@Param("cId") Long companyId);
+
+
 }

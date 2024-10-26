@@ -19,4 +19,6 @@ public interface AccommodationService {
     List<Company> findAllCompanies();
 
     void duplicateGuest(Guest originalGuest);
+
+    int averageDaysOfStay(Company c);
 }
