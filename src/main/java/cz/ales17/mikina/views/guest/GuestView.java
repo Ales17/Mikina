@@ -227,9 +227,16 @@ public class GuestView extends VerticalLayout {
                             ButtonVariant.LUMO_TERTIARY);
                     button.addClickListener(e -> this.duplicateGuest(person));
                     button.setIcon(new Icon(VaadinIcon.COPY));
+                    button.setAriaLabel("Duplikovat hosta");
+                    button.setTooltipText("Duplikovat hosta");
                 })).setHeader("Akce");
-
-
+        // Styling rows without date arrived OR left - adding CSS class to styles.css in frontend/themes/...
+        guestGrid.setPartNameGenerator(person -> {
+            if (person.getDateArrived() == null || person.getDateLeft() == null) {
+                return "incomplete";
+            }
+            return null;
+        });
 
         guestGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 

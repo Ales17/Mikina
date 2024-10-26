@@ -9,3 +9,7 @@ a[highlight] {
     font-weight: bold;
     text-decoration: underline;
 }
+
+vaadin-grid::part(incomplete) {
+    background-color: var(--lumo-error-color-10pct);
+}
