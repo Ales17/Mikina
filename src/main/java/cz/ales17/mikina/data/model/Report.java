@@ -4,9 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -25,6 +22,4 @@ public class Report extends AbstractEntity {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @CreationTimestamp
-    private LocalDateTime createdOn;
 }
