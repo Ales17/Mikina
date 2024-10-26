@@ -19,7 +19,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import cz.ales17.mikina.data.model.*;
-import cz.ales17.mikina.data.repository.ReportRepository;
 import cz.ales17.mikina.data.service.ReportService;
 import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
 import cz.ales17.mikina.security.AuthenticatedUser;
@@ -44,7 +43,6 @@ import static cz.ales17.mikina.util.DateTimeUtil.*;
 @Route(value = "guest", layout = MainLayout.class)
 @PageTitle("Evidenční kniha")
 public class GuestView extends VerticalLayout {
-    private final ReportRepository reportRepository;
     private final UbyportReportGenerator ubyportReportGenerator;
     private final PdfReportGenerator pdfReportGenerator;
     private final AccommodationServiceImpl accommodationService;
@@ -63,7 +61,6 @@ public class GuestView extends VerticalLayout {
     private final Button addGuestButton = new Button("Přidat hosta");
     private final Button filterReset = new Button("Zrušit filtr");
 
-    private Guest selectedGuestInGrid;
     private GuestForm form;
     private Company currentUserCompany;
 
@@ -74,14 +71,12 @@ public class GuestView extends VerticalLayout {
             UbyportReportGenerator ubyportReportGenerator,
             PdfReportGenerator pdfReportGenerator,
             AuthenticatedUser authenticatedUser,
-            ReportRepository reportRepository,
             ReportService recordService
     ) {
         this.accommodationService = accommodationService;
         this.ubyportReportGenerator = ubyportReportGenerator;
         this.pdfReportGenerator = pdfReportGenerator;
         this.authenticatedUser = authenticatedUser;
-        this.reportRepository = reportRepository;
         this.recordService = recordService;
         addClassName("list-view");
         setSizeFull();
@@ -244,7 +239,6 @@ public class GuestView extends VerticalLayout {
     }
 
     private void handleGuestSelection(Guest g) {
-        selectedGuestInGrid = g;
         editGuest(g);
     }
 
@@ -284,16 +278,6 @@ public class GuestView extends VerticalLayout {
         form.setGuest(null);
         accommodationService.duplicateGuest(toDuplicate);
         updateList();
-    }
-
-    private void handleGuestDuplication() {
-        if (selectedGuestInGrid == null) {
-            return;
-        } else {
-            form.setGuest(null);
-            accommodationService.duplicateGuest(selectedGuestInGrid);
-            updateList();
-        }
     }
 
     private void closeEditor() {
