@@ -57,11 +57,11 @@ public class GuestView extends VerticalLayout {
     private final TextField filterText = new TextField("Vyhledávání");
     private final DatePicker filterArrived = new DatePicker("Den příchodu");
     private final DatePicker filterLeft = new DatePicker("Den odchodu");
-    private final Button openDialogBtn = new Button("Export dat", e -> handleDialogOpening());
+    private final Button openDialogBtn = new Button("Export", e -> handleDialogOpening());
     private final LocalDate currentMonthFirstDay = LocalDate.now().withDayOfMonth(1);
     private final LocalDate currentMonthLastDay = YearMonth.now().atEndOfMonth();
     private final Button addGuestButton = new Button("Přidat hosta");
-    private final Button filterReset = new Button("Vymazat filtr");
+    private final Button filterReset = new Button("Zrušit filtr");
 
     private Guest selectedGuestInGrid;
     private GuestForm form;
@@ -148,7 +148,7 @@ public class GuestView extends VerticalLayout {
     }
 
 
-    private Component getToolbar() {
+    private Component getFilterBar() {
         filterText.setPlaceholder("Jméno / příjmení");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
@@ -163,17 +163,29 @@ public class GuestView extends VerticalLayout {
         // Date validation
         filterArrived.addValueChangeListener(e -> filterLeft.setMin(e.getValue()));
         filterLeft.addValueChangeListener(e -> filterArrived.setMax(e.getValue()));
+
+        filterReset.addClickListener(click -> resetFilters());
+        var toolbar = new HorizontalLayout(filterArrived, filterLeft, filterReset);
+        toolbar.setAlignItems(Alignment.END);
+        return toolbar;
+    }
+
+    private Component getToolbar() {
+
         // Listeners
         addGuestButton.addClickListener(click -> addGuest());
-        filterReset.addClickListener(click -> resetFilters());
-        filterReset.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        addGuestButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
+        var toolbarGuestOperation = new HorizontalLayout(openDialogBtn, addGuestButton);
+        toolbarGuestOperation.setAlignItems(Alignment.END);
+        toolbarGuestOperation.addClassName("toolbar");
+        toolbarGuestOperation.setPadding(false);
+        toolbarGuestOperation.getStyle().set("display", "inline-flex");
+        toolbarGuestOperation.setAlignItems(Alignment.END);
 
-        var toolbar = new HorizontalLayout(openDialogBtn, filterText, filterArrived, filterLeft, filterReset, addGuestButton);
-        toolbar.setAlignItems(Alignment.END);
-        toolbar.addClassName("toolbar");
-        toolbar.setPadding(false);
-        toolbar.getStyle().set("display", "inline-flex");
+        var toolbar = new HorizontalLayout(getFilterBar(), toolbarGuestOperation);
+        toolbar.setWidthFull();
+        toolbar.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
         return toolbar;
     }
