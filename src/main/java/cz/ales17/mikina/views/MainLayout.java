@@ -6,7 +6,10 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Footer;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -16,7 +19,6 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
-import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import cz.ales17.mikina.data.model.Role;
 import cz.ales17.mikina.data.model.UserEntity;
@@ -25,6 +27,7 @@ import cz.ales17.mikina.views.admin.company.AdminCompanyView;
 import cz.ales17.mikina.views.admin.user.AdminUserView;
 import cz.ales17.mikina.views.dashboard.DashboardView;
 import cz.ales17.mikina.views.guest.GuestView;
+import cz.ales17.mikina.views.report.ReportView;
 import cz.ales17.mikina.views.user.UserView;
 
 import java.io.ByteArrayInputStream;
@@ -39,13 +42,10 @@ import java.util.Optional;
  * </p>
  */
 public class MainLayout extends AppLayout {
-    private AuthenticatedUser authenticatedUser;
-    private AccessAnnotationChecker accessChecker;
+    private final AuthenticatedUser authenticatedUser;
 
-    public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
+    public MainLayout(AuthenticatedUser authenticatedUser) {
         this.authenticatedUser = authenticatedUser;
-        this.accessChecker = accessChecker;
-
         createHeader();
         createDrawer();
     }
@@ -54,7 +54,8 @@ public class MainLayout extends AppLayout {
         Tabs tabs = new Tabs();
         tabs.add(
                 createTab(VaadinIcon.DASHBOARD, "Hlavní panel", DashboardView.class),
-                createTab(VaadinIcon.BOOK, "Kniha hostů", GuestView.class)
+                createTab(VaadinIcon.BOOK, "Kniha hostů", GuestView.class),
+                createTab(VaadinIcon.DOWNLOAD, "Seznam reportů", ReportView.class)
         );
         Optional<UserEntity> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
@@ -142,11 +143,7 @@ public class MainLayout extends AppLayout {
 
             layout.add(userMenu);
             layout.getStyle().set("margin-right", "var(--lumo-space-m)");
-        } else {
-            Anchor loginLink = new Anchor("login", "Přihlášení");
-            layout.add(loginLink);
         }
-
         return layout;
     }
 }
