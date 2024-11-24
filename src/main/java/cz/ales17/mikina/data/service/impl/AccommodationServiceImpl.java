@@ -6,6 +6,7 @@ import cz.ales17.mikina.data.repository.CompanyRepository;
 import cz.ales17.mikina.data.repository.GuestRepository;
 import cz.ales17.mikina.data.service.AccommodationService;
 import cz.geek.ubyport.StatniPrislusnost;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,16 +17,11 @@ import java.util.List;
  * Service class for Accommodation entities.
  */
 @Service
+@RequiredArgsConstructor
 public class AccommodationServiceImpl implements AccommodationService {
 
     private final GuestRepository guestRepository;
     private final CompanyRepository companyRepository;
-
-    public AccommodationServiceImpl(GuestRepository guestRepository,
-                                    CompanyRepository companyRepository) {
-        this.guestRepository = guestRepository;
-        this.companyRepository = companyRepository;
-    }
 
     public List<Guest> searchForAllGuests(String stringFilter, LocalDate arrivedFilter, LocalDate leftFilter) {
         return searchGuests(stringFilter, arrivedFilter, leftFilter, false, null);
@@ -91,6 +87,11 @@ public class AccommodationServiceImpl implements AccommodationService {
     @Override
     public int averageDaysOfStay(Company c) {
         return guestRepository.averageDaysStay(c.getId());
+    }
+
+    @Override
+    public int totalGuestCount(Company c) {
+        return guestRepository.countGuestsByCompanyIs(c);
     }
 
 }
