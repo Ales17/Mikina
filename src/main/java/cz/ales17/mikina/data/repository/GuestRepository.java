@@ -40,4 +40,5 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
     int averageDaysStay(@Param("cId") Long companyId);
 
 
+    int countGuestsByCompanyIs(Company c);
 }
