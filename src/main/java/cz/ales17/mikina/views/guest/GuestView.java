@@ -18,6 +18,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import cz.ales17.mikina.data.model.*;
 import cz.ales17.mikina.data.service.ReportService;
 import cz.ales17.mikina.data.service.impl.AccommodationServiceImpl;
@@ -59,7 +60,7 @@ public class GuestView extends VerticalLayout {
     private final LocalDate currentMonthFirstDay = LocalDate.now().withDayOfMonth(1);
     private final LocalDate currentMonthLastDay = YearMonth.now().atEndOfMonth();
     private final Button addGuestButton = new Button("Přidat hosta");
-    private final Button filterReset = new Button("Zrušit filtr");
+    private final Button filterReset = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
 
     private GuestForm form;
     private Company currentUserCompany;
@@ -159,9 +160,11 @@ public class GuestView extends VerticalLayout {
         filterArrived.addValueChangeListener(e -> filterLeft.setMin(e.getValue()));
         filterLeft.addValueChangeListener(e -> filterArrived.setMax(e.getValue()));
 
+        filterReset.setAriaLabel("Zrušit filtr");
         filterReset.addClickListener(click -> resetFilters());
         var toolbar = new HorizontalLayout(filterArrived, filterLeft, filterReset);
         toolbar.setAlignItems(Alignment.END);
+        toolbar.addClassName(LumoUtility.FlexWrap.WRAP);
         return toolbar;
     }
 
@@ -181,7 +184,8 @@ public class GuestView extends VerticalLayout {
         var toolbar = new HorizontalLayout(getFilterBar(), toolbarGuestOperation);
         toolbar.setWidthFull();
         toolbar.setJustifyContentMode(JustifyContentMode.BETWEEN);
-
+        toolbar.addClassNames(LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN,
+                LumoUtility.FlexDirection.Breakpoint.Medium.ROW, LumoUtility.Gap.MEDIUM);
         return toolbar;
     }
 
