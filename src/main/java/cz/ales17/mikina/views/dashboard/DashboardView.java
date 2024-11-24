@@ -8,6 +8,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import cz.ales17.mikina.data.model.Company;
 import cz.ales17.mikina.data.model.UserEntity;
+import cz.ales17.mikina.data.service.AccommodationService;
 import cz.ales17.mikina.security.AuthenticatedUser;
 import cz.ales17.mikina.views.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
@@ -15,6 +16,7 @@ import jakarta.annotation.security.RolesAllowed;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
 import java.util.Optional;
 
 @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
@@ -22,14 +24,19 @@ import java.util.Optional;
 @PageTitle("Hlavní panel")
 public class DashboardView extends VerticalLayout {
     private final AuthenticatedUser authenticatedUser;
+    private final AccommodationService acccommodationService;
     private String companyInformation = "";
+    private Company currentCompany;
 
-    public DashboardView(AuthenticatedUser authenticatedUser) {
+    public DashboardView(AuthenticatedUser authenticatedUser, AccommodationService acccommodationService) {
         this.authenticatedUser = authenticatedUser;
+        this.acccommodationService = acccommodationService;
         addClassName("dashboard-view");
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         prepareUserCompanyInformation();
-        add(getContent());
+        //add(getWelcomeSection(), getStatistics());
+        add(welcome());
+        add(stats());
     }
 
     private String getFormattedCompanyInfo(Company c) {
@@ -43,17 +50,25 @@ public class DashboardView extends VerticalLayout {
         Optional<UserEntity> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
             UserEntity user = maybeUser.get();
-            Company currentCompany = user.getCompany();
+            currentCompany = user.getCompany();
             companyInformation = getFormattedCompanyInfo(currentCompany);
         }
     }
 
-    private Component getContent() {
+    private List<Component> welcome() {
         H2 welcomeText = new H2("Vítejte v ubytovacím systému");
         LocalDate currentDate = LocalDate.now();
         String formattedCurrentDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(currentDate);
         Paragraph dateParagraph = new Paragraph(String.format("Dnes je %s. Spravujete ubytovací zařízení %s.", formattedCurrentDate, companyInformation));
+        return List.of(welcomeText, dateParagraph);
+    }
 
-        return new VerticalLayout(welcomeText, dateParagraph);
+    private List<Component> stats() {
+        H2 statsHeading = new H2("Statistika");
+        int averageDaysCount = acccommodationService.averageDaysOfStay(currentCompany);
+        int totalGuests = acccommodationService.totalGuestCount(currentCompany);
+        Paragraph daysAvg = new Paragraph(String.format("Průměrný počet dní: %s\nCelkem hostů: %s", averageDaysCount, totalGuests));
+        daysAvg.getStyle().set("white-space", "pre-line");
+        return List.of(statsHeading, daysAvg);
     }
 }
