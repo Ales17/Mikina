@@ -64,9 +64,10 @@ public class DashboardView extends VerticalLayout {
     }
 
     private List<Component> stats() {
-        H2 statsHeading = new H2("Statistika");
-        int averageDaysCount = acccommodationService.averageDaysOfStay(currentCompany);
         int totalGuests = acccommodationService.totalGuestCount(currentCompany);
+        H2 statsHeading = new H2("Statistika");
+
+        Integer averageDaysCount = 999;//acccommodationService.averageDaysOfStay(currentCompany);
         Paragraph daysAvg = new Paragraph(String.format("Průměrný počet dní: %s\nCelkem hostů: %s", averageDaysCount, totalGuests));
         daysAvg.getStyle().set("white-space", "pre-line");
         return List.of(statsHeading, daysAvg);

@@ -85,7 +85,7 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
-    public int averageDaysOfStay(Company c) {
+    public Integer averageDaysOfStay(Company c) {
         return guestRepository.averageDaysStay(c.getId());
     }
 

@@ -20,7 +20,7 @@ public interface AccommodationService {
 
     void duplicateGuest(Guest originalGuest);
 
-    int averageDaysOfStay(Company c);
+    Integer averageDaysOfStay(Company c);
 
     int totalGuestCount(Company c);
 }
