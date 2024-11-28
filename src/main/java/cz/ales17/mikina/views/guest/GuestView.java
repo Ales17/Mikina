@@ -65,6 +65,8 @@ public class GuestView extends VerticalLayout {
     private GuestForm form;
     private Company currentUserCompany;
 
+    private final DeleteDialog deleteDialog;
+
     private List<Guest> currentGuestList, currentForeignGuestList;
 
     public GuestView(
@@ -88,6 +90,9 @@ public class GuestView extends VerticalLayout {
         updateList();
         // Editor will be closed at the start
         closeEditor();
+
+        deleteDialog = new DeleteDialog();
+
     }
 
     private void handleDialogOpening() {
@@ -260,8 +265,11 @@ public class GuestView extends VerticalLayout {
     }
 
     private void handleGuestDeleting(Guest g) {
-        accommodationService.deleteGuest(g);
-        updateList();
+        deleteDialog.addConfirmListener(e -> {
+            accommodationService.deleteGuest(g);
+            updateList();
+        });
+        deleteDialog.open();
     }
 
     private void configureForm() {
