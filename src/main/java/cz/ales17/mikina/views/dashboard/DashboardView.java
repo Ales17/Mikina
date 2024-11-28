@@ -36,7 +36,7 @@ public class DashboardView extends VerticalLayout {
         prepareUserCompanyInformation();
         //add(getWelcomeSection(), getStatistics());
         add(welcome());
-        add(stats());
+        //add(stats());
     }
 
     private String getFormattedCompanyInfo(Company c) {
