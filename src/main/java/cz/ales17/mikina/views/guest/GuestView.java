@@ -220,14 +220,27 @@ public class GuestView extends VerticalLayout {
         guestGrid.addColumn(new LocalDateRenderer<>(Guest::getDateLeft, () -> gridDateFormatter)).setHeader("Datum odchodu");
 
         guestGrid.addColumn(
-                new ComponentRenderer<>(Button::new, (button, person) -> {
-                    button.addThemeVariants(ButtonVariant.LUMO_ICON,
+                new ComponentRenderer<>(person -> {
+                    Button copy = new Button();
+                    copy.addThemeVariants(ButtonVariant.LUMO_ICON,
                             ButtonVariant.LUMO_PRIMARY,
                             ButtonVariant.LUMO_TERTIARY);
-                    button.addClickListener(e -> this.duplicateGuest(person));
-                    button.setIcon(new Icon(VaadinIcon.COPY));
-                    button.setAriaLabel("Duplikovat hosta");
-                    button.setTooltipText("Duplikovat hosta");
+                    copy.addClickListener(e -> this.duplicateGuest(person));
+                    copy.setIcon(new Icon(VaadinIcon.COPY));
+                    copy.setTooltipText("Duplikovat hosta");
+
+                    Button delete = new Button();
+                    delete.addClickListener(e -> handleGuestDeleting(person));
+                    delete.addThemeVariants(ButtonVariant.LUMO_ICON,
+                            ButtonVariant.LUMO_ERROR,
+                            ButtonVariant.LUMO_PRIMARY);
+
+                    delete.setIcon(new Icon(VaadinIcon.TRASH));
+                    delete.setTooltipText("Smazat hosta");
+
+                    HorizontalLayout buttons =
+                            new HorizontalLayout(copy, delete);
+                    return buttons;
                 })).setHeader("Akce");
         // Styling rows without date arrived OR left - adding CSS class to styles.css in frontend/themes/...
         guestGrid.setPartNameGenerator(person -> {
@@ -244,6 +257,11 @@ public class GuestView extends VerticalLayout {
 
     private void handleGuestSelection(Guest g) {
         editGuest(g);
+    }
+
+    private void handleGuestDeleting(Guest g) {
+        accommodationService.deleteGuest(g);
+        updateList();
     }
 
     private void configureForm() {
